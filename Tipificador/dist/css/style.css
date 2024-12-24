@@ -1,0 +1,118 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.no-arrows::-webkit-outer-spin-button,
+.no-arrows::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.no-arrows {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+.container {
+  text-align: center;
+}
+
+.trans {
+  backdrop-filter: blur(15px); /* Mantiene el desenfoque */
+  border-radius: 10px;
+  background: transparent;
+  color: rgb(200, 200, 200); /* Asegura legibilidad */
+  border: 0.2px solid rgba(255, 255, 255, 0.5); /* Define el grosor de borde correctamente */
+}
+
+option {
+  color: black;
+}
+
+label {
+  color: white;
+}
+
+.contenedor {
+  position: relative;
+  width: 90%;
+  height: 90%;
+  display: flex;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
+}
+
+.btn {
+  color: white;
+  border-radius: 8px;
+}
+
+.btn1 {
+  border-radius: 0 12px 12px 0; /* Simplificación de valores */
+  color: blue;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(100%); /* Cambia el color del indicador */
+}
+
+body {
+  background-image: url('../img/7.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  display: flex;
+  font-family: "Arial Black", sans-serif; /* Usa un sistema más robusto para la fuente */
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: transparent; /* "transparent" en lugar de "#00000000" */
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.2); /* Define el alfa en la sombra */
+  padding: 20px 0;
+  text-align: center;
+}
+
+.copy-button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+i, b {
+  pointer-events: none; /* Desactiva interacciones del cursor */
+}
+
+.icon-login {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+#textoNota {
+  position: relative;
+  width: 80%;
+  padding: 10px;
+  border-radius: 8px;
+  box-sizing: border-box; /* Corrige "field-sizing" por "box-sizing" */
+}
+
+.modal-title {
+  color: hsl(0, 0%, 100%);
+}
+
+

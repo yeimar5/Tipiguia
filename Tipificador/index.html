@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tipificador</title>
+  <link rel="stylesheet" href="./dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="./dist/css/style.css">
+  <link rel="icon" href="./dist/img/LR.png" type="image/x-icon" />
+</head>
+
+<body>
+  <div class="login">
+    <img src="./dist/img/agent.png" alt="Configuracion de agent" class="icon-login" data-target="#login-modal"
+      data-toggle="modal">
+
+    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="#exampleModalLabel"
+      aria-hidden="true" data-backdrop="static">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content trans">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">LOGIN</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-7" id="numt">
+                <label for="NomTitular">NOMBRE ASESOR</label>
+                <input type="text" class="form-control trans" id="NomAgent" required autocomplete="off">
+              </div>
+              <div class="col-sm-5" id="nomt">
+                <label for="NumTitular">NUMERO AGENT</label>
+                <input type="number" class="form-control trans no-arrows" id="Agent" required autocomplete="off">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="imagen" class="btn btn-outline-warning"><b>CAMBIAR FONDO</b> </button>
+            <button type="button" id="guardarCambios" class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor principal -->
+  <div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="contenedor transparent w-100 p-3" style="max-width: 800px;">
+      <form id="datosTecnico">
+        <div class="modal-header d-flex justify-content-between align-items-center">
+          <h2 class="modal-title" id="titulo"><b>LINEA DE RESCATE</b></h2>
+        </div>
+
+        <!-- Primera fila: Nombre y Rol -->
+        <div class="row pt-3">
+          <div class="form-group col-sm-8">
+            <label for="NombreTec">NOMBRE</label>
+            <div style="position: relative;">
+              <input type="text" class="form-control trans" id="NombreTec" autocomplete="off">
+              <button type="button" id="copiar" class="btn btn-outline-primary copy-button">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="rol">ROL</label>
+            <select id="rol" class="form-control">
+              <option value="Técnico">INSTALADOR</option>
+              <option value="gestor">GESTOR</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Segunda fila: Cédula, Teléfono y Atis -->
+        <div class="row">
+          <div class="form-group col-sm-4">
+            <label for="cedula">CEDULA</label>
+            <div style="position: relative;">
+              <input type="text" class="form-control trans" id="cedula"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '');" autocomplete="off">
+              <button type="button" id="copiar1" class="btn btn-outline-primary copy-button">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="telefono">TELEFONO</label>
+            <div style="position: relative;">
+              <input type="text" class="form-control trans" id="telefono"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '');" autocomplete="off">
+              <button type="button" id="copiar2" class="btn btn-outline-primary copy-button">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="atis">ATIS</label>
+            <div style="position: relative;">
+              <input type="text" class="form-control trans" id="atis" aria-describedby="Atis" value="100000"
+                maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13);"
+                autocomplete="off">
+              <button type="button" id="copiar3" class="btn btn-outline-warning copy-button">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row form-group justify-content-center">
+          <div class="col-auto">
+            <button type="button" id="Tipificar" class="btn btn-outline-success" data-toggle="modal"
+              data-target="#tipificarNota">TIPIFICAR</button>
+            <button type="button" id="limpiar" class="btn btn-outline-danger">LIMPIAR</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="tipificarNota" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content trans">
+        <div class="modal-header" id="color">
+          <h5 class="modal-title" id="exampleModalLabel">Tipificar</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body col-sm-auto ">
+
+
+          <form id="Formulario">
+            <div class="modal-header d-flex justify-content-between align-items-center">
+              <div>
+                <select class="form-control d-inline-block w-auto" id="Motivo">
+                  <option value="" selected disabled>MOTIVO LLAMADA</option>
+                  <option value="1">AGENDAR</option>
+                  <option value="2">QUIEBRE</option>
+                  <option value="3">NO APLICA SOPORTE</option>
+                  <option value="4">GESTION DECOS</option>
+                  <option value="5">DIRECION PILOTO</option>
+                  <option value="6">LLAMADA CAIDA</option>
+                </select>
+              </div>
+              <div class="col-sm" id="contingencia">
+                <div class="custom-control form-check-inline  custom-switch ">
+                  <input type="checkbox" class="custom-control-input " id="Contingencia">
+                  <label class="custom-control-label trans" for="Contingencia">CONTINGENCIA</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12" id="contacto">
+                <label class="my-1 mr-2 col-8" for="Contacto">Hubo Contacto</label>
+                <select class="custom-select my-1 mr-sm-2 trans" id="Contacto">
+                  <option selected>...</option>
+                  <option value="1">Sin Contacto</option>
+                  <option value="2">Contacto</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row pt-3">
+              <div class="col-sm" id="chatbot">
+                <div class="custom-control form-check-inline  custom-switch ">
+                  <input type="checkbox" class="custom-control-input " id="FC">
+                  <label class="custom-control-label trans" for="FC">FALLA CHATBOT</label>
+                </div>
+              </div>
+              <div class="col-sm " id="Acepta">
+                <div class="custom-control form-check-inline custom-switch  ">
+                  <input type="checkbox" class="custom-control-input" id="Aceptains">
+                  <label class="custom-control-label" for="Aceptains">ACEPTA </label>
+                </div>
+              </div>
+              <div class="col-sm " id="suspender">
+                <div class="custom-control form-check-inline custom-switch  ">
+                  <input type="checkbox" class="custom-control-input" id="sus">
+                  <label class="custom-control-label" for="sus">SUSPENDER</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm" id="Soporte">
+              <label for="NS" class="form-label">Soporte No Aplica</label>
+              <select id="NS" class="custom-select trans">
+                <option selected value="">SELECCIONE</option>
+                <option value="1">SIN CHATBOT</option>
+                <option value="2">ENTREGA DE TICKET</option>
+                <option value="3">NO PUEDE REALIZAR INSTALACIÓN/NO TIENE MATERIALES</option>
+                <option value="4">OTRO SEGMENTO</option>
+                <option value="6">REAGENDAMIENTO POR LLUVIA</option>
+                <option value="7">TAREA ASIGNADA EN DIA O JORNADA DIFERENTE</option>
+                <option value="8">TAREA EN OTRO ESTADO</option>
+                <option value="9">TÉCNICO NO ALCANZA A LLEGAR, CASA CLIENTE</option>
+                <option value="10">TÉCNICO NO ENCUENTRA DIRECCIÓN DEL PREDIO</option>
+                <option value="11">BASEPORT ADICIONAL </option>
+                <option value="12">LLAMADA CAÍDA</option>
+                <option value="13">DIRECCIÓN ERRADA</option>
+                <option value="14">BAJA DE PERFIL</option>
+                <option value="15">AVERIA</option>
+            </div>
+            </select>
+        </div>
+
+        <div class="row pt-3">
+          <div class="col-12" id="MotivoTec">
+            <label for="Mtecnico">Motivo Técnico</label>
+            <div class="form-group">
+              <textarea class="form-control trans" id="Mtecnico"></textarea>
+            </div>
+          </div>
+          <div class="col-12" id="Musuariod">
+            <label for="Musuario">Motivo Usuario</label>
+            <div class="form-group">
+              <textarea class="form-control trans" id="Musuario"></textarea>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row" id="Titular">
+          <div class="col-sm-7" id="nomt">
+            <label for="NomTitular">Nombre de Titular</label>
+            <input type="text" class="form-control trans" id="NomTitular" required autocomplete="off">
+          </div>
+          <div class="col-sm-5" id="numt">
+            <label for="NumTitular">Numero de Titular</label>
+            <input type="number" class="form-control trans no-arrows" id="NumTitular" required autocomplete="off">
+          </div>
+        </div>
+
+        <div class="row pt-3">
+          <div class=" col-sm" id="fecha">
+            <label for="Fecha" class="form-label trans ">Fecha Agendamiento</label>
+            <div class="input-group gap-3">
+              <input type="date" class="form-control trans Fecha" id="Fecha">
+              <select id="Franja" class="custom-select trans col-2" aria-label="">
+                <option id="AM" value="AM">AM</option>
+                <option id="PM" value="PM">PM</option>
+              </select>
+              <button type="button" id="pedir-cuota" class="btn btn1 btn-warning ">Pedir Cuota</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row " id="GPS">
+          <div class="col-sm-auto">
+            <label for="gps" id="gp" class="form-label">GPS</label>
+            <select id="gps" class="custom-select trans" aria-label="Gps">
+              <option value="OK">OK</option>
+              <option value="No OK">NO OK</option>
+            </select>
+          </div>
+          <div class="col-sm-auto">
+            <label for="SF" id="sf" class="form-label">Soporte Fotográfico</label>
+            <select id="SF" class="custom-select trans" aria-label="">
+              <option value="OK">OK</option>
+              <option value="No OK">NO OK</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" id="MoQuiebre">
+          <div class="col-sm">
+            <label for="exampleDataList">Motivo Quiebre</label>
+            <input class="form-control col-sm-auto trans" list="selectQE" id="exampleDataList"
+              placeholder="Escribe el motivo">
+            <datalist id="selectQE">
+              <option>PLAN ERRADO CLIENTE SOLICITO MAS DECOS</option>
+              <option>PLAN ERRADO CLIENTE SOLICITO MENOS DECOS</option>
+              <option>PLAN ERRADO VELOCIDAD BA</option>
+              <option>PLAN ERRADO OFERTA PRIMARIA</option>
+              <option>PLAN ERRADO OFERTA SUPLEMENTARIA</option>
+              <option>YA TIENE SERVICIO MOVISTAR INSTALADO</option>
+              <option>CLIENTE DESISTE DEL SERVICIO, INCONFORMIDAD TARIFAS</option>
+              <option>CLIENTE DESISTE DEL TRASLADO, SOLICITA RETIRO</option>
+              <option>CLIENTE DESISTE DEL TRASLADO, CONTINUA CON SERVICIO ACTUAL</option>
+              <option>CLIENTE SOLICITO TRASLADO DE OTRO PRODUCTO</option>
+              <option>CLIENTE SOLICITO OPERACIÓN COMERCIAL DIFERENTE</option>
+              <option>CLIENTE DESEA EL PRODUCTO EN UNA FECHA POSTERIOR</option>
+              <option>CLIENTE NO SOLICITO EL SERVICIO</option>
+              <option>FALLA APLICATIVOS Y/O PROBLEMAS SALIDA DE LLAMADAS</option>
+              <option>CONDICIONES DEL PREDIO NO APTAS PARA LA INSTALACIÓN</option>
+              <option>INCUMPLIMIENTO DE CITA ATRIBUIBLE A TITULAR</option>
+              <option>GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN</option>
+              <option>GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN</option>
+              <option>GESTIÓN INCOMPLETA EN APLICATIVOS POR LR</option>
+              <option>CAMBIO PLAN POR DECISION DEL CLIENTE</option>
+              <option>CLIENTE DESISTE DEL SERVICIO POR RECLAMO NO SOLUCIONADO</option>
+              <option>CLIENTE DESISTE DEL SERVICIO/DEMORAS EN LA INSTALACIÓN</option>
+              <option>CLIENTE DESISTE DEL SERVICIO/ELIGE LA COMPETENCIA</option>
+              <option>CLIENTE DESISTE DEL SERVICIO/INCONCISTENCIA EN LA OFERTA</option>
+              <option>CLIENTE DESISTE DEL SERVICIO/RETENIDO POR OTRO OPERADOR</option>
+              <option>CLIENTE DESISTE DEL SERVICIO/SITUACIÓN ECONOMICA</option>
+              <option>CLIENTE DESISTE DEL SERVICIO/NO DA MOTIVO</option>
+              <option>CLIENTE NO ACEPTA INSTALACIÓN PARCIAL</option>
+              <option>CLIENTE NO ACEPTA COBRO DE DECODIFICADOR ADICIONAL </option>
+              <option>CLIENTE RECHAZA COBRO DE INSTALACIÓN</option>
+              <option>DATOS DEL CLIENTE ERRADOS</option>
+              <option>SIN DISPONIBILIDAD DE EQUIPOS (EQ)</option>
+              <option>SIN PERMISO PARA INSTALAR</option>
+              <option>TELEFONO DEL CLIENTE ERRADO</option>
+            </datalist>
+          </div>
+        </div>
+
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary trans" id="CopiarT">COPIAR</button>
+      </div>
+    </div>
+    <!-- <div class="modal-footer">
+      <footer class="footer">
+        <div class="textarea-container">
+          <textarea id="textoNota"></textarea>
+          <button class="btn btn-primary copy-button" onclick="copiarNota()">COPIAR</button>
+        </div>
+      </footer>
+    </div> -->
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="./dist/js/funciones.js"></script>
+  <script src="./dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./dist/js/sweetalert2@11.js"></script>
+</body>
+
+</html>

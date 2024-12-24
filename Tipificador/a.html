@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Dinámico con Select y Checkbox</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-container input,
+        .form-container select {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body style="background-color: yellowgreen;">
+
+    <div class="form-container">
+        <label for="nombre" style="color: brown;">Nombre:</label>
+        <input type="text" id="nombre" placeholder="Escribe tu nombre" value="Pedro">
+    </div>
+
+    <div class="form-container">
+        <label for="documento">Documento:</label>
+        <input type="text" id="documento" placeholder="Escribe tu documento" value="123">
+    </div>
+
+    <div class="form-container">
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad" placeholder="Escribe tu edad" value="30">
+    </div>
+
+    <div class="form-container">
+        <label for="pais">País:</label>
+        <select id="pais">
+            <option value="Argentina">Argentina</option>
+            <option value="España">España</option>
+            <option value="México">México</option>
+        </select>
+    </div>
+
+    <div class="form-container">
+        <label for="intereses">Intereses:</label>
+        <input type="checkbox" id="intereses_deportes" value="Deportes" checked> Deportes
+        <input type="checkbox" id="intereses_tecnologia" value="Tecnología"> Tecnología
+    </div>
+
+    <div class="form-container">
+        <label for="output">Datos:</label>
+        <textarea id="output"></textarea>
+    </div>
+
+    <script>
+        // Función para actualizar el textarea con los valores de los inputs
+        function actualizarTextarea() {
+            const inputs = document.querySelectorAll('input, select'); // Seleccionamos todos los inputs y selects
+            let texto = '';
+
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    // Si es un checkbox, verificar si está marcado
+                    texto += `${input.previousElementSibling ? input.previousElementSibling.textContent : input.value}: ${input.checked ? 'Sí' : 'No'}\n`;
+                } else if (input.tagName.toLowerCase() === 'select') {
+                    // Si es un select, obtener el texto de la opción seleccionada
+                    texto += `${input.previousElementSibling.textContent}: ${input.options[input.selectedIndex].text}\n`;
+                } else {
+                    // Para otros tipos de input, agregar el valor directamente
+                    texto += `${input.previousElementSibling.textContent}: ${input.value}\n`;
+                }
+            });
+
+            // Asignar el texto al textarea
+            document.getElementById('output').value = texto;
+        }
+
+        // Añadir un solo evento para todos los inputs, selects y checkboxes
+        document.querySelector('body').addEventListener('input', function(event) {
+            if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'select') {
+                actualizarTextarea(); // Actualizar el textarea cuando un input o select cambia
+            }
+        });
+
+        // Añadir evento 'change' para los checkboxes y selects
+        document.querySelector('body').addEventListener('change', function(event) {
+            if (event.target.type === 'checkbox' || event.target.tagName.toLowerCase() === 'select') {
+                actualizarTextarea(); // Actualizar el textarea cuando un checkbox o select cambia
+            }
+        });
+
+        // Inicializar el textarea con los valores actuales
+        actualizarTextarea();
+    </script>
+
+</body>
+</html>
