@@ -89,7 +89,7 @@ function manejarCambio(e) {
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte"], "none");
                 }
             }
-            ValueMostrar("#Mtecnico", "");
+            ValueMostrar("#Mtecnico", "que solicitan reagendar la orden para el día ");
             break;
         case "2": // quiebres
             cambiarColorFondo("#FF0000");
@@ -120,7 +120,7 @@ function manejarCambio(e) {
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte"], "none");
                 }
             }
-            ValueMostrar("#Mtecnico", "");
+            ValueMostrar("#Mtecnico", "que desea cancelar el servicio por ");
             break;
         case "3": // soporte no aplica
             if (e.target.matches("#Motivo") || e.target.matches("#NS")) {
@@ -217,32 +217,27 @@ function copiarEnTipificar() {
 
                 if (contingenciaActiva) {
                     notaGenerada = "POR CONTINGENCIA se deja orden pendiente en aplicativos.";
-                } else if (contactoConTitular === "1") {
-                    notaGenerada = "No contesta, Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico;
-                    notaGenerada += (gpsActivo === "OK" && soporteFotografico === "OK") ? " se deja orden pendiente por reagendar." : " Se le indica a tecnico dirigirse al predio y Subir Soporte fotográfico.";
-                } else if (contactoConTitular === "2") {
-                    if (aLaEsperadeInstalacion) {
-                        notaGenerada = "indica que esta a la espera de instalación, valida datos correctos.";
-                    } else if (suspenderOrden) {
-                        notaGenerada = "se deja orden pendiente por agendar.";
-                    } else {
-                        notaGenerada = " se reagenda para " + fechaAgenda + " En la franja " + franjaAgenda;
-                    }
-                }
-            } else if (trabajador === "gestor") {
-                texto += ` se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} `;
-                if (contactoConTitular === "1") {
-                    notaGenerada = "no contesta se le indica a gestor que intente mas tarde para proceder con la gestión.";
-                } else if (contactoConTitular === "2") {
-                    if (aLaEsperadeInstalacion) {
-                        notaGenerada = "indica que esta a la espera de instalación, valida datos correctos.";
-                    } else if (suspenderOrden) {
-                        notaGenerada = "se deja orden pendiente por agendar.";
-                    } else {
-                        notaGenerada = " se reagenda para " + fechaAgenda + " En la franja " + franjaAgenda;
-                    }
                 }
             }
+
+            if (contactoConTitular === "1") {
+                if (trabajador === "gestor") {
+                    notaGenerada = "no contesta se le indica a gestor que intente mas tarde para proceder con la gestión.";
+                }
+                else {
+                    notaGenerada = "No contesta, Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico;
+                    notaGenerada += (gpsActivo === "OK" && soporteFotografico === "OK") ? " se deja orden pendiente por reagendar." : " Se le indica a tecnico dirigirse al predio y Subir Soporte fotográfico.";
+                }
+            } else if (contactoConTitular === "2") {
+                if (aLaEsperadeInstalacion) {
+                    notaGenerada = "indica que esta a la espera de instalación, valida datos correctos.";
+                } else if (suspenderOrden) {
+                    notaGenerada = "se deja orden pendiente por agendar.";
+                } else {
+                    notaGenerada = " se reagenda para " + fechaAgenda + " En la franja " + franjaAgenda;
+                }
+            }
+
 
             texto += notaGenerada + ` Gestionado por ${nombreAsesor} ${agentAsesor}.`;
             break;
