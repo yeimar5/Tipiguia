@@ -66,7 +66,7 @@ function manejarCambio(e) {
                 } else if (trabajador == "gestor" && contacto == "1") {
                     visualizarPantalla(["#MotivoTec"], "block");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte", "#contingencia", "#Acepta", "#chatbot", "#suspender"], "none");
-                } else if (contacto == "1" && trabajador == "Técnico" && !contingencia && mLlamada == "1") {
+                } else if (contacto == "1" && trabajador == "tecnico" && !contingencia && mLlamada == "1") {
                     visualizarPantalla(["#GPS", "#MotivoTec", "#contacto"], "block");
                     visualizarPantalla(["#MoQuiebre", "#Soporte", "#Musuariod", "#fecha", "#Acepta", "#contingencia", "#suspender"], "none");
                 } else if (contacto == "2" && !contingencia && mLlamada == "1" && !aceptaInstalar && !suspender) {
@@ -106,7 +106,7 @@ function manejarCambio(e) {
                 } else if (trabajador == "gestor" && contacto == "1" && !contingencia) {
                     visualizarPantalla(["#MotivoTec", "#contacto"], "block");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#contingencia", "#GPS", "#Soporte", "#suspender"], "none");
-                } else if (trabajador == "Técnico" && contacto == "1" && !contingencia) {
+                } else if (trabajador == "tecnico" && contacto == "1" && !contingencia) {
                     visualizarPantalla(["#MoQuiebre", "#MotivoTec", "#GPS", "#contacto"], "block");
                     visualizarPantalla(["#Soporte", "#Musuariod", "#fecha", "#contingencia", "#suspender"], "none");
                 } else if (contacto == "2" && !contingencia && mLlamada == "2") {
@@ -150,7 +150,7 @@ function manejarCambio(e) {
             break;
         default:
             cambiarColorFondo("#1392F1");
-            visualizarPantalla(["#Soporte", "#Musuariod", "#fecha", "#GPS", "#MoQuiebre","#contingencia", "#Titular", "#Acepta", "#contacto", "#chatbot", "#suspender"], "none");
+            visualizarPantalla(["#Soporte", "#Musuariod", "#fecha", "#GPS", "#MoQuiebre", "#contingencia", "#Titular", "#Acepta", "#contacto", "#chatbot", "#suspender"], "none");
             ValueMostrar("#Mtecnico", "");
     }
 }
@@ -189,7 +189,7 @@ function copiarEnTipificar() {
     let numeroTitular = document.getElementById("NumTitular").value;
     let nombreTitular = document.getElementById("NomTitular").value;
     let contingenciaActiva = document.getElementById("Contingencia").checked;
-    let aceptaInstalacion = document.getElementById("Aceptains").checked;
+    let aLaEsperadeInstalacion = document.getElementById("Aceptains").checked;
     let trabajador = document.getElementById("rol").value;
     let contactoConTitular = document.getElementById("Contacto").value;
     let motivoQuiebre = document.getElementById("exampleDataList").value;
@@ -202,78 +202,51 @@ function copiarEnTipificar() {
     let suspenderOrden = document.getElementById("sus").checked;
     nombreAsesor = document.getElementById("NomAgent").value;
     agentAsesor = "agent_" + document.getElementById("Agent").value;
-    let mensaje = " ";
-    let contingenciaActivada = " ";
+    let mensajeChatbot = "";
+    let notaGenerada = "";
+    let texto = "";
 
     switch (motivoLlamada) {
         case "1": // agendar
-            if (contingenciaActiva) {
-                if (contactoConTitular == "1" && !fallaChatbot && gpsActivo == "OK" && soporteFotografico == "OK") {
-                    mensaje = " se valida chatbot ok no ";
-                    contingenciaActivada = " POR CONTINGENCIA Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico + " se deja orden pendiente por reagendar ";
-                } else if (contactoConTitular == "1" && fallaChatbot && gpsActivo == "OK" && soporteFotografico == "OK") {
-                    mensaje = " se valida soporte por falla en chatbot ok no ";
-                    contingenciaActivada = " POR CONTINGENCIA Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico + " se deja orden pendiente por reagendar ";
-                } else if (contactoConTitular == "1" && !fallaChatbot && (gpsActivo != "OK" || soporteFotografico != "OK")) {
-                    mensaje = " se valida chatbot ok no ";
-                    contingenciaActivada = " POR CONTINGENCIA Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico + " Se le indica a Técnico dirigirse al predio y Subir Soporte fotográfico ";
-                } else if (contactoConTitular == "1" && fallaChatbot && (gpsActivo != "OK" || soporteFotografico != "OK")) {
-                    mensaje = " se valida soporte por falla en chatbot ok no ";
-                    contingenciaActivada = " POR CONTINGENCIA Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico + " Se le indica a Técnico dirigirse al predio y Subir Soporte fotográfico ";
-                } else if (!fallaChatbot) {
-                    mensaje = " se valida chatbot ok no ";
-                    contingenciaActivada = " POR CONTINGENCIA se deja pendiente por reagendar ";
-                } else if (fallaChatbot) {
-                    mensaje = " se valida soporte por falla en chatbot ok no ";
-                    contingenciaActivada = " POR CONTINGENCIA se deja pendiente por reagendar ";
+
+            texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico} `;
+
+            if (trabajador === "tecnico") {
+                mensajeChatbot = fallaChatbot ? "Se valida soporte por falla en chatbot" : "Se valida chatbot ok.";
+                texto += mensajeChatbot + ` se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} `;
+
+                if (contingenciaActiva) {
+                    notaGenerada = "POR CONTINGENCIA se deja orden pendiente en aplicativos.";
+                } else if (contactoConTitular === "1") {
+                    notaGenerada = "No contesta, Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico;
+                    notaGenerada += (gpsActivo === "OK" && soporteFotografico === "OK") ? " se deja orden pendiente por reagendar." : " Se le indica a tecnico dirigirse al predio y Subir Soporte fotográfico.";
+                } else if (contactoConTitular === "2") {
+                    if (aLaEsperadeInstalacion) {
+                        notaGenerada = "indica que esta a la espera de instalación, valida datos correctos.";
+                    } else if (suspenderOrden) {
+                        notaGenerada = "se deja orden pendiente por agendar.";
+                    } else {
+                        notaGenerada = " se reagenda para " + fechaAgenda + " En la franja " + franjaAgenda;
+                    }
                 }
-            } else if (contactoConTitular == "2") {
-                if (!aceptaInstalacion && !fallaChatbot && !suspenderOrden) {
-                    mensaje = " se valida CHATBOT OK ";
-                    contingenciaActivada = " se reagenda para " + fechaAgenda + " En la franja " + franjaAgenda;
-                } else if (!aceptaInstalacion && !fallaChatbot && suspenderOrden) {
-                    mensaje = " se valida CHATBOT OK ";
-                    contingenciaActivada = " se deja orden pendiente por reagendar ";
-                } else if (!aceptaInstalacion && fallaChatbot && !suspenderOrden) {
-                    mensaje = " se valida soporte por falla en chatbot ok ";
-                    contingenciaActivada = " se reagenda para " + fechaAgenda + " En la franja " + franjaAgenda;
-                } else if (!aceptaInstalacion && fallaChatbot && suspenderOrden) {
-                    mensaje = " se valida soporte por falla en chatbot ok ";
-                    contingenciaActivada = " se deja orden pendiente por reagenda ";
-                } else if (aceptaInstalacion && !fallaChatbot && !suspenderOrden) {
-                    mensaje = " se valida CHATBOT OK ";
-                    contingenciaActivada = " indica que esta a la espera de instalación valida datos correctos ";
-                } else if (aceptaInstalacion && fallaChatbot && !suspenderOrden) {
-                    mensaje = " se valida soporte por falla en chatbot ok ";
-                    contingenciaActivada = " indica que esta a la espera de instalación valida datos correctos ";
-                }
-            } else if (contactoConTitular == "1" && trabajador == "Técnico" && !fallaChatbot) {
-                if (gpsActivo == "OK" && soporteFotografico == "OK") {
-                    mensaje = " se valida chatbot ok ";
-                    contingenciaActivada = " No contesta Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico + " se deja orden pendiente por reagendar ";
-                } else {
-                    mensaje = " se valida chatbot ok ";
-                    contingenciaActivada = " No contesta Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico + " Se le indica a Técnico dirigirse al predio y Subir Soporte fotográfico ";
-                }
-            } else if (contactoConTitular == "1" && trabajador == "Técnico" && fallaChatbot) {
-                if (gpsActivo == "OK" && soporteFotografico == "OK") {
-                    mensaje = " se valida soporte por falla en chatbot ok ";
-                    contingenciaActivada = " No contesta Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico + " se deja orden pendiente por reagendar ";
-                } else {
-                    mensaje = " se valida soporte por falla en chatbot ok ";
-                    contingenciaActivada = " No contesta Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico + " Se le indica a Técnico dirigirse al predio y Subir Soporte fotográfico ";
+            } else if (trabajador === "gestor") {
+                texto += ` se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} `;
+                if (contactoConTitular === "1") {
+                    notaGenerada = "no contesta se le indica a gestor que intente mas tarde para proceder con la gestión.";
+                } else if (contactoConTitular === "2") {
+                    if (aLaEsperadeInstalacion) {
+                        notaGenerada = "indica que esta a la espera de instalación, valida datos correctos.";
+                    } else if (suspenderOrden) {
+                        notaGenerada = "se deja orden pendiente por agendar.";
+                    } else {
+                        notaGenerada = " se reagenda para " + fechaAgenda + " En la franja " + franjaAgenda;
+                    }
                 }
             }
 
-            if (contactoConTitular == "1" && trabajador == "gestor") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico} se marca al número ${numeroTitular} titular ${nombreTitular} no contesta se le indica a gestor que intente mas tarde para proceder con la gestión Gestionado por ${nombreAsesor} ${agentAsesor}.`;
-            } else if (contactoConTitular == "2") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico} ${mensaje} se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} ${contingenciaActivada} Gestionado por ${nombreAsesor} ${agentAsesor}.`;
-            } else {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico} ${mensaje} se marca al número ${numeroTitular} titular ${nombreTitular} ${contingenciaActivada} Gestionado por ${nombreAsesor} ${agentAsesor}.`;
-            }
-
+            texto += notaGenerada + ` Gestionado por ${nombreAsesor} ${agentAsesor}.`;
             break;
+
         case "2": // quiebre
             if (contingenciaActiva) {
                 texto = `QC - ${motivoQuiebre} LINEA RESCATE Se comunica ${trabajador} informando Titular desea cancelar el servicio ${motivoTecnico} no se marca al número ${numeroTitular} titular ${nombreTitular} POR CONTINGENCIA se deja orden suspendida en aplicativos Gestionado por ${nombreAsesor} ${agentAsesor}`;
@@ -341,7 +314,7 @@ function copiarEnTipificar() {
             break;
         case "5": // Direccion piloto
             let respuesta = "";
-            if (aceptaInstalacion) {
+            if (aLaEsperadeInstalacion) {
                 respuesta = "SI";
             } else {
                 respuesta = "NO";
