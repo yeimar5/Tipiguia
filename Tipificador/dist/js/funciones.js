@@ -30,7 +30,7 @@ function manejarClick(evento) {
             copiarYAlertar(texto, alerta);
         },
         "copiar3": () => copiarYAlertar(document.getElementById("atis").value, alerta),
-        "button-addon1": manejarBotonAddon1,
+        "pedirCuota": pedirCuota,
         "limpiar": resetearFormularios,
         "Tipificar": manejarCambio,
         "CopiarT": copiarEnTipificar,
@@ -164,12 +164,12 @@ function copiarYAlertar(t, callback) {
     }
 }
 
-function manejarBotonAddon1() {
+function pedirCuota() {
     try {
         const atis = document.getElementById("atis").value;
-        const cuota = document.getElementById("Fecha").value;
+        const fechaAgenda = document.getElementById("Fecha").value;
         const franja = document.getElementById("Franja").value;
-        const texto = `¡Hola! Solicito un cupo para el día ${cuota} en la franja ${franja} para la orden 100000${atis}`;
+        const texto = `¡Hola! Solicito un cupo para el día ${fechaAgenda} en la franja ${franja} para la orden ${atis}`;
 
         copiarAlPortapapeles(texto);
         alerta(texto, 1);
