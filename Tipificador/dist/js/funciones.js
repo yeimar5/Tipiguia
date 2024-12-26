@@ -364,6 +364,14 @@ async function subirImagen() {
             document.body.style.backgroundImage = `url(${base64Image})`;
             localStorage.setItem("imagenFondo", base64Image);
         };
+        reader.onerror = (e) => {
+            console.error("Error al leer el archivo:", e);
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo cambiar el fondo. Inténtelo de nuevo.",
+                icon: "error",
+            });
+        };
         reader.readAsDataURL(file);
     }
 }
@@ -378,19 +386,39 @@ window.onload = function () {
 
 function visualizarPantalla(selectors, displayValue) {
     selectors.forEach((selector) => {
-        document.querySelector(selector).style.display = displayValue;
+        const element = document.querySelector(selector);
+        if (element) {
+            element.style.display = displayValue;
+        } else {
+            console.warn(`Elemento no encontrado para el selector: ${selector}`);
+        }
     });
 }
 
 function cambiarColorFondo(color) {
-    document.getElementById("color").style.background = color;
+    const colorElement = document.getElementById("color");
+    if (colorElement) {
+        colorElement.style.background = color;
+    } else {
+        console.warn("Elemento con id 'color' no encontrado");
+    }
 }
 
 function setInnerHTML(selector, html) {
-    document.querySelector(selector).innerHTML = html;
+    const element = document.querySelector(selector);
+    if (element) {
+        element.innerHTML = html;
+    } else {
+        console.warn(`Elemento no encontrado para el selector: ${selector}`);
+    }
 }
 
 function ValueMostrar(selector, valorValue) {
-    document.querySelector(selector).textContent = valorValue;
+    const element = document.querySelector(selector);
+    if (element) {
+        element.textContent = valorValue;
+    } else {
+        console.warn(`Elemento no encontrado para el selector: ${selector}`);
+    }
 }
 
