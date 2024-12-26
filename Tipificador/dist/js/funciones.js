@@ -80,9 +80,9 @@ function manejarCambio(e) {
                     visualizarPantalla(["#MoQuiebre", "#GPS", "#Soporte", "#contingencia", "#Acepta", "#fecha"], "none");
                 } else if (contingencia && contacto != "1") {
                     visualizarPantalla(["#MotivoTec"], "block");
-                    visualizarPantalla(["#MoQuiebre", "#Musuariod", "#contacto","#fecha", "#GPS", "#Soporte", "#Acepta", "#suspender"], "none");
+                    visualizarPantalla(["#MoQuiebre", "#Musuariod", "#contacto", "#fecha", "#GPS", "#Soporte", "#Acepta", "#suspender"], "none");
                 } else if (contingencia) {
-                    visualizarPantalla(["#MotivoTec" ], "block");
+                    visualizarPantalla(["#MotivoTec"], "block");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte", "#Acepta", "#suspender"], "none");
                 } else if (!contingencia) {
                     visualizarPantalla(["#MotivoTec"], "block");
@@ -238,7 +238,6 @@ function copiarEnTipificar() {
                 }
             }
 
-
             texto += notaGenerada + ` Gestionado por ${nombreAsesor} ${agentAsesor}.`;
             break;
 
@@ -273,6 +272,7 @@ function copiarEnTipificar() {
 
             break;
         case "3": // soporte no aplica
+            texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico} `;
             const soporteNoAplica = document.querySelector("#NS").value;
             const mensajes = {
                 "1": "se valida chatbot y no ha realizado el proceso o no ha esperado respuesta se le recuerda parámetros del aplicativo a tener en cuenta antes de comunicarse con la linea y posibles causas por las cuales debe validar en caso de fallo por centro comando según la información. se le brinda ticket ",
@@ -289,8 +289,8 @@ function copiarEnTipificar() {
                 "14": `Se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} se solicita la baja de perfil en speedy `,
                 "15": "se valida orden y es una avería, se le indica que desde linea de rescate no se gestiona que se comunique con gestor o cierre controlado "
             };
-            
-            texto = mensajes[soporteNoAplica];
+
+            texto += mensajes[soporteNoAplica] + ` Gestionado por ${nombreAsesor} ${agentAsesor}.`;
 
             break;
         case "4": // Gestion de decos
