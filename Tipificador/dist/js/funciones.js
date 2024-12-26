@@ -56,7 +56,7 @@ function manejarCambio(e) {
         case "1": // agendar
             cambiarColorFondo("#28A745");
             if (e.target.matches("#Motivo") || e.target.matches("#Contacto") || e.target.matches("#rol") || e.target.matches("#Aceptains") || e.target.matches("#Contingencia") || e.target.matches("#sus")) {
-                visualizarPantalla(["#chatbot", "#contingencia", "#contacto"], "block");
+                visualizarPantalla(["#chatbot", "#contingencia"], "block");
                 visualizarPantalla(["#Titular", "#contacto"], "flex");
                 visualizarPantalla(["#Soporte"], "none");
 
@@ -68,6 +68,7 @@ function manejarCambio(e) {
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte", "#contingencia", "#Acepta", "#chatbot", "#suspender"], "none");
                 } else if (contacto == "1" && trabajador == "tecnico" && !contingencia && mLlamada == "1") {
                     visualizarPantalla(["#GPS", "#MotivoTec", "#contacto"], "block");
+                    visualizarPantalla(["#contacto"],"flex");
                     visualizarPantalla(["#MoQuiebre", "#Soporte", "#Musuariod", "#fecha", "#Acepta", "#contingencia", "#suspender"], "none");
                 } else if (contacto == "2" && !contingencia && mLlamada == "1" && !aceptaInstalar && !suspender) {
                     visualizarPantalla(["#MotivoTec", "#Musuariod", "#Acepta", "#fecha", "#suspender"], "block");
@@ -93,7 +94,7 @@ function manejarCambio(e) {
             break;
         case "2": // quiebres
             cambiarColorFondo("#FF0000");
-            visualizarPantalla(["#contingencia", "#Titular"], "block");
+            visualizarPantalla(["#contingencia"], "block");
             visualizarPantalla(["#Titular"], "flex");
             visualizarPantalla(["#Soporte", "#chatbot"], "none");
 
@@ -101,22 +102,27 @@ function manejarCambio(e) {
                 visualizarPantalla(["#chatbot", "#Acepta"], "none");
 
                 if (trabajador == "gestor" && contacto == "...") {
-                    visualizarPantalla(["#MotivoTec", "#contacto"], "block");
+                    visualizarPantalla(["#MotivoTec"], "block");
+                    visualizarPantalla(["#contacto"],"flex");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#contingencia", "#GPS", "#Soporte", "#suspender"], "none");
                 } else if (trabajador == "gestor" && contacto == "1" && !contingencia) {
-                    visualizarPantalla(["#MotivoTec", "#contacto"], "block");
+                    visualizarPantalla(["#MotivoTec"], "block");
+                    visualizarPantalla(["#contacto"],"flex");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#contingencia", "#GPS", "#Soporte", "#suspender"], "none");
                 } else if (trabajador == "tecnico" && contacto == "1" && !contingencia) {
-                    visualizarPantalla(["#MoQuiebre", "#MotivoTec", "#GPS", "#contacto"], "block");
+                    visualizarPantalla(["#MoQuiebre", "#MotivoTec", "#GPS"], "block");
+                    visualizarPantalla(["#contacto"],"flex");
                     visualizarPantalla(["#Soporte", "#Musuariod", "#fecha", "#contingencia", "#suspender"], "none");
                 } else if (contacto == "2" && !contingencia && mLlamada == "2") {
-                    visualizarPantalla(["#MotivoTec", "#Musuariod", "#MoQuiebre", "#contacto", "#suspender"], "block");
+                    visualizarPantalla(["#MotivoTec", "#Musuariod", "#MoQuiebre", "#suspender"], "block");
+                    visualizarPantalla(["#contacto"],"flex");
                     visualizarPantalla(["#fecha", "#GPS", "#Soporte", "#contingencia"], "none");
                 } else if (contingencia) {
                     visualizarPantalla(["#MotivoTec", "#MoQuiebre", "#nomt", "#numt"], "block");
                     visualizarPantalla(["#Musuariod", "#fecha", "#GPS", "#contacto", "#Soporte", "#suspender"], "none");
                 } else if (!contingencia) {
-                    visualizarPantalla(["#MotivoTec", "#contacto", "#nomt", "#numt"], "block");
+                    visualizarPantalla(["#MotivoTec", "#nomt", "#numt"], "block");
+                    visualizarPantalla(["#contacto"],"flex");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte"], "none");
                 }
             }
@@ -128,7 +134,8 @@ function manejarCambio(e) {
                 visualizarPantalla(["#chatbot", "#Acepta", "#suspender"], "none");
 
                 if (["11", "6", "13", "14", "3", "9", "4"].includes(soporteNA)) {
-                    visualizarPantalla(["#MotivoTec", "#Musuariod", "#Soporte", "#Titular"], "block");
+                    visualizarPantalla(["#MotivoTec", "#Musuariod", "#Soporte"], "block");
+                    visualizarPantalla(["#Titular"], "flex");
                     visualizarPantalla(["#fecha", "#MoQuiebre", "#GPS", "#contacto", "#contingencia"], "none");
                 } else {
                     visualizarPantalla(["#MotivoTec", "#Soporte"], "block");
@@ -138,7 +145,7 @@ function manejarCambio(e) {
             ValueMostrar("#Mtecnico", "");
             break;
         case "4": // Gestion decos
-            visualizarPantalla(["#MotivoTec", "#Musuariod", "#Titular"], "block");
+            visualizarPantalla(["#MotivoTec", "#Musuariod"], "block");
             visualizarPantalla(["#Titular"], "flex");
             visualizarPantalla(["#fecha", "#MoQuiebre", "#GPS", "#Soporte", "#contacto", "#contingencia"], "none");
             ValueMostrar("#Mtecnico", "para adicionar un decodificador a la orden ");
@@ -192,7 +199,7 @@ function copiarEnTipificar() {
     let aLaEsperadeInstalacion = document.getElementById("Aceptains").checked;
     let trabajador = document.getElementById("rol").value;
     let contactoConTitular = document.getElementById("Contacto").value;
-    let motivoQuiebre = document.getElementById("exampleDataList").value;
+    let motivoQuiebre = document.getElementById("motivoQuiebre").value;
     let motivoCliente = document.getElementById("Musuario").value;
     let fechaAgenda = document.getElementById("Fecha").value;
     let franjaAgenda = document.getElementById("Franja").value;
@@ -213,13 +220,12 @@ function copiarEnTipificar() {
 
             if (trabajador === "tecnico") {
                 mensajeChatbot = fallaChatbot ? "Se valida soporte por falla en chatbot" : "Se valida chatbot ok.";
-                texto += mensajeChatbot + ` se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} `;
 
                 if (contingenciaActiva) {
                     notaGenerada = "POR CONTINGENCIA se deja orden pendiente en aplicativos.";
                 }
             }
-
+            texto += mensajeChatbot + ` se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} `;
             if (contactoConTitular === "1") {
                 if (trabajador === "gestor") {
                     notaGenerada = "no contesta se le indica a gestor que intente mas tarde para proceder con la gestión.";
@@ -269,8 +275,8 @@ function copiarEnTipificar() {
             } else if (contactoConTitular == "2" && trabajador == "gestor" && suspenderOrden) {
                 texto = `QC - ${motivoQuiebre} LINEA RESCATE Se comunica Gestor informando que el cliente desea cancelar el servicio  ${motivoTecnico} Se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} se deja orden suspendida en aplicativos Gestionado por ${nombreAsesor} ${agentAsesor}`;
             }
-
             break;
+
         case "3": // soporte no aplica
             texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico} `;
             const soporteNoAplica = document.querySelector("#NS").value;
