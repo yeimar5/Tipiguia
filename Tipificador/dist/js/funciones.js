@@ -79,11 +79,11 @@ function manejarCambio(e) {
                     visualizarPantalla(["#MotivoTec", "#Musuariod", "#fecha", "#suspender"], "block");
                     visualizarPantalla(["#MoQuiebre", "#GPS", "#Soporte", "#contingencia", "#Acepta", "#fecha"], "none");
                 } else if (contingencia && contacto != "1") {
-                    visualizarPantalla(["#MotivoTec", "#contacto"], "block");
-                    visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte", "#Acepta", "#suspender"], "none");
+                    visualizarPantalla(["#MotivoTec"], "block");
+                    visualizarPantalla(["#MoQuiebre", "#Musuariod", "#contacto","#fecha", "#GPS", "#Soporte", "#Acepta", "#suspender"], "none");
                 } else if (contingencia) {
-                    visualizarPantalla(["#MotivoTec", "#GPS", "#contacto"], "block");
-                    visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#Soporte", "#Acepta", "#suspender"], "none");
+                    visualizarPantalla(["#MotivoTec" ], "block");
+                    visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte", "#Acepta", "#suspender"], "none");
                 } else if (!contingencia) {
                     visualizarPantalla(["#MotivoTec"], "block");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte"], "none");
@@ -274,34 +274,23 @@ function copiarEnTipificar() {
             break;
         case "3": // soporte no aplica
             const soporteNoAplica = document.querySelector("#NS").value;
-
-            if (soporteNoAplica == "1") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico} se valida chatbot y no ha realizado el proceso o no ha esperado respuesta se le recuerda parámetros del aplicativo a tener en cuenta antes de comunicarse con la linea y posibles causas por las cuales debe validar en caso de fallo por centro comando según la información. se le brinda ticket Gestionado por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "2") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico} se entrega ticket Gestionado  por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "3") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico}  Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le indica que en linea de rescate no se gestiona ordenes porque le falten materiales debe realizar autogestión o validar con su gestor Gestionado por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "4") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico}  Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le informa que esta gestión no se realiza por linea de rescate que valide con cierre controlado o con su gestor Gestionado por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "6") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico}  Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le indica a Tecnico que debe hacer autogestión o validar con gestor ya que en linea de rescate no se gestiona ordenes por lluvias  Gestionad por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "7") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico} se valida orden se encuentra en franja  am se le indica que en linea rescate solo gestionamos ordenes en am máximo hasta las 1 pm  se le indica a técnico hacer autogestión o validar con su gestor  Gestionado por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "8") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico}  se valida orden esta se encuentra en otro estado se le indica a Tecnico no se puede gestionar esta orden se le indica validar con gestor Gestionado  por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "9") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico}  Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le indica que en linea de rescate no se gestiona orden porque no pueda llegar al predio debe validar con gestor o hacer autogestión Gestionado por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "10") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando que la dirección del predio es errada o no encuentra dirección del predio se le indica comunicarse con gestor o hacer autogestión ya que desde Linea de rescate no se gestionan por ese motivo Gestionad por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "11") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico}  Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se indica a tecnico que este proceso no lo hace LR que debe validar con su gestor o con cierre controlado. Gestionado por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "13") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico}  Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le informa a Tecnico hacer autogestión por dirección errada Gestionado por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "14") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico}  Se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} se solicita la baja de perfil en speedy Gestionado por ${nombreAsesor} ${agentAsesor}`;
-            } else if (soporteNoAplica == "15") {
-                texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico}  se valida orden y es una avería, se le indica que desde linea de rescate no se gestiona que se comunique con gestor o cierre controlado Gestionado por ${nombreAsesor} ${agentAsesor}`;
-            }
+            const mensajes = {
+                "1": "se valida chatbot y no ha realizado el proceso o no ha esperado respuesta se le recuerda parámetros del aplicativo a tener en cuenta antes de comunicarse con la linea y posibles causas por las cuales debe validar en caso de fallo por centro comando según la información. se le brinda ticket ",
+                "2": "se entrega ticket ",
+                "3": `Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le indica que en linea de rescate no se gestiona ordenes porque le falten materiales debe realizar autogestión o validar con su gestor `,
+                "4": `Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le informa que esta gestión no se realiza por linea de rescate que valide con cierre controlado o con su gestor `,
+                "6": `Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le indica a Tecnico que debe hacer autogestión o validar con gestor ya que en linea de rescate no se gestiona ordenes por lluvias `,
+                "7": "se valida orden se encuentra en franja am se le indica que en linea rescate solo gestionamos ordenes en am máximo hasta las 1 pm se le indica a técnico hacer autogestión o validar con su gestor ",
+                "8": "se valida orden esta se encuentra en otro estado se le indica a Tecnico no se puede gestionar esta orden se le indica validar con gestor G",
+                "9": `Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le indica que en linea de rescate no se gestiona orden porque no pueda llegar al predio debe validar con gestor o hacer autogestión `,
+                "10": `LINEA RESCATE Se comunica ${trabajador} informando que la dirección del predio es errada o no encuentra dirección del predio se le indica comunicarse con gestor o hacer autogestión ya que desde Linea de rescate no se gestionan por ese motivo`,
+                "11": `Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se indica a tecnico que este proceso no lo hace LR que debe validar con su gestor o con cierre controlado. `,
+                "13": `Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le informa a Tecnico hacer autogestión por dirección errada `,
+                "14": `Se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} se solicita la baja de perfil en speedy `,
+                "15": "se valida orden y es una avería, se le indica que desde linea de rescate no se gestiona que se comunique con gestor o cierre controlado "
+            };
+            
+            texto = mensajes[soporteNoAplica];
 
             break;
         case "4": // Gestion de decos
