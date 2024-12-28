@@ -45,7 +45,7 @@ function manejarClick(evento) {
 
 function manejarCambio(e) {
     let mLlamada = document.querySelector("#Motivo").value;
-    let soporteNA = document.querySelector("#NS").value;
+    let soporteNA = document.querySelector("#noSoporte").value;
     let contacto = document.querySelector("#Contacto").value;
     let trabajador = document.querySelector("#rol").value;
     let contingencia = document.getElementById("Contingencia").checked;
@@ -67,8 +67,8 @@ function manejarCambio(e) {
                     visualizarPantalla(["#MotivoTec"], "block");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte", "#contingencia", "#Acepta", "#chatbot", "#suspender"], "none");
                 } else if (contacto == "1" && trabajador == "tecnico" && !contingencia && mLlamada == "1") {
-                    visualizarPantalla(["#GPS", "#MotivoTec", "#contacto"], "block");
-                    visualizarPantalla(["#contacto"],"flex");
+                    visualizarPantalla([ "#MotivoTec"], "block");
+                    visualizarPantalla(["#GPS","#contacto"], "flex");
                     visualizarPantalla(["#MoQuiebre", "#Soporte", "#Musuariod", "#fecha", "#Acepta", "#contingencia", "#suspender"], "none");
                 } else if (contacto == "2" && !contingencia && mLlamada == "1" && !aceptaInstalar && !suspender) {
                     visualizarPantalla(["#MotivoTec", "#Musuariod", "#Acepta", "#fecha", "#suspender"], "block");
@@ -103,33 +103,33 @@ function manejarCambio(e) {
 
                 if (trabajador == "gestor" && contacto == "...") {
                     visualizarPantalla(["#MotivoTec"], "block");
-                    visualizarPantalla(["#contacto"],"flex");
+                    visualizarPantalla(["#contacto"], "flex");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#contingencia", "#GPS", "#Soporte", "#suspender"], "none");
                 } else if (trabajador == "gestor" && contacto == "1" && !contingencia) {
                     visualizarPantalla(["#MotivoTec"], "block");
-                    visualizarPantalla(["#contacto"],"flex");
+                    visualizarPantalla(["#contacto"], "flex");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#contingencia", "#GPS", "#Soporte", "#suspender"], "none");
                 } else if (trabajador == "tecnico" && contacto == "1" && !contingencia) {
-                    visualizarPantalla(["#MoQuiebre", "#MotivoTec", "#GPS"], "block");
-                    visualizarPantalla(["#contacto"],"flex");
+                    visualizarPantalla(["#MoQuiebre", "#MotivoTec"], "block");
+                    visualizarPantalla(["#contacto", "#GPS"], "flex");
                     visualizarPantalla(["#Soporte", "#Musuariod", "#fecha", "#contingencia", "#suspender"], "none");
                 } else if (contacto == "2" && !contingencia && mLlamada == "2") {
                     visualizarPantalla(["#MotivoTec", "#Musuariod", "#MoQuiebre", "#suspender"], "block");
-                    visualizarPantalla(["#contacto"],"flex");
+                    visualizarPantalla(["#contacto"], "flex");
                     visualizarPantalla(["#fecha", "#GPS", "#Soporte", "#contingencia"], "none");
                 } else if (contingencia) {
                     visualizarPantalla(["#MotivoTec", "#MoQuiebre", "#nomt", "#numt"], "block");
                     visualizarPantalla(["#Musuariod", "#fecha", "#GPS", "#contacto", "#Soporte", "#suspender"], "none");
                 } else if (!contingencia) {
                     visualizarPantalla(["#MotivoTec", "#nomt", "#numt"], "block");
-                    visualizarPantalla(["#contacto"],"flex");
+                    visualizarPantalla(["#contacto"], "flex");
                     visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte"], "none");
                 }
             }
             ValueMostrar("#Mtecnico", "que desea cancelar el servicio por ");
             break;
         case "3": // soporte no aplica
-            if (e.target.matches("#Motivo") || e.target.matches("#NS")) {
+            if (e.target.matches("#Motivo") || e.target.matches("#noSoporte")) {
                 cambiarColorFondo("#F18F13");
                 visualizarPantalla(["#chatbot", "#Acepta", "#suspender"], "none");
 
@@ -148,12 +148,12 @@ function manejarCambio(e) {
             visualizarPantalla(["#MotivoTec", "#Musuariod"], "block");
             visualizarPantalla(["#Titular"], "flex");
             visualizarPantalla(["#fecha", "#MoQuiebre", "#GPS", "#Soporte", "#contacto", "#contingencia"], "none");
-            ValueMostrar("#Mtecnico", "para adicionar un decodificador a la orden ");
+            ValueMostrar("#Mtecnico", "para adicionar un decodificador a la orden para un total de ");
             break;
         case "5": // Gestion piloto
             visualizarPantalla(["#MotivoTec", "#Acepta"], "block");
             visualizarPantalla(["#MoQuiebre", "#Musuariod", "#fecha", "#GPS", "#Soporte", "#chatbot", "#contacto", "#Titular", "#contingencia", "#suspender"], "none");
-            ValueMostrar("#Mtecnico", "para validar recibo publico con dirección:  \nen sistema esta: ");
+            ValueMostrar("#Mtecnico", "para validar recibo publico con dirección  \nen sistema esta ");
             break;
         default:
             cambiarColorFondo("#1392F1");
@@ -199,7 +199,7 @@ function copiarEnTipificar() {
     let aLaEsperadeInstalacion = document.getElementById("Aceptains").checked;
     let trabajador = document.getElementById("rol").value;
     let contactoConTitular = document.getElementById("Contacto").value;
-    let motivoQuiebre = document.getElementById("motivoQuiebre").value;
+    let motivoQuiebre = document.getElementById("mQuiebre").value;
     let motivoCliente = document.getElementById("Musuario").value;
     let fechaAgenda = document.getElementById("Fecha").value;
     let franjaAgenda = document.getElementById("Franja").value;
@@ -232,7 +232,7 @@ function copiarEnTipificar() {
                 }
                 else {
                     notaGenerada = "No contesta, Se Valida GPS " + gpsActivo + " Se Valida SOPORTE FOTOGRÁFICO " + soporteFotografico;
-                    notaGenerada += (gpsActivo === "OK" && soporteFotografico === "OK") ? " se deja orden pendiente por reagendar." : " Se le indica a tecnico dirigirse al predio y Subir Soporte fotográfico.";
+                    notaGenerada += (gpsActivo === "OK" && soporteFotografico === "OK") ? " se deja orden pendiente por reagendar." : " Se le indica a técnico dirigirse al predio y Subir Soporte fotográfico.";
                 }
             } else if (contactoConTitular === "2") {
                 if (aLaEsperadeInstalacion) {
@@ -279,7 +279,7 @@ function copiarEnTipificar() {
 
         case "3": // soporte no aplica
             texto = `LINEA RESCATE Se comunica ${trabajador} informando ${motivoTecnico} `;
-            const soporteNoAplica = document.querySelector("#NS").value;
+            const soporteNoAplica = document.querySelector("#noSoporte").value;
             const mensajes = {
                 "1": "se valida chatbot y no ha realizado el proceso o no ha esperado respuesta se le recuerda parámetros del aplicativo a tener en cuenta antes de comunicarse con la linea y posibles causas por las cuales debe validar en caso de fallo por centro comando según la información. se le brinda ticket ",
                 "2": "se entrega ticket ",
@@ -290,7 +290,8 @@ function copiarEnTipificar() {
                 "8": "se valida orden esta se encuentra en otro estado se le indica a Tecnico no se puede gestionar esta orden se le indica validar con gestor G",
                 "9": `Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le indica que en linea de rescate no se gestiona orden porque no pueda llegar al predio debe validar con gestor o hacer autogestión `,
                 "10": `LINEA RESCATE Se comunica ${trabajador} informando que la dirección del predio es errada o no encuentra dirección del predio se le indica comunicarse con gestor o hacer autogestión ya que desde Linea de rescate no se gestionan por ese motivo`,
-                "11": `Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se indica a tecnico que este proceso no lo hace LR que debe validar con su gestor o con cierre controlado. `,
+                "11": `Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se indica a técnico que este proceso no lo hace LR que debe validar con su gestor o con cierre controlado. `,
+                "12": "se valida orden se encuentra en franja am se le indica que en linea rescate solo se puede hacer cambio de franja máximo hasta las 12 pm se le indica a técnico hacer autogestión o validar con su gestor ",
                 "13": `Se marca al número ${numeroTitular} titular ${nombreTitular} contesta ${motivoCliente} se le informa a Tecnico hacer autogestión por dirección errada `,
                 "14": `Se marca al número ${numeroTitular} titular ${nombreTitular} ${motivoCliente} se solicita la baja de perfil en speedy `,
                 "15": "se valida orden y es una avería, se le indica que desde linea de rescate no se gestiona que se comunique con gestor o cierre controlado "
@@ -310,12 +311,12 @@ function copiarEnTipificar() {
                 respuesta = "NO";
             }
             texto = `LINEA RESCATE Se comunica ${trabajador} ${motivoTecnico} aceptación de línea de rescate ${respuesta}, Gestionado por ${nombreAsesor} ${agentAsesor}`;
-            texto = texto.replaceAll("|", "").replace(/\s+/g, " ");
             break;
         case "6":
             texto = `LINEA RESCATE Se comunica ${trabajador} ${motivoTecnico} pero se cae la llamada sin poder validar la información  Gestionado por ${nombreAsesor} ${agentAsesor}`;
             break;
     }
+    texto = texto.replaceAll("|", "").replace(/\s+/g, " ").replaceAll("?", "Ñ")
 
     copiarYAlertar(texto, alerta);
 }

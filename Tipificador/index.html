@@ -13,7 +13,7 @@
 
 <body>
   <div class="login">
-    <img src="./dist/img/agent.png" alt="Configuracion de agent" class="icon-login" data-target="#login-modal"
+    <img src="./dist/img/call-center-agent.png" alt="Configuracion de agent" class="icon-login" data-target="#login-modal"
       data-toggle="modal">
 
     <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="#exampleModalLabel"
@@ -194,8 +194,8 @@
             </div>
 
             <div class="col-sm" id="Soporte">
-              <label for="NS" class="form-label">Soporte No Aplica</label>
-              <select id="NS" class="custom-select trans">
+              <label for="noSoporte" class="form-label">Soporte No Aplica</label>
+              <select id="noSoporte" class="custom-select trans">
                 <option selected value="">SELECCIONE</option>
                 <option value="1">SIN CHATBOT</option>
                 <option value="2">ENTREGA DE TICKET</option>
@@ -206,8 +206,8 @@
                 <option value="8">TAREA EN OTRO ESTADO</option>
                 <option value="9">TÉCNICO NO ALCANZA A LLEGAR, CASA CLIENTE</option>
                 <option value="10">TÉCNICO NO ENCUENTRA DIRECCIÓN DEL PREDIO</option>
-                <option value="11">BASEPORT ADICIONAL </option>
-                <option value="12">LLAMADA CAÍDA</option>
+                <option value="11">BASEPORT ADICIONAL</option>
+                <option value="12">CAMBIO DE FRANJA</option>
                 <option value="13">DIRECCIÓN ERRADA</option>
                 <option value="14">BAJA DE PERFIL</option>
                 <option value="15">AVERIA</option>
@@ -257,14 +257,14 @@
         </div>
 
         <div class="row " id="GPS">
-          <div class="col-sm-auto">
+          <div class="col-sm-6">
             <label for="gps" id="gp" class="form-label">GPS</label>
             <select id="gps" class="custom-select trans" aria-label="Gps">
               <option value="OK">OK</option>
               <option value="No OK">NO OK</option>
             </select>
           </div>
-          <div class="col-sm-auto">
+          <div class="col-sm-6">
             <label for="SF" id="sf" class="form-label">Soporte Fotográfico</label>
             <select id="SF" class="custom-select trans" aria-label="">
               <option value="OK">OK</option>
@@ -276,9 +276,9 @@
         <div class="row" id="MoQuiebre">
           <div class="col-sm">
             <label for="motivoQuiebre">Motivo Quiebre</label>
-            <input class="form-control col-sm-auto trans" list="selectQE" id="motivoQuiebre"
+            <input class="form-control col-sm-auto trans" list="motivoQuiebre" id="mQuiebre"
               placeholder="Escribe el motivo">
-            <datalist id="selectQE">
+            <datalist id="motivoQuiebre">
               <option>PLAN ERRADO CLIENTE SOLICITO MAS DECOS</option>
               <option>PLAN ERRADO CLIENTE SOLICITO MENOS DECOS</option>
               <option>PLAN ERRADO VELOCIDAD BA</option>
