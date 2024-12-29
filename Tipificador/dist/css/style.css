@@ -61,7 +61,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 body {
-  background-image: url('../img/7.jpg');
+  background-image: url('../img/4.jpg');
   background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -113,6 +113,10 @@ i, b {
 
 .modal-title {
   color: hsl(0, 0%, 100%);
+}
+
+textarea {
+  overflow: hidden;
 }
 
 
