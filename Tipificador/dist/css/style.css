@@ -103,14 +103,6 @@ i, b {
   cursor: pointer;
 }
 
-#textoNota {
-  position: relative;
-  width: 80%;
-  padding: 10px;
-  border-radius: 8px;
-  box-sizing: border-box; /* Corrige "field-sizing" por "box-sizing" */
-}
-
 .modal-title {
   color: hsl(0, 0%, 100%);
 }

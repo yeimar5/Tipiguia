@@ -70,7 +70,7 @@
           <div class="form-group col-sm-4">
             <label for="rol">ROL</label>
             <select id="rol" class="form-control">
-              <option value="tecnico">INSTALADOR</option>
+              <option value="técnico">INSTALADOR</option>
               <option value="gestor">GESTOR</option>
             </select>
           </div>
@@ -144,7 +144,7 @@
           <form id="Formulario">
             <div class="modal-header d-flex justify-content-between align-items-center">
               <div>
-                <select class="form-control d-inline-block w-auto" id="Motivo">
+                <select class="form-control d-inline-block w-auto" id="Motivo"><!--Motivo de llamada-->
                   <option value="" selected disabled>MOTIVO LLAMADA</option>
                   <option value="1">AGENDAR</option>
                   <option value="2">QUIEBRE</option>
@@ -154,14 +154,14 @@
                   <option value="6">LLAMADA CAIDA</option>
                 </select>
               </div>
-              <div class="col-sm" id="contingencia">
+              <div class="col-sm" id="contingencia"><!--Validar contingencia-->
                 <div class="custom-control form-check-inline  custom-switch ">
                   <input type="checkbox" class="custom-control-input " id="Contingencia">
                   <label class="custom-control-label trans" for="Contingencia">CONTINGENCIA</label>
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row"><!--Validar si hubo contacto-->
               <div class="col-12" id="contacto">
                 <label class="my-1 mr-2 col-8" for="Contacto">Hubo Contacto</label>
                 <select class="custom-select my-1 mr-sm-2 trans" id="Contacto">
@@ -172,7 +172,7 @@
               </div>
             </div>
 
-            <div class="row pt-3">
+            <div class="row pt-3"><!--checkbox de verificacion-->
               <div class="col-sm" id="chatbot">
                 <div class="custom-control form-check-inline  custom-switch ">
                   <input type="checkbox" class="custom-control-input " id="FC">
@@ -193,7 +193,7 @@
               </div>
             </div>
 
-            <div class="col-sm" id="Soporte">
+            <div class="col-sm" id="Soporte"><!--Soporte No Aplica-->
               <label for="noSoporte" class="form-label">Soporte No Aplica</label>
               <select id="noSoporte" class="custom-select trans">
                 <option selected value="">SELECCIONE</option>
@@ -215,7 +215,7 @@
             </select>
         </div>
 
-        <div class="row pt-3">
+        <div class="row pt-3"><!--Motivo Tecnico y Motivo Usuario-->
           <div class="col-12" id="MotivoTec">
             <label for="Mtecnico">Motivo Técnico</label>
             <div class="form-group">
@@ -231,7 +231,7 @@
         </div>
 
 
-        <div class="row" id="Titular">
+        <div class="row" id="Titular"><!--Nombre y Numero de Titular-->
           <div class="col-sm-7" id="nomt">
             <label for="NomTitular">Nombre de Titular</label>
             <input type="text" class="form-control trans" id="NomTitular" required autocomplete="off">
@@ -242,7 +242,7 @@
           </div>
         </div>
 
-        <div class="row pt-3">
+        <div class="row pt-3"><!--Fecha y Franja cita-->
           <div class=" col-sm" id="fecha">
             <label for="Fecha" class="form-label trans ">Fecha Agendamiento</label>
             <div class="input-group gap-3">
@@ -256,7 +256,7 @@
           </div>
         </div>
 
-        <div class="row " id="GPS">
+        <div class="row " id="GPS"><!--GPS y Soporte Fotografico del tecnico-->
           <div class="col-sm-6">
             <label for="gps" id="gp" class="form-label">GPS</label>
             <select id="gps" class="custom-select trans" aria-label="Gps">
@@ -273,7 +273,7 @@
           </div>
         </div>
 
-        <div class="row" id="MoQuiebre">
+        <div class="row" id="MoQuiebre"><!--Motivos de quiebres LR-->
           <div class="col-sm">
             <label for="motivoQuiebre">Motivo Quiebre</label>
             <input class="form-control col-sm-auto trans" list="motivoQuiebre" id="mQuiebre"
@@ -322,16 +322,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary trans" id="CopiarT">COPIAR</button>
+        <textarea class="form-control trans" id="textoNota" rows="3"></textarea>
       </div>
     </div>
-    <!-- <div class="modal-footer">
-      <footer class="footer">
-        <div class="textarea-container">
-          <textarea id="textoNota"></textarea>
-          <button class="btn btn-primary copy-button" onclick="copiarNota()">COPIAR</button>
-        </div>
-      </footer>
-    </div> -->
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
