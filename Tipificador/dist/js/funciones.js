@@ -1,6 +1,7 @@
 document.addEventListener(`click`, manejarClick);
 document.addEventListener(`change`, manejarCambio);
 
+
 var nombreAsesor;
 var agentAsesor;
 
@@ -36,10 +37,12 @@ function manejarClick(evento) {
     },
     copiar3: () =>
       copiarYAlertar(document.getElementById(`atis`).value, alerta),
+    CopiarT: () =>
+      copiarYAlertar(document.getElementById(`textoNota`).value, alerta),
     pedirCuota: pedirCuota,
     limpiar: resetearFormularios,
     Tipificar: manejarCambio,
-    CopiarT: copiarEnTipificar,
+  
     imagen: subirImagen,
     guardarCambios: guardarEnLocalStorage,
   };
@@ -50,7 +53,7 @@ function manejarClick(evento) {
 }
 
 function manejarCambio(e) {
-  Actualizartodo();
+  Actualizartodo(); //va actualizando la nota automaticamente no borrar
   let mLlamada = document.querySelector(`#Motivo`).value;
   let soporteNA = document.querySelector(`#noSoporte`).value;
   let contacto = document.querySelector(`#Contacto`).value;
@@ -473,7 +476,6 @@ function copiarEnTipificar() {
 
   switch (motivoLlamada) {
     case `1`: // agendar
-      console.log(motivoTecnico);
       if (trabajador === `técnico`) {
         mensajeChatbot = fallaChatbot
           ? `Se valida soporte por falla en chatbot`
@@ -625,7 +627,7 @@ function copiarEnTipificar() {
   texto += gestion;
   texto = texto.replace(/\|/g, ``).replace(/\s+/g, ` `).replace(/\?/g, `Ñ`);
   textoNota.value = texto;
-  copiarYAlertar(texto);
+  autoResize(document.getElementById('textoNota'));
 }
 
 function alerta(text) {
@@ -743,10 +745,6 @@ function autoResize(textarea) {
   textarea.style.height = textarea.scrollHeight + 'px';
 }
 
-// Asegúrate de llamar a autoResize cuando el contenido del textarea cambie automáticamente
-document.getElementById('textoNota').addEventListener('input', function() {
-  autoResize(this);
-});
 
 function Actualizartodo() {
    // Añadir evento 'change' para los checkboxes y selects

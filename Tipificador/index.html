@@ -173,19 +173,19 @@
             </div>
 
             <div class="row pt-3"><!--checkbox de verificacion-->
-              <div class="col-sm" id="chatbot">
+              <div class="cols-sm-7" id="chatbot">
                 <div class="custom-control form-check-inline  custom-switch ">
                   <input type="checkbox" class="custom-control-input " id="FC">
-                  <label class="custom-control-label trans" for="FC">FALLA CHATBOT</label>
+                  <label class="custom-control-label" for="FC">FALLA CHATBOT</label>
                 </div>
               </div>
-              <div class="col-sm " id="Acepta">
+              <div class="col-sm-3 " id="Acepta">
                 <div class="custom-control form-check-inline custom-switch  ">
                   <input type="checkbox" class="custom-control-input" id="Aceptains">
                   <label class="custom-control-label" for="Aceptains">ACEPTA </label>
                 </div>
               </div>
-              <div class="col-sm " id="suspender">
+              <div class="cols-sm-3 " id="suspender">
                 <div class="custom-control form-check-inline custom-switch  ">
                   <input type="checkbox" class="custom-control-input" id="sus">
                   <label class="custom-control-label" for="sus">SUSPENDER</label>
@@ -321,8 +321,9 @@
 
       </div>
       <div class="modal-footer">
+        <textarea class="form-control trans" id="textoNota" rows="3" oninput="autoResize(this)"></textarea>
         <button type="button" class="btn btn-primary trans" id="CopiarT">COPIAR</button>
-        <textarea class="form-control trans" id="textoNota" rows="3"></textarea>
+  
       </div>
     </div>
   </div>
