@@ -60,7 +60,7 @@
           <div class="form-group col-sm-8">
             <label for="NombreTec">NOMBRE</label>
             <div style="position: relative;">
-              <input type="text" class="form-control trans" id="NombreTec" autocomplete="off">
+              <input type="text" class="form-control trans" id="NombreTec" autocomplete="name">
               <button type="button" id="copiar" class="btn btn-outline-primary copy-button">
                 <i class="fas fa-copy"></i>
               </button>
@@ -82,7 +82,7 @@
             <label for="cedula">CEDULA</label>
             <div style="position: relative;">
               <input type="text" class="form-control trans" id="cedula"
-                oninput="this.value = this.value.replace(/[^0-9]/g, '');" autocomplete="off">
+                oninput="this.value = this.value.replace(/[^0-9]/g, '');" autocomplete="on">
               <button type="button" id="copiar1" class="btn btn-outline-primary copy-button">
                 <i class="fas fa-copy"></i>
               </button>
@@ -92,8 +92,8 @@
           <div class="form-group col-sm-4">
             <label for="telefono">TELEFONO</label>
             <div style="position: relative;">
-              <input type="text" class="form-control trans" id="telefono"
-                oninput="this.value = this.value.replace(/[^0-9]/g, '');" autocomplete="off">
+              <input type="text" class="form-control trans" id="telefono" maxlength="12"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '');" autocomplete="tel">
               <button type="button" id="copiar2" class="btn btn-outline-primary copy-button">
                 <i class="fas fa-copy"></i>
               </button>
@@ -316,7 +316,6 @@
             </datalist>
           </div>
         </div>
-
         </form>
 
       </div>

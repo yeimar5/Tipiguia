@@ -1,29 +1,6 @@
 document.addEventListener(`click`, manejarClick);
 document.addEventListener(`change`, manejarCambio);
 
-
-var nombreAsesor;
-var agentAsesor;
-
-function guardarEnLocalStorage() {
-  nombreAsesor = document.getElementById(`NomAgent`).value;
-  agentAsesor = document.getElementById(`Agent`).value;
-
-  localStorage.setItem(`nombreAsesor`, nombreAsesor);
-  localStorage.setItem(`agentAsesor`, agentAsesor);
-}
-
-// Mostrar los valores del localStorage en los inputs correspondientes
-if (localStorage.getItem(`nombreAsesor`)) {
-  document.getElementById(`NomAgent`).value =
-    localStorage.getItem(`nombreAsesor`);
-}
-if (localStorage.getItem(`agentAsesor`)) {
-  document.getElementById(`Agent`).value = localStorage
-    .getItem(`agentAsesor`)
-    .replace(`agent_`, ``);
-}
-
 function manejarClick(evento) {
   const targetId = evento.target.id;
   const actions = {
@@ -42,7 +19,6 @@ function manejarClick(evento) {
     pedirCuota: pedirCuota,
     limpiar: resetearFormularios,
     Tipificar: manejarCambio,
-  
     imagen: subirImagen,
     guardarCambios: guardarEnLocalStorage,
   };
@@ -409,7 +385,7 @@ function manejarCambio(e) {
     //copiarEnTipificar();
   }
   copiarEnTipificar();
-  autoResize(document.getElementById('textoNota'));
+  autoResize(document.getElementById("textoNota"));
 }
 
 function copiarYAlertar(t, callback) {
@@ -525,7 +501,7 @@ function copiarEnTipificar() {
         motivoQuiebre != `TELEFONO DEL CLIENTE ERRADO` &&
         motivoQuiebre != `GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN` &&
         motivoQuiebre !=
-        `GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN` &&
+          `GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN` &&
         !suspenderOrden
       ) {
         texto = `QC - ${motivoQuiebre}-${texto} ${titularContacto} ${motivoCliente} se hace objeción pero desiste valida datos, se procede a quebrar orden `;
@@ -534,7 +510,7 @@ function copiarEnTipificar() {
         motivoQuiebre != `TELEFONO DEL CLIENTE ERRADO` &&
         motivoQuiebre != `GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN` &&
         motivoQuiebre !=
-        `GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN` &&
+          `GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN` &&
         suspenderOrden
       ) {
         texto = `QC - ${motivoQuiebre}-${texto} ${titularContacto} ${motivoCliente} se deja orden suspendida en aplicativos`;
@@ -548,7 +524,7 @@ function copiarEnTipificar() {
       } else if (
         contactoConTitular == `2` &&
         motivoQuiebre ==
-        `GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN` &&
+          `GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN` &&
         motivoQuiebre != `TELEFONO DEL CLIENTE ERRADO`
       ) {
         texto = `LINEA RESCATE Se comunica técnico  informando Titular desea cancelar el servicio ${motivoTecnico} ${titularContacto} ${motivoCliente} solicita que lo llamen en 10 MIN`;
@@ -627,7 +603,7 @@ function copiarEnTipificar() {
   texto += gestion;
   texto = texto.replace(/\|/g, ``).replace(/\s+/g, ` `).replace(/\?/g, `Ñ`);
   textoNota.value = texto;
-  autoResize(document.getElementById('textoNota'));
+  autoResize(document.getElementById("textoNota"));
 }
 
 function alerta(text) {
@@ -635,7 +611,7 @@ function alerta(text) {
     toast: true,
     position: `top-start`,
     showConfirmButton: false,
-    timer: 1500,
+    timer: 500,
     timerProgressBar: true,
     didOpen: (toast) => {
       toast.addEventListener(`mouseenter`, Swal.stopTimer);
@@ -696,11 +672,45 @@ async function subirImagen() {
 
 // Recuperar y mostrar la imagen de fondo guardada en el localStorage al cargar la página
 window.onload = function () {
-  const imagenFondoGuardada = localStorage.getItem(`imagenFondo`);
+  const imagenFondoGuardada = localStorage.getItem("imagenFondo");
   if (imagenFondoGuardada) {
     document.body.style.backgroundImage = `url(${imagenFondoGuardada})`;
   }
+
+  const nombreAsesor = localStorage.getItem("nombreAsesor");
+  const agentAsesor = localStorage.getItem("agentAsesor");
+
+  // Verificar si los valores no son nulos ni vacíos
+  if (nombreAsesor && agentAsesor) {
+    document.getElementById("NomAgent").value = nombreAsesor;
+    document.getElementById("Agent").value = agentAsesor.replace("agent_", "");
+  } else {
+    Swal.fire({
+      title: "Datos faltantes",
+      text: "Por favor, ingresa tu nombre y tu numero de agent.",
+      icon: "warning",
+      confirmButtonText: "Ingresar datos",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Mostrar el modal usando Bootstrap
+        const modal = new bootstrap.Modal(
+          document.getElementById("login-modal")
+        );
+        modal.show();
+      }
+    });
+  }
 };
+
+function guardarEnLocalStorage() {
+  const nombreAsesor = document.getElementById("NomAgent").value;
+  const agentAsesor = document.getElementById("Agent").value;
+
+  localStorage.setItem("nombreAsesor", nombreAsesor);
+  localStorage.setItem("agentAsesor", agentAsesor);
+  // Cerrar el modal
+  $("#login-modal").modal("hide");
+}
 
 function visualizarPantalla(selectors, displayValue) {
   selectors.forEach((selector) => {
@@ -741,23 +751,19 @@ function ValueMostrar(selector, valorValue) {
 }
 
 function autoResize(textarea) {
-  textarea.style.height = 'auto';
-  textarea.style.height = textarea.scrollHeight + 'px';
+  textarea.style.height = "auto";
+  textarea.style.height = textarea.scrollHeight + "px";
 }
 
-
 function Actualizartodo() {
-   // Añadir evento 'change' para los checkboxes y selects
-  document
-    .querySelector("body")
-    .addEventListener("change" && "input", function (event) {
-      if (
-        event.target.tagName.toLowerCase() === "input" ||
-        event.target.type === "checkbox" ||
-        event.target.tagName.toLowerCase() === "select" ||
-        event.target.tagName.toLowerCase() === "textarea"
-      ) {
-        copiarEnTipificar(); // Actualizar el textarea cuando un checkbox o select cambia
-      }
-    });
+  document.querySelector("body").addEventListener("input", function (event) {
+    if (
+      event.target.tagName.toLowerCase() === "input" ||
+      event.target.type === "checkbox" ||
+      event.target.tagName.toLowerCase() === "select" ||
+      event.target.tagName.toLowerCase() === "textarea"
+    ) {
+      copiarEnTipificar(); // Actualizar el textarea cuando un checkbox o select cambia
+    }
+  });
 }
