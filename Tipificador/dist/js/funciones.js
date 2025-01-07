@@ -18,7 +18,7 @@ function manejarClick(evento) {
       copiarYAlertar(document.getElementById(`textoNota`).value, alerta),
     pedirCuota: pedirCuota,
     limpiar: resetearFormularios,
-    Tipificar: manejarCambio,
+    Tipificar: lanzarModal,
     imagen: subirImagen,
     guardarCambios: guardarEnLocalStorage,
   };
@@ -195,7 +195,6 @@ function manejarCambio(e) {
         }
       }
       ValueMostrar(`#Mtecnico`, `solicitan reagendar la orden para el día `);
-      //copiarEnTipificar();
       break;
     case `2`: // quiebres
       cambiarColorFondo(`#FF0000`);
@@ -288,7 +287,6 @@ function manejarCambio(e) {
         }
       }
       ValueMostrar(`#Mtecnico`, `titular desea cancelar el servicio por `);
-      //copiarEnTipificar();
       break;
     case `3`: // soporte no aplica
       if (e.target.matches(`#Motivo`) || e.target.matches(`#noSoporte`)) {
@@ -319,7 +317,6 @@ function manejarCambio(e) {
         }
       }
       ValueMostrar(`#Mtecnico`, ``);
-      //copiarEnTipificar();
       break;
     case `4`: // Gestion decos
       visualizarPantalla([`#MotivoTec`, `#Musuariod`], `block`);
@@ -339,7 +336,6 @@ function manejarCambio(e) {
         `#Mtecnico`,
         `para adicionar un decodificador a la orden para un total de `
       );
-      //copiarEnTipificar();
       break;
     case `5`: // Gestion piloto
       visualizarPantalla([`#MotivoTec`, `#Acepta`], `block`);
@@ -382,7 +378,6 @@ function manejarCambio(e) {
         `none`
       );
       ValueMostrar(`#Mtecnico`, ``);
-    //copiarEnTipificar();
   }
   copiarEnTipificar();
   autoResize(document.getElementById("textoNota"));
@@ -611,7 +606,7 @@ function alerta(text) {
     toast: true,
     position: `top-start`,
     showConfirmButton: false,
-    timer: 500,
+    timer: 1000,
     timerProgressBar: true,
     didOpen: (toast) => {
       toast.addEventListener(`mouseenter`, Swal.stopTimer);
@@ -621,7 +616,6 @@ function alerta(text) {
 
   Toast.fire({
     icon: `success`,
-    title: `NOTA COPIADA`,
     text: text,
   });
 }
@@ -679,27 +673,6 @@ window.onload = function () {
 
   const nombreAsesor = localStorage.getItem("nombreAsesor");
   const agentAsesor = localStorage.getItem("agentAsesor");
-
-  // Verificar si los valores no son nulos ni vacíos
-  if (nombreAsesor && agentAsesor) {
-    document.getElementById("NomAgent").value = nombreAsesor;
-    document.getElementById("Agent").value = agentAsesor.replace("agent_", "");
-  } else {
-    Swal.fire({
-      title: "Datos faltantes",
-      text: "Por favor, ingresa tu nombre y tu numero de agent.",
-      icon: "warning",
-      confirmButtonText: "Ingresar datos",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Mostrar el modal usando Bootstrap
-        const modal = new bootstrap.Modal(
-          document.getElementById("login-modal")
-        );
-        modal.show();
-      }
-    });
-  }
 };
 
 function guardarEnLocalStorage() {
@@ -709,7 +682,8 @@ function guardarEnLocalStorage() {
   localStorage.setItem("nombreAsesor", nombreAsesor);
   localStorage.setItem("agentAsesor", agentAsesor);
   // Cerrar el modal
-  $("#login-modal").modal("hide");
+  document.getElementById("close-login").click();
+  alerta(`DATOS GUARDADOS`);
 }
 
 function visualizarPantalla(selectors, displayValue) {
@@ -756,7 +730,7 @@ function autoResize(textarea) {
 }
 
 function Actualizartodo() {
-  document.querySelector("body").addEventListener("input", function (event) {
+  document.querySelector("#tipificarNota").addEventListener("input", function (event) {
     if (
       event.target.tagName.toLowerCase() === "input" ||
       event.target.type === "checkbox" ||
@@ -766,4 +740,35 @@ function Actualizartodo() {
       copiarEnTipificar(); // Actualizar el textarea cuando un checkbox o select cambia
     }
   });
+}
+
+function lanzarModal() {
+  const nombreAsesor = localStorage.getItem("nombreAsesor");
+  const agentAsesor = localStorage.getItem("agentAsesor");
+  // Verificar si los valores no son nulos ni vacíos
+  if (nombreAsesor && agentAsesor) {
+    document.getElementById("NomAgent").value = nombreAsesor;
+    document.getElementById("Agent").value = agentAsesor.replace("agent_", "");
+    // Mostrar el modal usando Bootstrap
+    const modal = new bootstrap.Modal(document.getElementById("tipificarNota"));
+    modal.show();
+    manejarCambio();
+  } else {
+    Swal.fire({
+      title: "DATOS FALTANTES",
+      text: "Por Favor, Ingresa tu Nombre y tu Numero de Agent.",
+      iconColor: "#f8f32b",
+      icon: "warning",
+      confirmButtonColor: "#70b578",
+      confirmButtonText: "Ingresar datos",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Mostrar el modal usando Bootstrap
+        const modal = new bootstrap.Modal(
+          document.getElementById("login-modal")
+        );
+        modal.show();
+      }
+    });
+  }
 }

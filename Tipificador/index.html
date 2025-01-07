@@ -8,21 +8,21 @@
   <link rel="stylesheet" href="./dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="./dist/css/style.css">
-  <link rel="icon" href="./dist/img/LR.png" type="image/png"/>
+  <link rel="icon" href="./dist/img/LR.png" type="image/png" />
 </head>
 
 <body>
   <div class="login">
-    <img src="./dist/img/call-center-agent.png" alt="Configuracion de agent" class="icon-login" data-target="#login-modal"
-      data-toggle="modal">
+    <img src="./dist/img/call-center-agent.png" alt="Configuracion de agent" class="icon-login"
+      data-target="#login-modal" data-toggle="modal">
 
     <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="#exampleModalLabel"
       aria-hidden="true" data-backdrop="static">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content trans">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">LOGIN</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" id="close-login" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -30,11 +30,11 @@
             <div class="row">
               <div class="col-sm-7" id="numt">
                 <label for="NomTitular">NOMBRE ASESOR</label>
-                <input type="text" class="form-control trans" id="NomAgent" required autocomplete="off">
+                <input type="text" class="form-control trans" id="NomAgent" required autocomplete="name">
               </div>
               <div class="col-sm-5" id="nomt">
                 <label for="NumTitular">NUMERO AGENT</label>
-                <input type="number" class="form-control trans no-arrows" id="Agent" required autocomplete="off">
+                <input type="number" class="form-control trans no-arrows" id="Agent" required autocomplete="on">
               </div>
             </div>
           </div>
@@ -115,8 +115,7 @@
 
         <div class="row form-group justify-content-center">
           <div class="col-auto">
-            <button type="button" id="Tipificar" class="btn btn-outline-success" data-toggle="modal"
-              data-target="#tipificarNota">TIPIFICAR</button>
+            <button type="button" id="Tipificar" class="btn btn-outline-success" data-toggle="modal">TIPIFICAR</button>
             <button type="button" id="limpiar" class="btn btn-outline-danger">LIMPIAR</button>
           </div>
         </div>
@@ -322,7 +321,7 @@
       <div class="modal-footer">
         <textarea class="form-control trans" id="textoNota" rows="3" oninput="autoResize(this)"></textarea>
         <button type="button" class="btn btn-primary trans" id="CopiarT">COPIAR</button>
-  
+
       </div>
     </div>
   </div>

@@ -111,4 +111,7 @@ textarea {
   overflow: hidden;
 }
 
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 1);
+}
 
