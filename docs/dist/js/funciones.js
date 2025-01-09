@@ -596,7 +596,7 @@ function copiarEnTipificar() {
       break;
   }
   texto += gestion;
-  texto = texto.replace(/\|/g, ``).replace(/\s+/g, ` `).replace(/\?/g, `Ñ`);
+  texto = texto.replace(/\|/g, ``).replace(/\s+/g, ` `).replace(/\¿/g, `Ñ`);
   textoNota.value = texto;
   autoResize(document.getElementById("textoNota"));
 }
