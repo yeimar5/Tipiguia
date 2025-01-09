@@ -1,22 +1,24 @@
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
 }
 
 .no-arrows::-webkit-outer-spin-button,
 .no-arrows::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .no-arrows {
-    -moz-appearance: textfield;
-    appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 .container {
   text-align: center;
@@ -61,7 +63,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 body {
-  background-image: url('../img/4.jpg');
+  background-image: url("../img/4.jpg");
   background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -90,7 +92,8 @@ footer {
   transform: translateY(-50%);
 }
 
-i, b {
+i,
+b {
   pointer-events: none; /* Desactiva interacciones del cursor */
 }
 
@@ -101,6 +104,8 @@ i, b {
   top: 10px;
   right: 10px;
   cursor: pointer;
+  filter: invert(100%); /* Invierte el color de la imagen */
+  mix-blend-mode: difference; /* Ajusta el color de la imagen según el fondo */
 }
 
 .modal-title {
@@ -114,4 +119,3 @@ textarea {
 .modal-backdrop {
   background-color: rgba(0, 0, 0, 1);
 }
-
