@@ -14,13 +14,14 @@ function manejarClick(evento) {
     },
     copiar3: () =>
       copiarYAlertar(document.getElementById(`atis`).value, alerta),
-    CopiarT: () =>
+    btnCopiarNota: () =>
       copiarYAlertar(document.getElementById(`textoNota`).value, alerta),
     pedirCuota: pedirCuota,
     limpiar: resetearFormularios,
     Tipificar: lanzarModal,
     imagen: subirImagen,
     guardarCambios: guardarEnLocalStorage,
+    btnModificar: anularActualizartodo
   };
 
   if (actions[targetId]) {
@@ -380,7 +381,6 @@ function manejarCambio(e) {
       ValueMostrar(`#Mtecnico`, ``);
   }
   copiarEnTipificar();
-  autoResize(document.getElementById("textoNota"));
 }
 
 function copiarYAlertar(t, callback) {
@@ -598,8 +598,7 @@ function copiarEnTipificar() {
   texto += gestion;
   texto = texto.replace(/\|/g, ``).replace(/\s+/g, ` `).replace(/\¿/g, `Ñ`);
   textoNota.value = texto;
-  autoResize(document.getElementById("textoNota"));
-}
+  }
 
 function alerta(text) {
   const Toast = Swal.mixin({
@@ -683,7 +682,7 @@ function guardarEnLocalStorage() {
   localStorage.setItem("agentAsesor", agentAsesor);
   // Cerrar el modal
   document.getElementById("close-login").click();
-  alerta(`DATOS GUARDADOS`);
+  alerta(`DATOS GUARDADOS\n Exitosamente`);
 }
 
 function visualizarPantalla(selectors, displayValue) {
@@ -729,17 +728,24 @@ function autoResize(textarea) {
   textarea.style.height = textarea.scrollHeight + "px";
 }
 
+function actualizarNota(event) {
+  if (
+    event.target.tagName.toLowerCase() === "input" ||
+    event.target.type === "checkbox" ||
+    event.target.tagName.toLowerCase() === "select" ||
+    event.target.tagName.toLowerCase() === "textarea"
+  ) {
+    copiarEnTipificar(); // Actualizar el textarea cuando un checkbox o select cambia
+    autoResize(document.getElementById("textoNota"))
+  }
+}
+
 function Actualizartodo() {
-  document.querySelector("#tipificarNota").addEventListener("input", function (event) {
-    if (
-      event.target.tagName.toLowerCase() === "input" ||
-      event.target.type === "checkbox" ||
-      event.target.tagName.toLowerCase() === "select" ||
-      event.target.tagName.toLowerCase() === "textarea"
-    ) {
-      copiarEnTipificar(); // Actualizar el textarea cuando un checkbox o select cambia
-    }
-  });
+  document.querySelector("#tipificarNota").addEventListener("input", actualizarNota);
+}
+
+function anularActualizartodo() {
+  document.querySelector("#tipificarNota").removeEventListener("input", actualizarNota);
 }
 
 function lanzarModal() {

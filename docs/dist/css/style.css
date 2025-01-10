@@ -25,11 +25,11 @@ body {
 }
 
 .trans {
-  backdrop-filter: blur(15px); /* Mantiene el desenfoque */
+  backdrop-filter: blur(7px); /* Mantiene el desenfoque */
   border-radius: 10px;
   background: transparent;
   color: rgb(200, 200, 200); /* Asegura legibilidad */
-  border: 0.2px solid rgba(255, 255, 255, 0.5); /* Define el grosor de borde correctamente */
+  /* border: 0.2px solid rgba(255, 255, 255, 0.5); /* Define el grosor de borde correctamente */ 
 }
 
 option {
@@ -90,6 +90,7 @@ footer {
   right: 0;
   top: 50%;
   transform: translateY(-50%);
+  
 }
 
 i,

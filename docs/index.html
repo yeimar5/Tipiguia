@@ -38,9 +38,9 @@
               </div>
             </div>
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer justify-content-center">
             <button type="button" id="imagen" class="btn btn-outline-warning"><b>CAMBIAR FONDO</b> </button>
-            <button type="button" id="guardarCambios" class="btn btn-primary">Guardar cambios</button>
+            <button type="button" id="guardarCambios" class="btn btn-outline-primary">GUARDAR CAMBIOS</button>
           </div>
         </div>
       </div>
@@ -48,11 +48,11 @@
   </div>
 
   <!-- Contenedor principal -->
-  <div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="contenedor transparent w-100 p-3" style="max-width: 800px;">
+  <div class="container d-flex justify-content-center align-items-center min-vh-100" >
+    <div class="contenedor trans w-100 p-3" style="max-width: 800px;">
       <form id="datosTecnico">
-        <div class="modal-header d-flex justify-content-between align-items-center">
-          <h2 class="modal-title" id="titulo"><b>LINEA DE RESCATE</b></h2>
+        <div class="modal-header d-flex justify-content-center align-items-center">
+          <h4 class="modal-title" id="titulo"><b>LINEA DE RESCATE</b></h4>
         </div>
 
         <!-- Primera fila: Nombre y Rol -->
@@ -69,7 +69,7 @@
 
           <div class="form-group col-sm-4">
             <label for="rol">ROL</label>
-            <select id="rol" class="form-control">
+            <select id="rol" class=" custom-select trans">
               <option value="técnico">INSTALADOR</option>
               <option value="gestor">GESTOR</option>
             </select>
@@ -132,7 +132,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content trans">
         <div class="modal-header" id="color">
-          <h5 class="modal-title" id="exampleModalLabel">Tipificar</h5>
+          <h5 class="modal-title" id="exampleModalLabel">TIPIFICAR</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -143,7 +143,7 @@
           <form id="Formulario">
             <div class="modal-header d-flex justify-content-between align-items-center">
               <div>
-                <select class="form-control d-inline-block w-auto" id="Motivo"><!--Motivo de llamada-->
+                <select class="custom-select d-inline-block w-auto  trans" id="Motivo"><!--Motivo de llamada-->
                   <option value="" selected disabled>MOTIVO LLAMADA</option>
                   <option value="1">AGENDAR</option>
                   <option value="2">QUIEBRE</option>
@@ -320,8 +320,9 @@
       </div>
       <div class="modal-footer">
         <textarea class="form-control trans" id="textoNota" rows="3" oninput="autoResize(this)"></textarea>
-        <button type="button" class="btn btn-primary trans" id="CopiarT">COPIAR</button>
-
+        <button type="button" class="btn btn-outline-warning trans" id="btnModificar">MODIFICAR</button>
+        <button type="button" class="btn btn-outline-primary trans" id="btnCopiarNota">COPIAR</button>
+        
       </div>
     </div>
   </div>
