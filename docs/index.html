@@ -15,7 +15,6 @@
   <div class="login">
     <img src="./dist/img/call-center-agent.png" alt="Configuracion de agent" class="icon-login"
       data-target="#login-modal" data-toggle="modal">
-
     <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="#exampleModalLabel"
       aria-hidden="true" data-backdrop="static">
       <div class="modal-dialog modal-dialog-centered" role="document">
@@ -48,7 +47,7 @@
   </div>
 
   <!-- Contenedor principal -->
-  <div class="container d-flex justify-content-center align-items-center min-vh-100" >
+  <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="contenedor trans w-100 p-3" style="max-width: 800px;">
       <form id="datosTecnico">
         <div class="modal-header d-flex justify-content-center align-items-center">
@@ -123,9 +122,6 @@
     </div>
   </div>
 
-
-
-
   <!-- Modal -->
   <div class="modal fade" id="tipificarNota" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -138,8 +134,6 @@
           </button>
         </div>
         <div class="modal-body col-sm-auto ">
-
-
           <form id="Formulario">
             <div class="modal-header d-flex justify-content-between align-items-center">
               <div>
@@ -210,127 +204,125 @@
                 <option value="13">DIRECCIÓN ERRADA</option>
                 <option value="14">BAJA DE PERFIL</option>
                 <option value="15">AVERIA</option>
-            </div>
-            </select>
-        </div>
-
-        <div class="row pt-3"><!--Motivo Tecnico y Motivo Usuario-->
-          <div class="col-12" id="MotivoTec">
-            <label for="Mtecnico">Motivo Técnico</label>
-            <div class="form-group">
-              <textarea class="form-control trans" id="Mtecnico" rows="2" oninput="autoResize(this)"></textarea>
-            </div>
-          </div>
-          <div class="col-12" id="Musuariod">
-            <label for="Musuario">Motivo Usuario</label>
-            <div class="form-group">
-              <textarea class="form-control trans" id="Musuario" rows="2" oninput="autoResize(this)"></textarea>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="row" id="Titular"><!--Nombre y Numero de Titular-->
-          <div class="col-sm-7" id="nomt">
-            <label for="NomTitular">Nombre de Titular</label>
-            <input type="text" class="form-control trans" id="NomTitular" required autocomplete="off">
-          </div>
-          <div class="col-sm-5" id="numt">
-            <label for="NumTitular">Numero de Titular</label>
-            <input type="number" class="form-control trans no-arrows" id="NumTitular" required autocomplete="off">
-          </div>
-        </div>
-
-        <div class="row pt-3"><!--Fecha y Franja cita-->
-          <div class=" col-sm" id="fecha">
-            <label for="Fecha" class="form-label trans ">Fecha Agendamiento</label>
-            <div class="input-group gap-3">
-              <input type="date" class="form-control trans Fecha" id="Fecha">
-              <select id="Franja" class="custom-select trans col-2" aria-label="">
-                <option id="AM" value="AM">AM</option>
-                <option id="PM" value="PM">PM</option>
               </select>
-              <button type="button" id="pedirCuota" class="btn btn1 btn-warning ">Pedir Cuota</button>
             </div>
-          </div>
+
+            <div class="row pt-3"><!--Motivo Tecnico y Motivo Usuario-->
+              <div class="col-12" id="MotivoTec">
+                <label for="Mtecnico">Motivo Técnico</label>
+                <div class="form-group">
+                  <textarea class="form-control trans" id="Mtecnico" rows="2" oninput="autoResize(this)"></textarea>
+                </div>
+              </div>
+              <div class="col-12" id="Musuariod">
+                <label for="Musuario">Motivo Usuario</label>
+                <div class="form-group">
+                  <textarea class="form-control trans" id="Musuario" rows="2" oninput="autoResize(this)"></textarea>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row" id="Titular"><!--Nombre y Numero de Titular-->
+              <div class="col-sm-7" id="nomt">
+                <label for="NomTitular">Nombre de Titular</label>
+                <input type="text" class="form-control trans" id="NomTitular" required autocomplete="off">
+              </div>
+              <div class="col-sm-5" id="numt">
+                <label for="NumTitular">Numero de Titular</label>
+                <input type="number" class="form-control trans no-arrows" id="NumTitular" required autocomplete="off">
+              </div>
+            </div>
+
+            <div class="row pt-3"><!--Fecha y Franja cita-->
+              <div class=" col-sm" id="fecha">
+                <label for="Fecha" class="form-label trans ">Fecha Agendamiento</label>
+                <div class="input-group gap-3">
+                  <input type="date" class="form-control trans Fecha" id="Fecha">
+                  <select id="Franja" class="custom-select trans col-2" aria-label="">
+                    <option id="AM" value="AM">AM</option>
+                    <option id="PM" value="PM">PM</option>
+                  </select>
+                  <button type="button" id="pedirCuota" class="btn btn1 btn-warning ">Pedir Cuota</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row " id="GPS"><!--GPS y Soporte Fotografico del tecnico-->
+              <div class="col-sm-6">
+                <label for="gps" id="gp" class="form-label">GPS</label>
+                <select id="gps" class="custom-select trans" aria-label="Gps">
+                  <option value="OK">OK</option>
+                  <option value="No OK">NO OK</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label for="SF" id="sf" class="form-label">Soporte Fotográfico</label>
+                <select id="SF" class="custom-select trans" aria-label="">
+                  <option value="OK">OK</option>
+                  <option value="No OK">NO OK</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row" id="MoQuiebre"><!--Motivos de quiebres LR-->
+              <div class="col-sm">
+                <label for="motivoQuiebre">Motivo Quiebre</label>
+                <input class="form-control col-sm-auto trans" list="motivoQuiebre" id="mQuiebre"
+                  placeholder="Escribe el motivo">
+                <datalist id="motivoQuiebre">
+                  <option>PLAN ERRADO CLIENTE SOLICITO MAS DECOS</option>
+                  <option>PLAN ERRADO CLIENTE SOLICITO MENOS DECOS</option>
+                  <option>PLAN ERRADO VELOCIDAD BA</option>
+                  <option>PLAN ERRADO OFERTA PRIMARIA</option>
+                  <option>PLAN ERRADO OFERTA SUPLEMENTARIA</option>
+                  <option>YA TIENE SERVICIO MOVISTAR INSTALADO</option>
+                  <option>CLIENTE DESISTE DEL SERVICIO, INCONFORMIDAD TARIFAS</option>
+                  <option>CLIENTE DESISTE DEL TRASLADO, SOLICITA RETIRO</option>
+                  <option>CLIENTE DESISTE DEL TRASLADO, CONTINUA CON SERVICIO ACTUAL</option>
+                  <option>CLIENTE SOLICITO TRASLADO DE OTRO PRODUCTO</option>
+                  <option>CLIENTE SOLICITO OPERACIÓN COMERCIAL DIFERENTE</option>
+                  <option>CLIENTE DESEA EL PRODUCTO EN UNA FECHA POSTERIOR</option>
+                  <option>CLIENTE NO SOLICITO EL SERVICIO</option>
+                  <option>FALLA APLICATIVOS Y/O PROBLEMAS SALIDA DE LLAMADAS</option>
+                  <option>CONDICIONES DEL PREDIO NO APTAS PARA LA INSTALACIÓN</option>
+                  <option>INCUMPLIMIENTO DE CITA ATRIBUIBLE A TITULAR</option>
+                  <option>GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN</option>
+                  <option>GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN</option>
+                  <option>GESTIÓN INCOMPLETA EN APLICATIVOS POR LR</option>
+                  <option>CAMBIO PLAN POR DECISION DEL CLIENTE</option>
+                  <option>CLIENTE DESISTE DEL SERVICIO POR RECLAMO NO SOLUCIONADO</option>
+                  <option>CLIENTE DESISTE DEL SERVICIO/DEMORAS EN LA INSTALACIÓN</option>
+                  <option>CLIENTE DESISTE DEL SERVICIO/ELIGE LA COMPETENCIA</option>
+                  <option>CLIENTE DESISTE DEL SERVICIO/INCONCISTENCIA EN LA OFERTA</option>
+                  <option>CLIENTE DESISTE DEL SERVICIO/RETENIDO POR OTRO OPERADOR</option>
+                  <option>CLIENTE DESISTE DEL SERVICIO/SITUACIÓN ECONOMICA</option>
+                  <option>CLIENTE DESISTE DEL SERVICIO/NO DA MOTIVO</option>
+                  <option>CLIENTE NO ACEPTA INSTALACIÓN PARCIAL</option>
+                  <option>CLIENTE NO ACEPTA COBRO DE DECODIFICADOR ADICIONAL </option>
+                  <option>CLIENTE RECHAZA COBRO DE INSTALACIÓN</option>
+                  <option>DATOS DEL CLIENTE ERRADOS</option>
+                  <option>SIN DISPONIBILIDAD DE EQUIPOS (EQ)</option>
+                  <option>SIN PERMISO PARA INSTALAR</option>
+                  <option>TELEFONO DEL CLIENTE ERRADO</option>
+                </datalist>
+              </div>
+            </div>
+          </form>
         </div>
 
-        <div class="row " id="GPS"><!--GPS y Soporte Fotografico del tecnico-->
-          <div class="col-sm-6">
-            <label for="gps" id="gp" class="form-label">GPS</label>
-            <select id="gps" class="custom-select trans" aria-label="Gps">
-              <option value="OK">OK</option>
-              <option value="No OK">NO OK</option>
-            </select>
-          </div>
-          <div class="col-sm-6">
-            <label for="SF" id="sf" class="form-label">Soporte Fotográfico</label>
-            <select id="SF" class="custom-select trans" aria-label="">
-              <option value="OK">OK</option>
-              <option value="No OK">NO OK</option>
-            </select>
-          </div>
+        <div class="modal-footer">
+          <textarea class="form-control trans" id="textoNota" rows="3" oninput="autoResize(this)"></textarea>
+          <button type="button" class="btn btn-outline-warning trans" id="btnModificar">MODIFICAR</button>
+          <button type="button" class="btn btn-outline-primary trans" id="btnCopiarNota">COPIAR</button>
         </div>
-
-        <div class="row" id="MoQuiebre"><!--Motivos de quiebres LR-->
-          <div class="col-sm">
-            <label for="motivoQuiebre">Motivo Quiebre</label>
-            <input class="form-control col-sm-auto trans" list="motivoQuiebre" id="mQuiebre"
-              placeholder="Escribe el motivo">
-            <datalist id="motivoQuiebre">
-              <option>PLAN ERRADO CLIENTE SOLICITO MAS DECOS</option>
-              <option>PLAN ERRADO CLIENTE SOLICITO MENOS DECOS</option>
-              <option>PLAN ERRADO VELOCIDAD BA</option>
-              <option>PLAN ERRADO OFERTA PRIMARIA</option>
-              <option>PLAN ERRADO OFERTA SUPLEMENTARIA</option>
-              <option>YA TIENE SERVICIO MOVISTAR INSTALADO</option>
-              <option>CLIENTE DESISTE DEL SERVICIO, INCONFORMIDAD TARIFAS</option>
-              <option>CLIENTE DESISTE DEL TRASLADO, SOLICITA RETIRO</option>
-              <option>CLIENTE DESISTE DEL TRASLADO, CONTINUA CON SERVICIO ACTUAL</option>
-              <option>CLIENTE SOLICITO TRASLADO DE OTRO PRODUCTO</option>
-              <option>CLIENTE SOLICITO OPERACIÓN COMERCIAL DIFERENTE</option>
-              <option>CLIENTE DESEA EL PRODUCTO EN UNA FECHA POSTERIOR</option>
-              <option>CLIENTE NO SOLICITO EL SERVICIO</option>
-              <option>FALLA APLICATIVOS Y/O PROBLEMAS SALIDA DE LLAMADAS</option>
-              <option>CONDICIONES DEL PREDIO NO APTAS PARA LA INSTALACIÓN</option>
-              <option>INCUMPLIMIENTO DE CITA ATRIBUIBLE A TITULAR</option>
-              <option>GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN</option>
-              <option>GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN</option>
-              <option>GESTIÓN INCOMPLETA EN APLICATIVOS POR LR</option>
-              <option>CAMBIO PLAN POR DECISION DEL CLIENTE</option>
-              <option>CLIENTE DESISTE DEL SERVICIO POR RECLAMO NO SOLUCIONADO</option>
-              <option>CLIENTE DESISTE DEL SERVICIO/DEMORAS EN LA INSTALACIÓN</option>
-              <option>CLIENTE DESISTE DEL SERVICIO/ELIGE LA COMPETENCIA</option>
-              <option>CLIENTE DESISTE DEL SERVICIO/INCONCISTENCIA EN LA OFERTA</option>
-              <option>CLIENTE DESISTE DEL SERVICIO/RETENIDO POR OTRO OPERADOR</option>
-              <option>CLIENTE DESISTE DEL SERVICIO/SITUACIÓN ECONOMICA</option>
-              <option>CLIENTE DESISTE DEL SERVICIO/NO DA MOTIVO</option>
-              <option>CLIENTE NO ACEPTA INSTALACIÓN PARCIAL</option>
-              <option>CLIENTE NO ACEPTA COBRO DE DECODIFICADOR ADICIONAL </option>
-              <option>CLIENTE RECHAZA COBRO DE INSTALACIÓN</option>
-              <option>DATOS DEL CLIENTE ERRADOS</option>
-              <option>SIN DISPONIBILIDAD DE EQUIPOS (EQ)</option>
-              <option>SIN PERMISO PARA INSTALAR</option>
-              <option>TELEFONO DEL CLIENTE ERRADO</option>
-            </datalist>
-          </div>
-        </div>
-        </form>
-
-      </div>
-      <div class="modal-footer">
-        <textarea class="form-control trans" id="textoNota" rows="3" oninput="autoResize(this)"></textarea>
-        <button type="button" class="btn btn-outline-warning trans" id="btnModificar">MODIFICAR</button>
-        <button type="button" class="btn btn-outline-primary trans" id="btnCopiarNota">COPIAR</button>
-        
       </div>
     </div>
-  </div>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="./dist/js/funciones.js"></script>
-  <script src="./dist/js/bootstrap.bundle.min.js"></script>
-  <script src="./dist/js/sweetalert2@11.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./dist/js/funciones.js"></script>
+    <script src="./dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./dist/js/sweetalert2@11.js"></script>
 </body>
 
 </html>

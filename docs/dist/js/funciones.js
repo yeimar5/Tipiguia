@@ -487,7 +487,6 @@ function copiarEnTipificar() {
 
       texto += notaGenerada;
       break;
-
     case `2`: // quiebre
       if (contingenciaActiva) {
         texto = `QC - ${motivoQuiebre}-${texto} no ${titularContacto} POR CONTINGENCIA se deja orden suspendida en aplicativos`;
@@ -556,7 +555,6 @@ function copiarEnTipificar() {
         texto = `QC - ${motivoQuiebre}-${texto}${titularContacto} ${motivoCliente} se deja orden suspendida en aplicativos`;
       }
       break;
-
     case `3`: // soporte no aplica
       const soporteNoAplica = document.querySelector(`#noSoporte`).value;
       const mensajes = {
@@ -741,11 +739,12 @@ function actualizarNota(event) {
 }
 
 function Actualizartodo() {
-  document.querySelector("#tipificarNota").addEventListener("input", actualizarNota);
+  document.querySelector("#Formulario").addEventListener("input", actualizarNota);
 }
 
 function anularActualizartodo() {
-  document.querySelector("#tipificarNota").removeEventListener("input", actualizarNota);
+  document.querySelector("#Formulario").removeEventListener("input", actualizarNota);
+  document.getElementById("textoNota").focus();
 }
 
 function lanzarModal() {
