@@ -1,5 +1,6 @@
-document.addEventListener(`click`, manejarClick);
-document.addEventListener(`change`, manejarCambio);
+const formulario = document.getElementById('Formulario');
+document.addEventListener('click', manejarClick);
+formulario.addEventListener('change', manejarCambio);
 
 function manejarClick(evento) {
   const targetId = evento.target.id;
@@ -21,7 +22,7 @@ function manejarClick(evento) {
     Tipificar: lanzarModal,
     imagen: subirImagen,
     guardarCambios: guardarEnLocalStorage,
-    btnModificar: anularActualizartodo
+    btnModificar: anularActualizartodo,
   };
 
   if (actions[targetId]) {
@@ -38,18 +39,10 @@ function manejarCambio(e) {
   let contingencia = document.getElementById(`Contingencia`).checked;
   let aceptaInstalar = document.getElementById(`Aceptains`).checked;
   let suspender = document.getElementById(`sus`).checked;
-
-  switch (mLlamada) {
-    case `1`: // agendar
-      cambiarColorFondo(`#28A745`);
-      if (
-        e.target.matches(`#Motivo`) ||
-        e.target.matches(`#Contacto`) ||
-        e.target.matches(`#rol`) ||
-        e.target.matches(`#Aceptains`) ||
-        e.target.matches(`#Contingencia`) ||
-        e.target.matches(`#sus`)
-      ) {
+  if (Actualizartodo) {
+    switch (mLlamada) {
+      case `1`: // agendar
+        cambiarColorFondo(`#28A745`);
         visualizarPantalla([`#chatbot`, `#contingencia`], `block`);
         visualizarPantalla([`#Titular`, `#contacto`], `flex`);
         visualizarPantalla([`#Soporte`], `none`);
@@ -194,21 +187,14 @@ function manejarCambio(e) {
             `none`
           );
         }
-      }
-      ValueMostrar(`#Mtecnico`, `solicitan reagendar la orden para el día `);
-      break;
-    case `2`: // quiebres
-      cambiarColorFondo(`#FF0000`);
-      visualizarPantalla([`#contingencia`], `block`);
-      visualizarPantalla([`#Titular`], `flex`);
-      visualizarPantalla([`#Soporte`, `#chatbot`], `none`);
 
-      if (
-        e.target.matches(`#Motivo`) ||
-        e.target.matches(`#Contacto`) ||
-        e.target.matches(`#rol`) ||
-        e.target.matches(`#Contingencia`)
-      ) {
+        ValueMostrar(`#Mtecnico`, `solicitan reagendar la orden para el día `);
+        break;
+      case `2`: // quiebres
+        cambiarColorFondo(`#FF0000`);
+        visualizarPantalla([`#contingencia`], `block`);
+        visualizarPantalla([`#Titular`], `flex`);
+        visualizarPantalla([`#Soporte`, `#chatbot`], `none`);
         visualizarPantalla([`#chatbot`, `#Acepta`], `none`);
 
         if (trabajador == `gestor` && contacto == `...`) {
@@ -286,11 +272,10 @@ function manejarCambio(e) {
             `none`
           );
         }
-      }
-      ValueMostrar(`#Mtecnico`, `titular desea cancelar el servicio por `);
-      break;
-    case `3`: // soporte no aplica
-      if (e.target.matches(`#Motivo`) || e.target.matches(`#noSoporte`)) {
+
+        ValueMostrar(`#Mtecnico`, `titular desea cancelar el servicio por `);
+        break;
+      case `3`: // soporte no aplica
         cambiarColorFondo(`#F18F13`);
         visualizarPantalla([`#chatbot`, `#Acepta`, `#suspender`], `none`);
 
@@ -316,71 +301,65 @@ function manejarCambio(e) {
             `none`
           );
         }
-      }
-      ValueMostrar(`#Mtecnico`, ``);
-      break;
-    case `4`: // Gestion decos
-      visualizarPantalla([`#MotivoTec`, `#Musuariod`], `block`);
-      visualizarPantalla([`#Titular`], `flex`);
-      visualizarPantalla(
-        [
-          `#fecha`,
-          `#MoQuiebre`,
-          `#GPS`,
-          `#Soporte`,
-          `#contacto`,
-          `#contingencia`,
-        ],
-        `none`
-      );
-      ValueMostrar(
-        `#Mtecnico`,
-        `para adicionar un decodificador a la orden para un total de `
-      );
-      break;
-    case `5`: // Gestion piloto
-      visualizarPantalla([`#MotivoTec`, `#Acepta`], `block`);
-      visualizarPantalla(
-        [
-          `#MoQuiebre`,
-          `#Musuariod`,
-          `#fecha`,
-          `#GPS`,
-          `#Soporte`,
-          `#chatbot`,
-          `#contacto`,
-          `#Titular`,
-          `#contingencia`,
-          `#suspender`,
-        ],
-        `none`
-      );
-      ValueMostrar(
-        `#Mtecnico`,
-        `para validar recibo publico con dirección  \nen sistema esta `
-      );
-      break;
-    default:
-      cambiarColorFondo(`#1392F1`);
-      visualizarPantalla(
-        [
-          `#Soporte`,
-          `#Musuariod`,
-          `#fecha`,
-          `#GPS`,
-          `#MoQuiebre`,
-          `#contingencia`,
-          `#Titular`,
-          `#Acepta`,
-          `#contacto`,
-          `#chatbot`,
-          `#suspender`,
-        ],
-        `none`
-      );
-      ValueMostrar(`#Mtecnico`, ``);
+
+        ValueMostrar(`#Mtecnico`, ``);
+        break;
+      case `4`: // Gestion decos
+        visualizarPantalla([`#MotivoTec`, `#Musuariod`, `#contacto`], `block`);
+        visualizarPantalla([`#Titular`], `flex`);
+        visualizarPantalla(
+          [`#fecha`, `#MoQuiebre`, `#GPS`, `#Soporte`, `#contingencia`],
+          `none`
+        );
+        ValueMostrar(
+          `#Mtecnico`,
+          `para adicionar un decodificador a la orden para un total de `
+        );
+        break;
+      case `5`: // Gestion piloto
+        visualizarPantalla([`#MotivoTec`, `#Acepta`], `block`);
+        visualizarPantalla(
+          [
+            `#MoQuiebre`,
+            `#Musuariod`,
+            `#fecha`,
+            `#GPS`,
+            `#Soporte`,
+            `#chatbot`,
+            `#contacto`,
+            `#Titular`,
+            `#contingencia`,
+            `#suspender`,
+          ],
+          `none`
+        );
+        ValueMostrar(
+          `#Mtecnico`,
+          `para validar recibo publico con dirección  \nen sistema esta `
+        );
+        break;
+      default:
+        cambiarColorFondo(`#1392F1`);
+        visualizarPantalla(
+          [
+            `#Soporte`,
+            `#Musuariod`,
+            `#fecha`,
+            `#GPS`,
+            `#MoQuiebre`,
+            `#contingencia`,
+            `#Titular`,
+            `#Acepta`,
+            `#contacto`,
+            `#chatbot`,
+            `#suspender`,
+          ],
+          `none`
+        );
+        ValueMostrar(`#Mtecnico`, ``);
+    }
   }
-  copiarEnTipificar();
+  crearNota();
 }
 
 function copiarYAlertar(t, callback) {
@@ -418,7 +397,7 @@ function resetearFormularios() {
   });
 }
 
-function copiarEnTipificar() {
+function crearNota() {
   let motivoLlamada = document.querySelector(`#Motivo`).value;
   let motivoTecnico = document.getElementById("Mtecnico").value;
   let numeroTitular = document.getElementById(`NumTitular`).value;
@@ -441,7 +420,7 @@ function copiarEnTipificar() {
   //mensajes
   let notaGenerada = ``;
   let titularContacto = `se marca al número ${numeroTitular} titular ${nombreTitular}`;
-  let gestion = `. Gestionado por ${nombreAsesor} ${agentAsesor}.`;
+  let gestion = ` Gestionado por ${nombreAsesor} ${agentAsesor}.`;
   let mensajeChatbot = ``;
   let texto = `LINEA RESCATE Se comunica ${trabajador} informando que ${motivoTecnico} `;
 
@@ -488,71 +467,50 @@ function copiarEnTipificar() {
       texto += notaGenerada;
       break;
     case `2`: // quiebre
-      if (contingenciaActiva) {
-        texto = `QC - ${motivoQuiebre}-${texto} no ${titularContacto} POR CONTINGENCIA se deja orden suspendida en aplicativos`;
-      } else if (
-        contactoConTitular == `2` &&
-        motivoQuiebre != `TELEFONO DEL CLIENTE ERRADO` &&
-        motivoQuiebre != `GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN` &&
-        motivoQuiebre !=
-          `GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN` &&
-        !suspenderOrden
-      ) {
-        texto = `QC - ${motivoQuiebre}-${texto} ${titularContacto} ${motivoCliente} se hace objeción pero desiste valida datos, se procede a quebrar orden `;
-      } else if (
-        contactoConTitular == `2` &&
-        motivoQuiebre != `TELEFONO DEL CLIENTE ERRADO` &&
-        motivoQuiebre != `GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN` &&
-        motivoQuiebre !=
-          `GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN` &&
-        suspenderOrden
-      ) {
-        texto = `QC - ${motivoQuiebre}-${texto} ${titularContacto} ${motivoCliente} se deja orden suspendida en aplicativos`;
-      } else if (
-        contactoConTitular == `2` &&
-        motivoQuiebre == `GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN` &&
-        motivoQuiebre != `TELEFONO DEL CLIENTE ERRADO` &&
-        motivoQuiebre != `GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN`
-      ) {
-        texto = `LINEA RESCATE Se comunica técnico  informando Titular desea cancelar el servicio ${motivoTecnico} ${titularContacto} ${motivoCliente} se hace objeción acepta instalación, valida datos correctos`;
-      } else if (
-        contactoConTitular == `2` &&
-        motivoQuiebre ==
-          `GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN` &&
-        motivoQuiebre != `TELEFONO DEL CLIENTE ERRADO`
-      ) {
-        texto = `LINEA RESCATE Se comunica técnico  informando Titular desea cancelar el servicio ${motivoTecnico} ${titularContacto} ${motivoCliente} solicita que lo llamen en 10 MIN`;
-      } else if (
-        contactoConTitular == `2` &&
-        motivoQuiebre == `TELEFONO DEL CLIENTE ERRADO`
-      ) {
-        texto = `QC - ${motivoQuiebre}-${texto}${titularContacto} ${motivoCliente} se valida SOPORTE FOTOGRÁFICO OK se valida GPS OK se procede a suspender orden`;
-      } else if (contactoConTitular == `1`) {
-        if (
-          gpsActivo == `OK` &&
-          soporteFotografico == `OK` &&
-          motivoQuiebre != `INCUMPLIMIENTO DE CITA ATRIBUIBLE A TITULAR`
-        ) {
-          texto = `QC - ${motivoQuiebre}-${texto} ${titularContacto} No contesta Se Valida GPS ${gpsActivo} Se Valida SOPORTE FOTOGRÁFICO ${soporteFotografico} se procede a  suspender orden`;
-        } else if (
-          motivoQuiebre == `INCUMPLIMIENTO DE CITA ATRIBUIBLE A TITULAR` &&
-          gpsActivo == `OK` &&
-          soporteFotografico == `OK`
-        ) {
-          texto = `QC - ${motivoQuiebre}-${texto}${titularContacto} no contesta se valida SOPORTE FOTOGRÁFICO ${soporteFotografico}  se valida GPS ${gpsActivo} , YA QUE LLEVA MAS DE TRES VECES DE NO CONTACTO CON CLIENTE SE  PROCEDE A QUEBRAR ORDEN`;
+      if (contactoConTitular == "1") {
+        if (trabajador == "gestor") {
+          texto += `${titularContacto}. No contesta se le indica a gestor que intente mas tarde para proceder con la gestión.`;
         } else {
-          texto += `${titularContacto} No contesta Se Valida GPS ${gpsActivo} Se Valida SOPORTE FOTOGRÁFICO ${soporteFotografico} Se le indica a Tecnico dirigirse al predio y Subir Soporte fotográfico`;
+          if (contingenciaActiva) {
+            texto = `QC - ${motivoQuiebre} - ${texto} no ${titularContacto} POR CONTINGENCIA se deja orden suspendida en aplicativos`;
+          } else if (gpsActivo === "OK" && soporteFotografico === "OK") {
+            texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto}. No contesta. Se valida SOPORTE FOTOGRÁFICO: ${soporteFotografico}. Se valida GPS: ${gpsActivo}. Se deja orden suspendida en aplicativos.`;
+          } else {
+            texto += `${titularContacto}. No contesta. Se valida GPS: ${gpsActivo}. Se valida SOPORTE FOTOGRÁFICO: ${soporteFotografico}. Se le indica al técnico dirigirse al predio y subir soporte fotográfico.`;
+          }
         }
-      }
-
-      if (contactoConTitular == `1` && trabajador == `gestor`) {
-        texto += `${titularContacto} no contesta se le indica a gestor que favor envié técnico a predio para proceder con la gestión`;
-      } else if (
-        contactoConTitular == `2` &&
-        trabajador == `gestor` &&
-        suspenderOrden
-      ) {
-        texto = `QC - ${motivoQuiebre}-${texto}${titularContacto} ${motivoCliente} se deja orden suspendida en aplicativos`;
+      } else {
+        if (contactoConTitular == "2") {
+          if (
+            motivoQuiebre !== "TELEFONO DEL CLIENTE ERRADO" &&
+            motivoQuiebre !== "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN" &&
+            motivoQuiebre !==
+              "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN"
+          ) {
+            if (!suspenderOrden) {
+              texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. Se hace objeción pero desiste, valida datos, se procede a quebrar orden.`;
+            } else {
+              texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. Se deja orden suspendida en aplicativos.`;
+            }
+          } else {
+            if (
+              motivoQuiebre === "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN"
+            ) {
+              texto += `${motivoCliente}. Se hace objeción, acepta instalación y valida datos correctos.`;
+            } else if (
+              motivoQuiebre ===
+              "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN"
+            ) {
+              texto += `${motivoCliente}. Solicita que lo llamen en 10 minutos.`;
+            } else {
+              if (motivoQuiebre === "TELEFONO DEL CLIENTE ERRADO" && trabajador === "gestor") {
+              texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. se indica que debe enviar tecnico a predio para poder suspender la orden.`;
+            }else{
+              texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. Se valida SOPORTE FOTOGRÁFICO OK, se valida GPS OK, se procede a suspender orden.`;
+            }
+          }
+          }
+        }
       }
       break;
     case `3`: // soporte no aplica
@@ -578,7 +536,11 @@ function copiarEnTipificar() {
 
       break;
     case `4`: // Gestion de decos
-      texto += ` ${titularContacto} ${motivoCliente} se valida datos correctos y se actualiza TAG de equipos`;
+      if (contactoConTitular == `2`) {
+        texto += ` ${titularContacto} ${motivoCliente} se valida datos correctos y se actualiza TAG de equipos`;
+      } else {
+        texto += ` ${titularContacto} ${motivoCliente} no hay contacto se indica a técnico que le diga a l titular que este pendiente de la llamada e intente nuevamente`;
+      }
       break;
     case `5`: // Direccion piloto
       let respuesta = ``;
@@ -596,7 +558,7 @@ function copiarEnTipificar() {
   texto += gestion;
   texto = texto.replace(/\|/g, ``).replace(/\s+/g, ` `).replace(/\¿/g, `Ñ`);
   textoNota.value = texto;
-  }
+}
 
 function alerta(text) {
   const Toast = Swal.mixin({
@@ -661,8 +623,8 @@ async function subirImagen() {
   }
 }
 
-// Recuperar y mostrar la imagen de fondo guardada en el localStorage al cargar la página
 window.onload = function () {
+  // Recuperar y mostrar la imagen de fondo guardada en el localStorage al cargar la página
   const imagenFondoGuardada = localStorage.getItem("imagenFondo");
   if (imagenFondoGuardada) {
     document.body.style.backgroundImage = `url(${imagenFondoGuardada})`;
@@ -726,24 +688,28 @@ function autoResize(textarea) {
   textarea.style.height = textarea.scrollHeight + "px";
 }
 
+function actualizarNotaCompleta() {
+  crearNota();
+  autoResize(document.getElementById("textoNota"));
+}
+
 function actualizarNota(event) {
-  if (
-    event.target.tagName.toLowerCase() === "input" ||
-    event.target.type === "checkbox" ||
-    event.target.tagName.toLowerCase() === "select" ||
-    event.target.tagName.toLowerCase() === "textarea"
-  ) {
-    copiarEnTipificar(); // Actualizar el textarea cuando un checkbox o select cambia
-    autoResize(document.getElementById("textoNota"))
-  }
+  return true;
 }
 
 function Actualizartodo() {
-  document.querySelector("#Formulario").addEventListener("input", actualizarNota);
+  const formulario = document.querySelector("#Formulario");
+  formulario.addEventListener("input", (event) => {
+    if (actualizarNota(event)) {
+      actualizarNotaCompleta();
+    }
+  });
 }
 
 function anularActualizartodo() {
-  document.querySelector("#Formulario").removeEventListener("input", actualizarNota);
+  document
+    .querySelector("#Formulario")
+    .removeEventListener("input", actualizarNota);
   document.getElementById("textoNota").focus();
 }
 
