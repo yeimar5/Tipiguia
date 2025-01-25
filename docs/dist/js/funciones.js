@@ -305,8 +305,8 @@ function manejarCambio(e) {
         ValueMostrar(`#Mtecnico`, ``);
         break;
       case `4`: // Gestion decos
-        visualizarPantalla([`#MotivoTec`, `#Musuariod`, `#contacto`], `block`);
-        visualizarPantalla([`#Titular`], `flex`);
+        visualizarPantalla([`#MotivoTec`, `#Musuariod`], `block`);
+        visualizarPantalla([`#Titular`,`#contacto`], `flex`);
         visualizarPantalla(
           [`#fecha`, `#MoQuiebre`, `#GPS`, `#Soporte`, `#contingencia`],
           `none`
@@ -484,8 +484,7 @@ function crearNota() {
           if (
             motivoQuiebre !== "TELEFONO DEL CLIENTE ERRADO" &&
             motivoQuiebre !== "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN" &&
-            motivoQuiebre !==
-              "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN"
+            motivoQuiebre !== "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN"
           ) {
             if (!suspenderOrden) {
               texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. Se hace objeción pero desiste, valida datos, se procede a quebrar orden.`;
@@ -539,7 +538,9 @@ function crearNota() {
       if (contactoConTitular == `2`) {
         texto += ` ${titularContacto} ${motivoCliente} se valida datos correctos y se actualiza TAG de equipos`;
       } else {
-        texto += ` ${titularContacto} ${motivoCliente} no hay contacto se indica a técnico que le diga a l titular que este pendiente de la llamada e intente nuevamente`;
+        if (contactoConTitular == `1`) {
+          texto += ` ${titularContacto} ${motivoCliente} no hay contacto se indica a técnico que le diga al titular que este pendiente de la llamada e intente nuevamente`;
+        }
       }
       break;
     case `5`: // Direccion piloto
