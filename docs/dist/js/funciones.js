@@ -501,7 +501,7 @@ function crearNota() {
               motivoQuiebre ===
               "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN"
             ) {
-              texto += `${motivoCliente}. Solicita que lo llamen en 10 minutos.`;
+              texto += `${titularContacto} ${motivoCliente}. Solicita que lo llamen en 10 minutos.`;
             } else {
               if (motivoQuiebre === "TELEFONO DEL CLIENTE ERRADO" && trabajador === "gestor") {
               texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. se indica que debe enviar tecnico a predio para poder suspender la orden.`;
