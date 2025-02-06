@@ -1,6 +1,6 @@
-const formulario = document.getElementById('Formulario');
-document.addEventListener('click', manejarClick);
-formulario.addEventListener('change', manejarCambio);
+const formulario = document.getElementById("Formulario");
+document.addEventListener("click", manejarClick);
+formulario.addEventListener("change", manejarCambio);
 
 function manejarClick(evento) {
   const targetId = evento.target.id;
@@ -43,8 +43,8 @@ function manejarCambio(e) {
     switch (mLlamada) {
       case `1`: // agendar
         cambiarColorFondo(`#28A745`);
-        visualizarPantalla([`#chatbot`, `#contingencia`], `block`);
-        visualizarPantalla([`#Titular`, `#contacto`], `flex`);
+        visualizarPantalla([`#contingencia`], `block`);
+        visualizarPantalla([`#chatbot`,`#Titular`, `#contacto`], `flex`);
         visualizarPantalla([`#Soporte`], `none`);
 
         if (trabajador == `gestor` && contacto == `...`) {
@@ -106,8 +106,9 @@ function manejarCambio(e) {
           !aceptaInstalar &&
           !suspender
         ) {
+          visualizarPantalla([`#Acepta`, `#suspender`], `block`);
           visualizarPantalla(
-            [`#MotivoTec`, `#Musuariod`, `#Acepta`, `#fecha`, `#suspender`],
+            [`#MotivoTec`, `#Musuariod`,  `#fecha`],
             `block`
           );
           visualizarPantalla(
@@ -193,9 +194,8 @@ function manejarCambio(e) {
       case `2`: // quiebres
         cambiarColorFondo(`#FF0000`);
         visualizarPantalla([`#contingencia`], `block`);
-        visualizarPantalla([`#Titular`], `flex`);
-        visualizarPantalla([`#Soporte`, `#chatbot`], `none`);
-        visualizarPantalla([`#chatbot`, `#Acepta`], `none`);
+        visualizarPantalla([`#Titular`,`#chatbot`], `flex`);
+        visualizarPantalla([`#Soporte`,  `#Acepta`], `none`);
 
         if (trabajador == `gestor` && contacto == `...`) {
           visualizarPantalla([`#MotivoTec`], `block`);
@@ -306,14 +306,14 @@ function manejarCambio(e) {
         break;
       case `4`: // Gestion decos
         visualizarPantalla([`#MotivoTec`, `#Musuariod`], `block`);
-        visualizarPantalla([`#Titular`,`#contacto`], `flex`);
+        visualizarPantalla([`#Titular`, `#contacto`, `#chatbot`], `flex`);
         visualizarPantalla(
-          [`#fecha`, `#MoQuiebre`, `#GPS`, `#Soporte`, `#contingencia`],
+          [`#fecha`, `#MoQuiebre`, `#GPS`, `#Soporte`, `#contingencia`,`#Acepta`, `#suspender`],
           `none`
         );
         ValueMostrar(
           `#Mtecnico`,
-          `para adicionar un decodificador a la orden para un total de `
+          `titular solicita adicionar un decodificador a la orden para un total de `
         );
         break;
       case `5`: // Gestion piloto
@@ -428,7 +428,7 @@ function crearNota() {
     case `1`: // agendar
       if (trabajador === `técnico`) {
         mensajeChatbot = fallaChatbot
-          ? `Se valida soporte por falla en chatbot`
+          ? `Se valida soporte por falla reportada en chatbot`
           : `Se valida chatbot ok.`;
 
         if (contingenciaActiva) {
@@ -467,6 +467,14 @@ function crearNota() {
       texto += notaGenerada;
       break;
     case `2`: // quiebre
+
+    if (trabajador === `técnico`) {
+      mensajeChatbot = fallaChatbot
+        ? `, se valida soporte por falla reportada en chatbot`
+        : `, se valida chatbot ok.`;
+      }
+
+      texto += mensajeChatbot
       if (contactoConTitular == "1") {
         if (trabajador == "gestor") {
           texto += `${titularContacto}. No contesta se le indica a gestor que intente mas tarde para proceder con la gestión.`;
@@ -474,9 +482,9 @@ function crearNota() {
           if (contingenciaActiva) {
             texto = `QC - ${motivoQuiebre} - ${texto} no ${titularContacto} POR CONTINGENCIA se deja orden suspendida en aplicativos`;
           } else if (gpsActivo === "OK" && soporteFotografico === "OK") {
-            texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto}. No contesta. Se valida SOPORTE FOTOGRÁFICO: ${soporteFotografico}. Se valida GPS: ${gpsActivo}. Se deja orden suspendida en aplicativos.`;
+            texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto}. No contesta. Se valida SOPORTE FOTOGRÁFICO ${soporteFotografico}. Se valida GPS ${gpsActivo}. Se deja orden suspendida en aplicativos.`;
           } else {
-            texto += `${titularContacto}. No contesta. Se valida GPS: ${gpsActivo}. Se valida SOPORTE FOTOGRÁFICO: ${soporteFotografico}. Se le indica al técnico dirigirse al predio y subir soporte fotográfico.`;
+            texto += `${titularContacto}. No contesta. Se valida GPS ${gpsActivo}. Se valida SOPORTE FOTOGRÁFICO ${soporteFotografico}. Se le indica al técnico dirigirse al predio y subir soporte fotográfico.`;
           }
         }
       } else {
@@ -484,7 +492,8 @@ function crearNota() {
           if (
             motivoQuiebre !== "TELEFONO DEL CLIENTE ERRADO" &&
             motivoQuiebre !== "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN" &&
-            motivoQuiebre !== "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN"
+            motivoQuiebre !==
+              "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN"
           ) {
             if (!suspenderOrden) {
               texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. Se hace objeción pero desiste, valida datos, se procede a quebrar orden.`;
@@ -502,12 +511,15 @@ function crearNota() {
             ) {
               texto += `${titularContacto} ${motivoCliente}. Solicita que lo llamen en 10 minutos.`;
             } else {
-              if (motivoQuiebre === "TELEFONO DEL CLIENTE ERRADO" && trabajador === "gestor") {
-              texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. se indica que debe enviar tecnico a predio para poder suspender la orden.`;
-            }else{
-              texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. Se valida SOPORTE FOTOGRÁFICO OK, se valida GPS OK, se procede a suspender orden.`;
+              if (
+                motivoQuiebre === "TELEFONO DEL CLIENTE ERRADO" &&
+                trabajador === "gestor"
+              ) {
+                texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. se indica que debe enviar tecnico a predio para poder suspender la orden.`;
+              } else {
+                texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. Se valida SOPORTE FOTOGRÁFICO OK, se valida GPS OK, se procede a suspender orden.`;
+              }
             }
-          }
           }
         }
       }
@@ -515,10 +527,11 @@ function crearNota() {
     case `3`: // soporte no aplica
       const soporteNoAplica = document.querySelector(`#noSoporte`).value;
       const mensajes = {
-        1: `se valida chatbot y no ha realizado el proceso o no ha esperado respuesta se le recuerda parámetros del aplicativo a tener en cuenta antes de comunicarse con la linea y posibles causas por las cuales debe validar en caso de fallo por centro comando según la información. se le brinda ticket`,
-        2: `se entrega ticket`,
-        3: `${titularContacto} contesta ${motivoCliente} se le indica que en linea de rescate no se gestiona ordenes porque le falten materiales debe realizar autogestión o validar con su gestor`,
-        4: `${titularContacto} contesta ${motivoCliente} se le informa que esta gestión no se realiza por linea de rescate que valide con cierre controlado o con su gestor`,
+        1: `se valida chatbot y no ha realizado el proceso, se le indica que debe realizar el poceso antes de comunicarse con la linea y si hay fallo reportarlo con su gestor para que reporten a centro comando, se le brinda ticket`,
+        2: `se valida chatbot y no ha esperado respuesta se le recuerda parámetros del aplicativo a tener en cuenta antes de comunicarse con la linea y si hay alguna falla reportarlo con centro comando. se le brinda ticket`,
+        3: `se entrega ticket`,
+        4: `${titularContacto} contesta ${motivoCliente} se le indica que en linea de rescate no se gestiona ordenes porque le falten materiales debe realizar autogestión o validar con su gestor`,
+        5: `${titularContacto} contesta ${motivoCliente} se le informa que esta gestión no se realiza por linea de rescate que valide con cierre controlado o con su gestor`,
         6: `${titularContacto} contesta ${motivoCliente} se le indica a Tecnico que debe hacer autogestión o validar con gestor ya que en linea de rescate no se gestiona ordenes por lluvias`,
         7: `se valida orden se encuentra en franja am se le indica que en linea rescate solo gestionamos ordenes en am máximo hasta las 1 pm se le indica a técnico hacer autogestión o validar con su gestor`,
         8: `se valida orden esta se encuentra en otro estado se le indica a Tecnico no se puede gestionar esta orden se le indica validar con gestor`,
@@ -535,11 +548,13 @@ function crearNota() {
 
       break;
     case `4`: // Gestion de decos
+      mensajeChatbot = fallaChatbot? `, se valida soporte por falla reportada en chatbot`: `, se valida chatbot ok.`;
+      texto += mensajeChatbot + ` ${titularContacto} ${motivoCliente}`;
       if (contactoConTitular == `2`) {
-        texto += ` ${titularContacto} ${motivoCliente} se valida datos correctos y se actualiza TAG de equipos`;
+        texto += ` se valida datos correctos y se actualiza TAG de equipos`;
       } else {
         if (contactoConTitular == `1`) {
-          texto += ` ${titularContacto} ${motivoCliente} no hay contacto se indica a técnico que le diga al titular que este pendiente de la llamada e intente nuevamente`;
+          texto += ` no hay contacto se indica a técnico que le diga al titular que este pendiente de la llamada e intente nuevamente`;
         }
       }
       break;

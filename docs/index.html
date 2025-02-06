@@ -123,7 +123,8 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal fade" id="tipificarNota" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false"> 
+  <div class="modal fade" id="tipificarNota" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
       <div class="modal-content trans">
         <div class="modal-header" id="color">
@@ -164,35 +165,35 @@
               </div>
             </div>
 
-            <div class="row pt-3"><!--checkbox de verificacion-->
-              <div class="cols-sm-7" id="chatbot">
+            <div class="row px-3 col-auto"><!--checkbox de verificacion-->
+              <div class="cols-sm-6" id="chatbot">
                 <div class="custom-control form-check-inline  custom-switch ">
                   <input type="checkbox" class="custom-control-input " id="FC">
                   <label class="custom-control-label" for="FC">FALLA CHATBOT</label>
                 </div>
               </div>
-              <div class="col-sm-3 " id="Acepta">
+              <div class="cols-sm-3" id="Acepta">
                 <div class="custom-control form-check-inline custom-switch  ">
                   <input type="checkbox" class="custom-control-input" id="Aceptains">
                   <label class="custom-control-label" for="Aceptains">ACEPTA </label>
                 </div>
               </div>
-              <div class="cols-sm-3 " id="suspender">
+              <div class="cols-sm-3" id="suspender">
                 <div class="custom-control form-check-inline custom-switch  ">
                   <input type="checkbox" class="custom-control-input" id="sus">
                   <label class="custom-control-label" for="sus">SUSPENDER</label>
                 </div>
               </div>
             </div>
-
             <div class="col-sm" id="Soporte"><!--Soporte No Aplica-->
               <label for="noSoporte" class="form-label">Soporte No Aplica</label>
               <select id="noSoporte" class="custom-select trans">
                 <option selected value="">SELECCIONE</option>
-                <option value="1">SIN CHATBOT</option>
-                <option value="2">ENTREGA DE TICKET</option>
-                <option value="3">NO PUEDE REALIZAR INSTALACIÓN/NO TIENE MATERIALES</option>
-                <option value="4">OTRO SEGMENTO</option>
+                <option value="1">NO HA REALIZADO PROCESO DE CHATBOT</option>
+                <option value="2">NO ESPERA RESPUESTA DE CHATBOT</option>
+                <option value="3">ENTREGA DE TICKET</option>
+                <option value="4">NO PUEDE REALIZAR INSTALACIÓN/NO TIENE MATERIALES</option>
+                <option value="5">OTRO SEGMENTO</option>
                 <option value="6">REAGENDAMIENTO POR LLUVIA</option>
                 <option value="7">TAREA ASIGNADA EN DIA O JORNADA DIFERENTE</option>
                 <option value="8">TAREA EN OTRO ESTADO</option>
@@ -229,7 +230,10 @@
               </div>
               <div class="col-sm-5" id="numt">
                 <label for="NumTitular">Numero de Titular</label>
-                <input type="number" class="form-control trans no-arrows" id="NumTitular" required autocomplete="off">
+                <div class="input-group mb-2">
+                  <input type="number" class="form-control trans no-arrows" id="NumTitular" required autocomplete="off">
+                  <button type="button" class="btn btn-success">+</button>
+                </div>
               </div>
             </div>
 
@@ -319,10 +323,10 @@
     </div>
   </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="./dist/js/funciones.js"></script>
-    <script src="./dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./dist/js/sweetalert2@11.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="./dist/js/funciones.js"></script>
+  <script src="./dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./dist/js/sweetalert2@11.js"></script>
 </body>
 
 </html>
