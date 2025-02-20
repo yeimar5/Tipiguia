@@ -42,7 +42,7 @@ function manejarCambio(e) {
   if (Actualizartodo) {
     switch (mLlamada) {
       case `1`: // agendar
-        cambiarColorFondo(`#28A745`);
+        cambiarColorFondo(`#2d8215`);
         visualizarPantalla([`#contingencia`], `block`);
         visualizarPantalla([`#chatbot`,`#Titular`, `#contacto`], `flex`);
         visualizarPantalla([`#Soporte`], `none`);
@@ -192,7 +192,7 @@ function manejarCambio(e) {
         ValueMostrar(`#Mtecnico`, `solicitan reagendar la orden para el día `);
         break;
       case `2`: // quiebres
-        cambiarColorFondo(`#FF0000`);
+        cambiarColorFondo(`#dc4c4c`);
         visualizarPantalla([`#contingencia`], `block`);
         visualizarPantalla([`#Titular`,`#chatbot`], `flex`);
         visualizarPantalla([`#Soporte`,  `#Acepta`], `none`);
@@ -305,6 +305,7 @@ function manejarCambio(e) {
         ValueMostrar(`#Mtecnico`, ``);
         break;
       case `4`: // Gestion decos
+        cambiarColorFondo(`#00ccfe`);
         visualizarPantalla([`#MotivoTec`, `#Musuariod`], `block`);
         visualizarPantalla([`#Titular`, `#contacto`, `#chatbot`], `flex`);
         visualizarPantalla(
@@ -317,6 +318,7 @@ function manejarCambio(e) {
         );
         break;
       case `5`: // Gestion piloto
+        cambiarColorFondo(`#c3c3c3`);
         visualizarPantalla([`#MotivoTec`, `#Acepta`], `block`);
         visualizarPantalla(
           [
@@ -337,6 +339,9 @@ function manejarCambio(e) {
           `#Mtecnico`,
           `para validar recibo publico con dirección  \nen sistema esta `
         );
+        break;
+      case `6`: // llamada caida
+        cambiarColorFondo(`#9513f1`);
         break;
       default:
         cambiarColorFondo(`#1392F1`);
