@@ -541,7 +541,7 @@ function crearNota() {
         7: `se valida orden se encuentra en franja am se le indica que en linea rescate solo gestionamos ordenes en am máximo hasta las 1 pm se le indica a técnico hacer autogestión o validar con su gestor`,
         8: `se valida orden esta se encuentra en otro estado se le indica a Tecnico no se puede gestionar esta orden se le indica validar con gestor`,
         9: `${titularContacto} contesta ${motivoCliente} se le indica que en linea de rescate no se gestiona orden porque no pueda llegar al predio debe validar con gestor o hacer autogestión`,
-        10: `LINEA RESCATE Se comunica ${trabajador} informando que la dirección del predio es errada o no encuentra dirección del predio se le indica comunicarse con gestor o hacer autogestión ya que desde Linea de rescate no se gestionan por ese motivo`,
+        10: `se le indica comunicarse con gestor o hacer autogestión ya que desde linea de rescate no se gestionan por ese motivo`,
         11: `${titularContacto} contesta ${motivoCliente} se indica a técnico que este proceso no lo hace LR que debe validar con su gestor o con cierre controlado.`,
         12: `se valida orden se encuentra en franja am se le indica que en linea rescate solo se puede hacer cambio de franja máximo hasta las 12 pm se le indica a técnico hacer autogestión o validar con su gestor`,
         13: `${titularContacto} contesta ${motivoCliente} se le informa a Tecnico hacer autogestión por dirección errada`,
