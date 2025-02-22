@@ -31,7 +31,7 @@ function manejarClick(evento) {
 }
 
 function manejarCambio(e) {
-  Actualizartodo(); //va actualizando la nota automaticamente no borrar
+  Actualizartodo(); //va actualizando la nota automáticamente no borrar
   let mLlamada = document.querySelector(`#Motivo`).value;
   let soporteNA = document.querySelector(`#noSoporte`).value;
   let contacto = document.querySelector(`#Contacto`).value;
@@ -304,7 +304,7 @@ function manejarCambio(e) {
 
         ValueMostrar(`#Mtecnico`, ``);
         break;
-      case `4`: // Gestion decos
+      case `4`: // Gestión decos
         cambiarColorFondo(`#00ccfe`);
         visualizarPantalla([`#MotivoTec`, `#Musuariod`], `block`);
         visualizarPantalla([`#Titular`, `#contacto`, `#chatbot`], `flex`);
@@ -317,7 +317,7 @@ function manejarCambio(e) {
           `titular solicita adicionar un decodificador a la orden para un total de `
         );
         break;
-      case `5`: // Gestion piloto
+      case `5`: // Gestión piloto
         cambiarColorFondo(`#c3c3c3`);
         visualizarPantalla([`#MotivoTec`, `#Acepta`], `block`);
         visualizarPantalla(
@@ -340,7 +340,7 @@ function manejarCambio(e) {
           `para validar recibo publico con dirección  \nen sistema esta `
         );
         break;
-      case `6`: // llamada caida
+      case `6`: // llamada caída
         cambiarColorFondo(`#9513f1`);
         break;
       default:
@@ -394,7 +394,7 @@ function resetearFormularios() {
   datosTecnico.reset();
   Formulario.reset();
 
-  // Restablecer la altura de los textareas
+  // Restablecer la altura de los textarea
   const textareas = document.querySelectorAll("textarea");
   textareas.forEach((textarea) => {
     textarea.style.height = "auto";
@@ -495,7 +495,7 @@ function crearNota() {
       } else {
         if (contactoConTitular == "2") {
           if (
-            motivoQuiebre !== "TELEFONO DEL CLIENTE ERRADO" &&
+            motivoQuiebre !== "TELÉFONO DEL CLIENTE ERRADO" &&
             motivoQuiebre !== "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN" &&
             motivoQuiebre !==
               "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN"
@@ -517,10 +517,10 @@ function crearNota() {
               texto += `${titularContacto} ${motivoCliente}. Solicita que lo llamen en 10 minutos.`;
             } else {
               if (
-                motivoQuiebre === "TELEFONO DEL CLIENTE ERRADO" &&
+                motivoQuiebre === "TELÉFONO DEL CLIENTE ERRADO" &&
                 trabajador === "gestor"
               ) {
-                texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. se indica que debe enviar tecnico a predio para poder suspender la orden.`;
+                texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. se indica que debe enviar técnico a predio para poder suspender la orden.`;
               } else {
                 texto = `QC - ${motivoQuiebre} - ${texto} ${titularContacto} ${motivoCliente}. Se valida SOPORTE FOTOGRÁFICO OK, se valida GPS OK, se procede a suspender orden.`;
               }
@@ -532,19 +532,19 @@ function crearNota() {
     case `3`: // soporte no aplica
       const soporteNoAplica = document.querySelector(`#noSoporte`).value;
       const mensajes = {
-        1: `se valida chatbot y no ha realizado el proceso, se le indica que debe realizar el poceso antes de comunicarse con la linea y si hay fallo reportarlo con su gestor para que reporten a centro comando, se le brinda ticket`,
+        1: `se valida chatbot y no ha realizado el proceso, se le indica que debe realizar el proceso antes de comunicarse con la linea y si hay fallo reportarlo con su gestor para que reporten a centro comando, se le brinda ticket`,
         2: `se valida chatbot y no ha esperado respuesta se le recuerda parámetros del aplicativo a tener en cuenta antes de comunicarse con la linea y si hay alguna falla reportarlo con centro comando. se le brinda ticket`,
         3: `se entrega ticket`,
         4: `${titularContacto} contesta ${motivoCliente} se le indica que en linea de rescate no se gestiona ordenes porque le falten materiales debe realizar autogestión o validar con su gestor`,
         5: `${titularContacto} contesta ${motivoCliente} se le informa que esta gestión no se realiza por linea de rescate que valide con cierre controlado o con su gestor`,
-        6: `${titularContacto} contesta ${motivoCliente} se le indica a Tecnico que debe hacer autogestión o validar con gestor ya que en linea de rescate no se gestiona ordenes por lluvias`,
+        6: `${titularContacto} contesta ${motivoCliente} se le indica a Técnico que debe hacer autogestión o validar con gestor ya que en linea de rescate no se gestiona ordenes por lluvias`,
         7: `se valida orden se encuentra en franja am se le indica que en linea rescate solo gestionamos ordenes en am máximo hasta las 1 pm se le indica a técnico hacer autogestión o validar con su gestor`,
-        8: `se valida orden esta se encuentra en otro estado se le indica a Tecnico no se puede gestionar esta orden se le indica validar con gestor`,
+        8: `se valida orden esta se encuentra en otro estado se le indica a Técnico no se puede gestionar esta orden se le indica validar con gestor`,
         9: `${titularContacto} contesta ${motivoCliente} se le indica que en linea de rescate no se gestiona orden porque no pueda llegar al predio debe validar con gestor o hacer autogestión`,
         10: `se le indica comunicarse con gestor o hacer autogestión ya que desde linea de rescate no se gestionan por ese motivo`,
         11: `${titularContacto} contesta ${motivoCliente} se indica a técnico que este proceso no lo hace LR que debe validar con su gestor o con cierre controlado.`,
         12: `se valida orden se encuentra en franja am se le indica que en linea rescate solo se puede hacer cambio de franja máximo hasta las 12 pm se le indica a técnico hacer autogestión o validar con su gestor`,
-        13: `${titularContacto} contesta ${motivoCliente} se le informa a Tecnico hacer autogestión por dirección errada`,
+        13: `${titularContacto} contesta ${motivoCliente} se le informa a Técnico hacer autogestión por dirección errada`,
         14: `${titularContacto} ${motivoCliente} se solicita la baja de perfil en speedy`,
         15: `se valida orden y es una avería, se le indica que desde linea de rescate no se gestiona que se comunique con gestor o cierre controlado`,
       };
@@ -552,7 +552,7 @@ function crearNota() {
       texto += mensajes[soporteNoAplica];
 
       break;
-    case `4`: // Gestion de decos
+    case `4`: // Gestión de decos
       mensajeChatbot = fallaChatbot? `, se valida soporte por falla reportada en chatbot`: `, se valida chatbot ok.`;
       texto += mensajeChatbot + ` ${titularContacto} ${motivoCliente}`;
       if (contactoConTitular == `2`) {
@@ -563,7 +563,7 @@ function crearNota() {
         }
       }
       break;
-    case `5`: // Direccion piloto
+    case `5`: // Dirección piloto
       let respuesta = ``;
       if (aLaEsperadeInstalacion) {
         respuesta = `SI`;
