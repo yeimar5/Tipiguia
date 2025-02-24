@@ -480,7 +480,7 @@ function crearNota() {
       }
 
       texto += mensajeChatbot
-      if (contactoConTitular == "1") {
+      if (contactoConTitular == "1" || contactoConTitular == "...") {
         if (trabajador == "gestor") {
           texto += `${titularContacto}. No contesta se le indica a gestor que intente mas tarde para proceder con la gestión.`;
         } else {
