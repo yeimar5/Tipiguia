@@ -335,6 +335,15 @@ function manejarCambio(e) {
           ],
           `none`
         );
+
+        if (!aceptaInstalar) {
+          setInnerHTML(
+            `#TMusuario`,  "NO SE ACEPTA PORQUE?");
+
+          visualizarPantalla([`#Musuariod`], `block`);
+        } else {
+          visualizarPantalla([`#Musuariod`], `none`);
+        }
         ValueMostrar(
           `#Mtecnico`,
           `para validar recibo publico con dirección  \nen sistema esta `
@@ -568,7 +577,7 @@ function crearNota() {
       if (aLaEsperadeInstalacion) {
         respuesta = `SI`;
       } else {
-        respuesta = `NO`;
+        respuesta = `NO se acepta porque `+ motivoCliente;
       }
       texto += ` aceptación de línea de rescate ` + respuesta;
       break;
