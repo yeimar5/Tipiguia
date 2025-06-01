@@ -32,6 +32,8 @@ function manejarClick(evento) {
 
 function manejarCambio(e) {
   Actualizartodo(); //va actualizando la nota automáticamente no borrar
+   setInnerHTML(
+            `#TMusuario`, "MOTIVO USUARIO");
   let mLlamada = document.querySelector(`#Motivo`).value;
   let soporteNA = document.querySelector(`#noSoporte`).value;
   let contacto = document.querySelector(`#Contacto`).value;
@@ -337,10 +339,10 @@ function manejarCambio(e) {
         );
 
         if (!aceptaInstalar) {
-          setInnerHTML(
-            `#TMusuario`,  "NO SE ACEPTA PORQUE?");
-
+          
           visualizarPantalla([`#Musuariod`], `block`);
+          setInnerHTML(
+            `#TMusuario`, "NO SE ACEPTA PORQUE?");
         } else {
           visualizarPantalla([`#Musuariod`], `none`);
         }
@@ -577,7 +579,7 @@ function crearNota() {
       if (aLaEsperadeInstalacion) {
         respuesta = `SI`;
       } else {
-        respuesta = `NO se acepta porque `+ motivoCliente;
+        respuesta = `NO se acepta porque ${motivoCliente}.`;
       }
       texto += ` aceptación de línea de rescate ` + respuesta;
       break;
