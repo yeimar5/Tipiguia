@@ -32,8 +32,7 @@ function manejarClick(evento) {
 
 function manejarCambio(e) {
   Actualizartodo(); //va actualizando la nota automáticamente no borrar
-   setInnerHTML(
-            `#TMusuario`, "MOTIVO USUARIO");
+  setInnerHTML(`#TMusuario`, "MOTIVO USUARIO");
   let mLlamada = document.querySelector(`#Motivo`).value;
   let soporteNA = document.querySelector(`#noSoporte`).value;
   let contacto = document.querySelector(`#Contacto`).value;
@@ -81,32 +80,33 @@ function manejarCambio(e) {
             ],
             `none`
           );
-        } else if (
-          contacto == `1` &&
-          trabajador == `técnico` &&
-          !contingencia &&
-          mLlamada == `1`
+        } else if ( contacto == `1` && trabajador == `técnico` && !contingencia && mLlamada == `1` //no contacto tecnico
         ) {
-          visualizarPantalla([`#MotivoTec`], `block`);
+          visualizarPantalla([`#MotivoTec`,`#suspender`, `#fecha`], `block`);
           visualizarPantalla([`#GPS`, `#contacto`], `flex`);
+            // Cambia el orden de los elementos en el DOM para que #GPS esté arriba de #fecha sin alterar estilos
+            const gpsElem = document.querySelector('GPS');
+            const fechaElem = document.querySelector('fecha');
+            if (gpsElem && fechaElem && fechaElem.parentNode) {
+              // Solo mueve el nodo, no cambia clases ni estilos
+              fechaElem.parentNode.insertBefore(gpsElem, fechaElem);
+            }
+            if(suspender){
+              visualizarPantalla(
+                [ `#fecha`],`none`)}
           visualizarPantalla(
             [
               `#MoQuiebre`,
               `#Soporte`,
               `#Musuariod`,
-              `#fecha`,
+              //`#fecha`,
               `#Acepta`,
               `#contingencia`,
-              `#suspender`,
+              //`#suspender`,
             ],
             `none`
           );
-        } else if (
-          contacto == `2` &&
-          !contingencia &&
-          mLlamada == `1` &&
-          !aceptaInstalar &&
-          !suspender
+        } else if ( contacto == `2` && !contingencia && mLlamada == `1` && !aceptaInstalar && !suspender
         ) {
           visualizarPantalla([`#Acepta`, `#suspender`], `block`);
           visualizarPantalla(
@@ -117,12 +117,7 @@ function manejarCambio(e) {
             [`#MoQuiebre`, `#GPS`, `#Soporte`, `#contingencia`],
             `none`
           );
-        } else if (
-          contacto == `2` &&
-          !contingencia &&
-          mLlamada == `1` &&
-          aceptaInstalar &&
-          !suspender
+        } else if ( contacto == `2` && !contingencia && mLlamada == `1` && aceptaInstalar && !suspender
         ) {
           visualizarPantalla(
             [`#MotivoTec`, `#Musuariod`, `#contingencia`, `#Acepta`],
@@ -132,12 +127,7 @@ function manejarCambio(e) {
             [`#MoQuiebre`, `#fecha`, `#GPS`, `#Soporte`, `#suspender`],
             `none`
           );
-        } else if (
-          contacto == `2` &&
-          !contingencia &&
-          mLlamada == `1` &&
-          !aceptaInstalar &&
-          suspender
+        } else if ( contacto == `2` && !contingencia && mLlamada == `1` && !aceptaInstalar && suspender
         ) {
           visualizarPantalla(
             [`#MotivoTec`, `#Musuariod`, `#fecha`, `#suspender`],
@@ -156,6 +146,7 @@ function manejarCambio(e) {
           );
         } else if (contingencia && contacto != `1`) {
           visualizarPantalla([`#MotivoTec`], `block`);
+          visualizarPantalla([`#suspender`], `flex`);
           visualizarPantalla(
             [
               `#MoQuiebre`,
@@ -165,7 +156,7 @@ function manejarCambio(e) {
               `#GPS`,
               `#Soporte`,
               `#Acepta`,
-              `#suspender`,
+              ,
             ],
             `none`
           );
@@ -178,8 +169,7 @@ function manejarCambio(e) {
               `#fecha`,
               `#GPS`,
               `#Soporte`,
-              `#Acepta`,
-              `#suspender`,
+              `#Acepta`,            
             ],
             `none`
           );
@@ -448,9 +438,13 @@ function crearNota() {
           : `Se valida chatbot ok.`;
 
         if (contingenciaActiva) {
+          if(suspenderOrden){
           notaGenerada = `POR CONTINGENCIA se deja orden pendiente en aplicativos.`;
+        }else{
+          notaGenerada = ` se reagenda para el dia ${fechaAgenda} En la franja ${franjaAgenda} como indica tecnico.`;
         }
       }
+    }
       texto += mensajeChatbot + ` ${titularContacto} ${motivoCliente} `;
       if (contactoConTitular === `1`) {
         if (trabajador === `gestor`) {
@@ -461,11 +455,16 @@ function crearNota() {
             gpsActivo +
             ` Se Valida SOPORTE FOTOGRÁFICO ` +
             soporteFotografico;
-          notaGenerada +=
-            gpsActivo === `OK` && soporteFotografico === `OK`
-              ? ` se deja orden pendiente por reagendar.`
-              : ` Se le indica a técnico dirigirse al predio y Subir Soporte fotográfico.`;
+          if (gpsActivo === `OK` && soporteFotografico === `OK`) {
+            if (suspenderOrden) {
+              notaGenerada += ` Se deja orden pendiente por reagendar.`;
+            }else{
+              notaGenerada +=` se reagenda para el dia ${fechaAgenda} En la franja ${franjaAgenda} como indica tecnico.`
+            }
+          } else {
+            notaGenerada += ` Se le indica a técnico dirigirse al predio y Subir Soporte fotográfico.`;
         }
+      }
       } else if (contactoConTitular === `2`) {
         if (aLaEsperadeInstalacion) {
           notaGenerada = `indica que esta a la espera de instalación, valida datos correctos.`;
