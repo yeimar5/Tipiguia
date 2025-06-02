@@ -416,7 +416,7 @@ function crearNota() {
   let contactoConTitular = document.getElementById(`Contacto`).value;
   let motivoQuiebre = document.getElementById(`mQuiebre`).value;
   let motivoCliente = document.getElementById(`Musuario`).value;
-  let fechaAgenda = document.getElementById(`Fecha`).value;
+  let fecha = document.getElementById(`Fecha`).value;
   let franjaAgenda = document.getElementById(`Franja`).value;
   let gpsActivo = document.getElementById(`gps`).value;
   let soporteFotografico = document.getElementById(`SF`).value;
@@ -431,6 +431,17 @@ function crearNota() {
   let gestion = ` Gestionado por ${nombreAsesor} ${agentAsesor}.`;
   let mensajeChatbot = ``;
   let texto = `LINEA RESCATE Se comunica ${trabajador} informando que ${motivoTecnico} `;
+
+  let fechaAgenda = "";
+  if (fecha) {
+    // Divide la fecha en partes
+    const [anio, mes, dia] = fecha.split("-");
+    // Crea la fecha correctamente (mes - 1 porque los meses empiezan en 0)
+    const fechaObj = new Date(anio, mes - 1, dia);
+    const opciones = { weekday: "long", day: "numeric", month: "long" };
+    fechaAgenda = fechaObj
+      .toLocaleDateString("es-ES", opciones)
+  }
 
   switch (motivoLlamada) {
     case `1`: // agendar
