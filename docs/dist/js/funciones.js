@@ -145,14 +145,13 @@ function manejarCambio(e) {
             `none`
           );
         } else if (contingencia && contacto != `1`) {
-          visualizarPantalla([`#MotivoTec`], `block`);
+          visualizarPantalla([`#MotivoTec`,`#fecha`], `block`);
           visualizarPantalla([`#suspender`], `flex`);
           visualizarPantalla(
             [
               `#MoQuiebre`,
               `#Musuariod`,
               `#contacto`,
-              `#fecha`,
               `#GPS`,
               `#Soporte`,
               `#Acepta`,
@@ -160,6 +159,9 @@ function manejarCambio(e) {
             ],
             `none`
           );
+          if (suspender) {
+            visualizarPantalla([`#fecha`], `none`);
+          }
         } else if (contingencia) {
           visualizarPantalla([`#MotivoTec`], `block`);
           visualizarPantalla(
@@ -425,7 +427,7 @@ function crearNota() {
   let textoNota = document.getElementById(`textoNota`);
   //mensajes
   let notaGenerada = ``;
-  let titularContacto = `se marca al número ${numeroTitular} titular ${nombreTitular}`;
+  let titularContacto = `Titular ${nombreTitular} número ${numeroTitular}` ;
   let gestion = ` Gestionado por ${nombreAsesor} ${agentAsesor}.`;
   let mensajeChatbot = ``;
   let texto = `LINEA RESCATE Se comunica ${trabajador} informando que ${motivoTecnico} `;
@@ -441,7 +443,7 @@ function crearNota() {
           if(suspenderOrden){
           notaGenerada = `POR CONTINGENCIA se deja orden pendiente en aplicativos.`;
         }else{
-          notaGenerada = ` se reagenda para el dia ${fechaAgenda} En la franja ${franjaAgenda} como indica tecnico.`;
+          notaGenerada = ` POR CONTINGENCIA se reagenda para el dia ${fechaAgenda} En la franja ${franjaAgenda} como indica tecnico.`;
         }
       }
     }
