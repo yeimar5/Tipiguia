@@ -45,7 +45,7 @@ function manejarCambio(e) {
       case `1`: // agendar
         cambiarColorFondo(`#2d8215`);
         visualizarPantalla([`#contingencia`], `block`);
-        visualizarPantalla([`#chatbot`,`#Titular`, `#contacto`], `flex`);
+        visualizarPantalla([`#chatbot`, `#Titular`, `#contacto`], `flex`);
         visualizarPantalla([`#Soporte`], `none`);
 
         if (trabajador == `gestor` && contacto == `...`) {
@@ -80,20 +80,24 @@ function manejarCambio(e) {
             ],
             `none`
           );
-        } else if ( contacto == `1` && trabajador == `técnico` && !contingencia && mLlamada == `1` //no contacto tecnico
+        } else if (
+          contacto == `1` &&
+          trabajador == `técnico` &&
+          !contingencia &&
+          mLlamada == `1` //no contacto tecnico
         ) {
-          visualizarPantalla([`#MotivoTec`,`#suspender`, `#fecha`], `block`);
+          visualizarPantalla([`#MotivoTec`, `#suspender`, `#fecha`], `block`);
           visualizarPantalla([`#GPS`, `#contacto`], `flex`);
-            // Cambia el orden de los elementos en el DOM para que #GPS esté arriba de #fecha sin alterar estilos
-            const gpsElem = document.querySelector('GPS');
-            const fechaElem = document.querySelector('fecha');
-            if (gpsElem && fechaElem && fechaElem.parentNode) {
-              // Solo mueve el nodo, no cambia clases ni estilos
-              fechaElem.parentNode.insertBefore(gpsElem, fechaElem);
-            }
-            if(suspender){
-              visualizarPantalla(
-                [ `#fecha`],`none`)}
+          // Cambia el orden de los elementos en el DOM para que #GPS esté arriba de #fecha sin alterar estilos
+          const gpsElem = document.querySelector("GPS");
+          const fechaElem = document.querySelector("fecha");
+          if (gpsElem && fechaElem && fechaElem.parentNode) {
+            // Solo mueve el nodo, no cambia clases ni estilos
+            fechaElem.parentNode.insertBefore(gpsElem, fechaElem);
+          }
+          if (suspender) {
+            visualizarPantalla([`#fecha`], `none`);
+          }
           visualizarPantalla(
             [
               `#MoQuiebre`,
@@ -106,18 +110,25 @@ function manejarCambio(e) {
             ],
             `none`
           );
-        } else if ( contacto == `2` && !contingencia && mLlamada == `1` && !aceptaInstalar && !suspender
+        } else if (
+          contacto == `2` &&
+          !contingencia &&
+          mLlamada == `1` &&
+          !aceptaInstalar &&
+          !suspender
         ) {
           visualizarPantalla([`#Acepta`, `#suspender`], `block`);
-          visualizarPantalla(
-            [`#MotivoTec`, `#Musuariod`,  `#fecha`],
-            `block`
-          );
+          visualizarPantalla([`#MotivoTec`, `#Musuariod`, `#fecha`], `block`);
           visualizarPantalla(
             [`#MoQuiebre`, `#GPS`, `#Soporte`, `#contingencia`],
             `none`
           );
-        } else if ( contacto == `2` && !contingencia && mLlamada == `1` && aceptaInstalar && !suspender
+        } else if (
+          contacto == `2` &&
+          !contingencia &&
+          mLlamada == `1` &&
+          aceptaInstalar &&
+          !suspender
         ) {
           visualizarPantalla(
             [`#MotivoTec`, `#Musuariod`, `#contingencia`, `#Acepta`],
@@ -127,7 +138,12 @@ function manejarCambio(e) {
             [`#MoQuiebre`, `#fecha`, `#GPS`, `#Soporte`, `#suspender`],
             `none`
           );
-        } else if ( contacto == `2` && !contingencia && mLlamada == `1` && !aceptaInstalar && suspender
+        } else if (
+          contacto == `2` &&
+          !contingencia &&
+          mLlamada == `1` &&
+          !aceptaInstalar &&
+          suspender
         ) {
           visualizarPantalla(
             [`#MotivoTec`, `#Musuariod`, `#fecha`, `#suspender`],
@@ -145,7 +161,7 @@ function manejarCambio(e) {
             `none`
           );
         } else if (contingencia && contacto != `1`) {
-          visualizarPantalla([`#MotivoTec`,`#fecha`], `block`);
+          visualizarPantalla([`#MotivoTec`, `#fecha`], `block`);
           visualizarPantalla([`#suspender`], `flex`);
           visualizarPantalla(
             [
@@ -171,7 +187,7 @@ function manejarCambio(e) {
               `#fecha`,
               `#GPS`,
               `#Soporte`,
-              `#Acepta`,            
+              `#Acepta`,
             ],
             `none`
           );
@@ -188,8 +204,8 @@ function manejarCambio(e) {
       case `2`: // quiebres
         cambiarColorFondo(`#dc4c4c`);
         visualizarPantalla([`#contingencia`], `block`);
-        visualizarPantalla([`#Titular`,`#chatbot`], `flex`);
-        visualizarPantalla([`#Soporte`,  `#Acepta`], `none`);
+        visualizarPantalla([`#Titular`, `#chatbot`], `flex`);
+        visualizarPantalla([`#Soporte`, `#Acepta`], `none`);
 
         if (trabajador == `gestor` && contacto == `...`) {
           visualizarPantalla([`#MotivoTec`], `block`);
@@ -303,7 +319,15 @@ function manejarCambio(e) {
         visualizarPantalla([`#MotivoTec`, `#Musuariod`], `block`);
         visualizarPantalla([`#Titular`, `#contacto`, `#chatbot`], `flex`);
         visualizarPantalla(
-          [`#fecha`, `#MoQuiebre`, `#GPS`, `#Soporte`, `#contingencia`,`#Acepta`, `#suspender`],
+          [
+            `#fecha`,
+            `#MoQuiebre`,
+            `#GPS`,
+            `#Soporte`,
+            `#contingencia`,
+            `#Acepta`,
+            `#suspender`,
+          ],
           `none`
         );
         ValueMostrar(
@@ -331,10 +355,8 @@ function manejarCambio(e) {
         );
 
         if (!aceptaInstalar) {
-          
           visualizarPantalla([`#Musuariod`], `block`);
-          setInnerHTML(
-            `#TMusuario`, "NO SE ACEPTA PORQUE?");
+          setInnerHTML(`#TMusuario`, "NO SE ACEPTA PORQUE?");
         } else {
           visualizarPantalla([`#Musuariod`], `none`);
         }
@@ -417,47 +439,38 @@ function crearNota() {
   let motivoQuiebre = document.getElementById(`mQuiebre`).value;
   let motivoCliente = document.getElementById(`Musuario`).value;
   let fecha = document.getElementById(`Fecha`).value;
+  let fechaFormateada = FormatearFecha(fecha);
   let franjaAgenda = document.getElementById(`Franja`).value;
   let gpsActivo = document.getElementById(`gps`).value;
   let soporteFotografico = document.getElementById(`SF`).value;
   let fallaChatbot = document.getElementById(`FC`).checked;
   let suspenderOrden = document.getElementById(`sus`).checked;
-  nombreAsesor = document.getElementById(`NomAgent`).value;
-  agentAsesor = `agent_` + document.getElementById(`Agent`).value;
+  let nombreAsesor = document.getElementById(`NomAgent`).value;
+  let agentAsesor = `agent_` + document.getElementById(`Agent`).value;
   let textoNota = document.getElementById(`textoNota`);
   //mensajes
   let notaGenerada = ``;
-  let titularContacto = `Titular ${nombreTitular} número ${numeroTitular}` ;
+  let titularContacto = `Titular ${nombreTitular} número ${numeroTitular}`;
   let gestion = ` Gestionado por ${nombreAsesor} ${agentAsesor}.`;
   let mensajeChatbot = ``;
   let texto = `LINEA RESCATE Se comunica ${trabajador} informando que ${motivoTecnico} `;
 
-  let fechaAgenda = "";
-  if (fecha) {
-    // Divide la fecha en partes
-    const [anio, mes, dia] = fecha.split("-");
-    // Crea la fecha correctamente (mes - 1 porque los meses empiezan en 0)
-    const fechaObj = new Date(anio, mes - 1, dia);
-    const opciones = { weekday: "long", day: "numeric", month: "long" };
-    fechaAgenda = fechaObj
-      .toLocaleDateString("es-ES", opciones)
-  }
-
   switch (motivoLlamada) {
     case `1`: // agendar
+      let agendaNota = ` se reagenda orden para el dia ${fechaFormateada} en la franja ${franjaAgenda} segun indicación de técnico.`;
       if (trabajador === `técnico`) {
         mensajeChatbot = fallaChatbot
           ? `Se valida soporte por falla reportada en chatbot`
           : `Se valida chatbot ok.`;
 
         if (contingenciaActiva) {
-          if(suspenderOrden){
-          notaGenerada = `POR CONTINGENCIA se deja orden pendiente en aplicativos.`;
-        }else{
-          notaGenerada = ` POR CONTINGENCIA se reagenda para el dia ${fechaAgenda} En la franja ${franjaAgenda} como indica tecnico.`;
+          if (suspenderOrden) {
+            notaGenerada = `POR CONTINGENCIA se deja orden pendiente en aplicativos.`;
+          } else {
+            notaGenerada = ` POR CONTINGENCIA ${agendaNota}`;
+          }
         }
       }
-    }
       texto += mensajeChatbot + ` ${titularContacto} ${motivoCliente} `;
       if (contactoConTitular === `1`) {
         if (trabajador === `gestor`) {
@@ -471,13 +484,13 @@ function crearNota() {
           if (gpsActivo === `OK` && soporteFotografico === `OK`) {
             if (suspenderOrden) {
               notaGenerada += ` Se deja orden pendiente por reagendar.`;
-            }else{
-              notaGenerada +=` se reagenda para el dia ${fechaAgenda} En la franja ${franjaAgenda} como indica tecnico.`
+            } else {
+              notaGenerada += `${agendaNota}`;
             }
           } else {
             notaGenerada += ` Se le indica a técnico dirigirse al predio y Subir Soporte fotográfico.`;
+          }
         }
-      }
       } else if (contactoConTitular === `2`) {
         if (aLaEsperadeInstalacion) {
           notaGenerada = `indica que esta a la espera de instalación, valida datos correctos.`;
@@ -486,23 +499,22 @@ function crearNota() {
         } else {
           notaGenerada =
             ` se reagenda para ` +
-            fechaAgenda +
+            fechaFormateada +
             ` En la franja ` +
             franjaAgenda;
         }
       }
-
+      
       texto += notaGenerada;
       break;
     case `2`: // quiebre
-
-    if (trabajador === `técnico`) {
-      mensajeChatbot = fallaChatbot
-        ? `, se valida soporte por falla reportada en chatbot`
-        : `, se valida chatbot ok.`;
+      if (trabajador === `técnico`) {
+        mensajeChatbot = fallaChatbot
+          ? `, se valida soporte por falla reportada en chatbot`
+          : `, se valida chatbot ok.`;
       }
 
-      texto += mensajeChatbot
+      texto += mensajeChatbot;
       if (contactoConTitular == "1" || contactoConTitular == "...") {
         if (trabajador == "gestor") {
           texto += `${titularContacto}. No contesta se le indica a gestor que intente mas tarde para proceder con la gestión.`;
@@ -576,7 +588,9 @@ function crearNota() {
 
       break;
     case `4`: // Gestión de decos
-      mensajeChatbot = fallaChatbot? `, se valida soporte por falla reportada en chatbot`: `, se valida chatbot ok.`;
+      mensajeChatbot = fallaChatbot
+        ? `, se valida soporte por falla reportada en chatbot`
+        : `, se valida chatbot ok.`;
       texto += mensajeChatbot + ` ${titularContacto} ${motivoCliente}`;
       if (contactoConTitular == `2`) {
         texto += ` se valida datos correctos y se actualiza TAG de equipos`;
@@ -601,6 +615,7 @@ function crearNota() {
   }
   texto += gestion;
   texto = texto.replace(/\|/g, ``).replace(/\s+/g, ` `).replace(/\¿/g, `Ñ`);
+  
   textoNota.value = texto;
 }
 
@@ -786,4 +801,14 @@ function lanzarModal() {
       }
     });
   }
+}
+
+function FormatearFecha(fecha) {
+  // Divide la fecha en partes
+  const [anio, mes, dia] = fecha.split("-");
+  // Crea la fecha correctamente (mes - 1 porque los meses empiezan en 0)
+  const fechaObj = new Date(anio, mes - 1, dia);
+  const opciones = { weekday: "long", day: "numeric", month: "long" };
+  fecha_Agenda = fechaObj.toLocaleDateString("es-ES", opciones);
+  return fecha_Agenda;
 }
