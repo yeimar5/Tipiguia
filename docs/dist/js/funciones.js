@@ -394,6 +394,13 @@ function manejarCambio(e) {
 
 function copiarYAlertar(t, callback) {
   try {
+    // Verificar si contiene "Invalid Date"
+    if (t.includes("Invalid Date" || t.includes("NaN") || t.includes("undefined")|| t.includes("null"))) {
+      alert("Seleccione una fecha válida, no sea pendej@ 😂🤣😅");
+      return; // Salir de la función sin ejecutar el resto
+    }
+    
+    // Si no contiene la cadena problemática, continuar con la lógica normal
     copiarAlPortapapeles(t);
     callback(t);
   } catch (error) {
@@ -806,8 +813,25 @@ function lanzarModal() {
 function FormatearFecha(fecha) {
   // Divide la fecha en partes
   const [anio, mes, dia] = fecha.split("-");
+  
   // Crea la fecha correctamente (mes - 1 porque los meses empiezan en 0)
   const fechaObj = new Date(anio, mes - 1, dia);
+  
+  // Obtener la fecha actual (solo la fecha, sin hora)
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0); // Establecer hora a 00:00:00 para comparar solo fechas
+  
+  // Establecer la hora de la fecha ingresada a 00:00:00 para comparar solo fechas
+  fechaObj.setHours(0, 0, 0, 0);
+  
+  // Verificar si la fecha es anterior a hoy
+  if (fechaObj < hoy) {
+    alert("La fecha seleccionada no puede ser anterior a hoy. Seleccione una fecha válida 📅⚠️");
+    document.getElementById(`Fecha`).value = null;
+    return  // Retornar false si la fecha es inválida
+  }
+  
+  // Si la fecha es válida, formatear y retornar
   const opciones = { weekday: "long", day: "numeric", month: "long" };
   fecha_Agenda = fechaObj.toLocaleDateString("es-ES", opciones);
   return fecha_Agenda;
