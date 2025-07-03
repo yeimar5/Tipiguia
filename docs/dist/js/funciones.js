@@ -188,13 +188,14 @@ function manejarCambio(e) {
               `#GPS`,
               `#Soporte`,
               `#Acepta`,
+              `#direccionSistema`
             ],
             `none`
           );
         } else if (!contingencia) {
           visualizarPantalla([`#MotivoTec`], `block`);
           visualizarPantalla(
-            [`#MoQuiebre`, `#Musuariod`, `#fecha`, `#GPS`, `#Soporte`],
+            [`#MoQuiebre`, `#Musuariod`, `#fecha`, `#GPS`, `#Soporte`,`#direccionSistema`],
             `none`
           );
         }
@@ -307,6 +308,7 @@ function manejarCambio(e) {
               `#contacto`,
               `#Titular`,
               `#contingencia`,
+              `#direccionSistema`
             ],
             `none`
           );
@@ -327,6 +329,7 @@ function manejarCambio(e) {
             `#contingencia`,
             `#Acepta`,
             `#suspender`,
+            `#direccionSistema`
           ],
           `none`
         );
@@ -367,6 +370,24 @@ function manejarCambio(e) {
         break;
       case `6`: // llamada caída
         cambiarColorFondo(`#9513f1`);
+        visualizarPantalla(
+          [
+            `#Soporte`,
+            `#Musuariod`,
+            `#fecha`,
+            `#GPS`,
+            `#MoQuiebre`,
+            `#contingencia`,
+            `#Titular`,
+            `#Acepta`,
+            `#contacto`,
+            `#chatbot`,
+            `#suspender`,
+            `#direccionSistema`
+          ],
+          `none`
+        );
+        ValueMostrar(`#Mtecnico`, ``)
         break;
       default:
         cambiarColorFondo(`#1392F1`);

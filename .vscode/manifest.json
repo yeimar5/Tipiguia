@@ -1,7 +1,11 @@
 {
-    "manifest_version": 3,
     "name": "Tipiguia",
-    "version": "1.0.0",
+    "short_name": "Tipiguia",
+    "display_name": "Tipificador de Llamadas",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
     "description": "Aplicación para tipificar las llamadas de LR.",
     "icons": {
         "16": "icon16.png",
