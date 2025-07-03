@@ -644,13 +644,19 @@ function crearNota() {
         respuesta = `NO se acepta porque ${motivoCliente}.`;
       }
       texto += `y en sistema está ${direccionAgendador} ${respuesta}.`;
+
       break;
     case `6`:
       texto += ` pero se cae la llamada sin poder validar la información`;
       break;
   }
   texto += gestion;
-  texto = texto.replace(/\|/g, ``).replace(/\s+/g, ` `).replace(/\¿/g, `Ñ`);
+  texto = texto
+  .replace(/\([^)]*\)/g, '')  // Eliminar paréntesis y su contenido
+  .replace(/\|/g, '')         // Eliminar barras verticales
+  .replace(/\¿/g, 'Ñ')        // Corregir codificación ¿ → Ñ
+  .replace(/\s+/g, ' ')       // Normalizar espacios (incluye múltiples espacios)
+  .trim();                    // Limpiar espacios al inicio/final
   
   textoNota.value = texto;
 }
