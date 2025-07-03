@@ -337,7 +337,7 @@ function manejarCambio(e) {
         break;
       case `5`: // Gestión piloto
         cambiarColorFondo(`#c3c3c3`);
-        visualizarPantalla([`#MotivoTec`, `#Acepta`], `block`);
+        visualizarPantalla([`#MotivoTec`, `#Acepta`,`#direccionSistema`], `block`);
         visualizarPantalla(
           [
             `#MoQuiebre`,
@@ -362,7 +362,7 @@ function manejarCambio(e) {
         }
         ValueMostrar(
           `#Mtecnico`,
-          `para validar recibo publico con dirección  \nen sistema esta `
+          `requieren cambio de complemento, en recibo publico está `
         );
         break;
       case `6`: // llamada caída
@@ -383,6 +383,7 @@ function manejarCambio(e) {
             `#contacto`,
             `#chatbot`,
             `#suspender`,
+            `#direccionSistema`
           ],
           `none`
         );
@@ -436,7 +437,7 @@ function resetearFormularios() {
 
 function crearNota() {
   let motivoLlamada = document.querySelector(`#Motivo`).value;
-  let motivoTecnico = document.getElementById("Mtecnico").value;
+  let motivoTecnico = document.getElementById("Mtecnico");
   let numeroTitular = document.getElementById(`NumTitular`).value;
   let nombreTitular = document.getElementById(`NomTitular`).value;
   let contingenciaActiva = document.getElementById(`Contingencia`).checked;
@@ -455,12 +456,19 @@ function crearNota() {
   let nombreAsesor = document.getElementById(`NomAgent`).value;
   let agentAsesor = `agent_` + document.getElementById(`Agent`).value;
   let textoNota = document.getElementById(`textoNota`);
+  let direccionAgendador = document.getElementById(`direccionSistema`).value;
   //mensajes
   let notaGenerada = ``;
   let titularContacto = `Titular ${nombreTitular} número ${numeroTitular}`;
   let gestion = ` Gestionado por ${nombreAsesor} ${agentAsesor}.`;
   let mensajeChatbot = ``;
-  let texto = `LINEA RESCATE Se comunica ${trabajador} informando que ${motivoTecnico} `;
+  let texto = `LINEA RESCATE Se comunica ${trabajador} informando que ${motivoTecnico.value} `;
+
+  if(motivoLlamada === `5`) {   
+    motivoTecnico.addEventListener('paste', evitarPegarContenido); 
+  } else {
+    motivoTecnico.removeEventListener('paste', evitarPegarContenido);  
+  }
 
   switch (motivoLlamada) {
     case `1`: // agendar
@@ -610,11 +618,11 @@ function crearNota() {
     case `5`: // Dirección piloto
       let respuesta = ``;
       if (aLaEsperadeInstalacion) {
-        respuesta = `SI`;
+        respuesta = `SI se da aceptación al recibo publico`;
       } else {
         respuesta = `NO se acepta porque ${motivoCliente}.`;
       }
-      texto += ` aceptación de línea de rescate ` + respuesta;
+      texto += `y en sistema está ${direccionAgendador} ${respuesta}.`;
       break;
     case `6`:
       texto += ` pero se cae la llamada sin poder validar la información`;
@@ -835,4 +843,8 @@ function FormatearFecha(fecha) {
   const opciones = { weekday: "long", day: "numeric", month: "long" };
   fecha_Agenda = fechaObj.toLocaleDateString("es-ES", opciones);
   return fecha_Agenda;
+}
+
+function evitarPegarContenido(e){
+  e.preventDefault(); // Evita que se pegue el contenido
 }

@@ -5,6 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Tipificador</title>
+  <link rel="manifest" href="./manifest.json" />
   <link rel="stylesheet" href="./dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="./dist/css/style.css">
@@ -212,6 +213,8 @@
                 <label for="Mtecnico">Motivo Técnico</label>
                 <div class="form-group">
                   <textarea class="form-control trans" id="Mtecnico" rows="2" oninput="autoResize(this)"></textarea>
+                    <input type="text" id="direccionSistema" autocomplete="off" class="form-control mt-3 trans" 
+                    placeholder="pega la direccion de agendador"  spellcheck="false"/>
                 </div>
               </div>
               <div class="col-12" id="Musuariod">
