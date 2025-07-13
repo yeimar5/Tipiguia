@@ -1,16 +1,11 @@
-html,
-body {
+/* SOLO CORRECCIONES Y MODAL MÁS ANCHO - Mantiene tus estilos originales */
+
+html, body {
   height: 100%;
   margin: 0;
 }
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-}
-
-.no-arrows::-webkit-outer-spin-button,
+.no-arrows::-webkit-outer-spin-button, 
 .no-arrows::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
@@ -20,16 +15,17 @@ body {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
 .container {
   text-align: center;
 }
 
 .trans {
-  backdrop-filter: blur(7px); /* Mantiene el desenfoque */
+  backdrop-filter: blur(7px);
   border-radius: 10px;
   background: transparent;
-  color: rgb(200, 200, 200); /* Asegura legibilidad */
-  /* border: 0.2px solid rgba(255, 255, 255, 0.5); /* Define el grosor de borde correctamente */ 
+  color: rgb(200, 200, 200);
+  border: 0.2px solid rgba(255, 255, 255, 0.5); /* Corregido: removí el comentario dentro de la regla */
 }
 
 option {
@@ -45,7 +41,7 @@ label {
   width: 90%;
   height: 90%;
   display: flex;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .btn {
@@ -54,12 +50,12 @@ label {
 }
 
 .btn1 {
-  border-radius: 0 12px 12px 0; /* Simplificación de valores */
+  border-radius: 0 12px 12px 0;
   color: blue;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(100%); /* Cambia el color del indicador */
+  filter: invert(100%);
 }
 
 body {
@@ -72,15 +68,15 @@ body {
   justify-content: center;
   min-height: 100vh;
   display: flex;
-  font-family: "Arial Black", sans-serif; /* Usa un sistema más robusto para la fuente */
+  font-family: "Arial Black", sans-serif;
 }
 
 footer {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: transparent; /* "transparent" en lugar de "#00000000" */
-  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.2); /* Define el alfa en la sombra */
+  background-color: transparent; /* Corregido: cambiado de #00000000 a transparent */
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.2);
   padding: 20px 0;
   text-align: center;
 }
@@ -90,12 +86,10 @@ footer {
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  
 }
 
-i,
-b {
-  pointer-events: none; /* Desactiva interacciones del cursor */
+i, b {
+  pointer-events: none;
 }
 
 .icon-login {
@@ -105,8 +99,8 @@ b {
   top: 10px;
   right: 10px;
   cursor: pointer;
-  filter: invert(100%); /* Invierte el color de la imagen */
-  mix-blend-mode: difference; /* Ajusta el color de la imagen según el fondo */
+  filter: invert(100%);
+  mix-blend-mode: difference;
 }
 
 .modal-title {
@@ -119,4 +113,32 @@ textarea {
 
 .modal-backdrop {
   background-color: rgba(0, 0, 0, 1);
+}
+
+/* NUEVA REGLA PARA MODAL MÁS ANCHO */
+.modal-dialog {
+  max-width: 75%;
+  width: 1000px;
+}
+
+@media (max-width: 1200px) {
+  .modal-dialog {
+    max-width: 95%;
+    width: 900px;
+  }
+}
+
+@media (max-width: 992px) {
+  .modal-dialog {
+    max-width: 95%;
+    width: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-dialog {
+    max-width: 98%;
+    width: 100%;
+    margin: 0.5rem;
+  }
 }

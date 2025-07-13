@@ -4,19 +4,33 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#007bff" />
+  <meta name="description" content="Aplicación Tipificador para Línea de Rescate" />
   <title>Tipificador</title>
+  
+  <!-- PWA Manifest -->
   <link rel="manifest" href="./manifest.json" />
+  
+  <!-- Estilos -->
   <link rel="stylesheet" href="./dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="./dist/css/style.css">
+  
+  <!-- Iconos PWA -->
   <link rel="icon" href="./dist/img/LR.png" type="image/png" />
+  <link rel="apple-touch-icon" href="./dist/img/LR.png" />
+  
+  <!-- Metadatos para PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Tipificador" />
 </head>
 
 <body>
   <div class="login">
     <img src="./dist/img/call-center-agent.png" alt="Configuración de agent" class="icon-login"
       data-target="#login-modal" data-toggle="modal">
-    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="#exampleModalLabel"
+    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
       aria-hidden="true" data-backdrop="static">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content trans">
@@ -29,17 +43,17 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-sm-7" id="numt">
-                <label for="NomTitular">NOMBRE ASESOR</label>
+                <label for="NomAgent">NOMBRE ASESOR</label>
                 <input type="text" class="form-control trans" id="NomAgent" required autocomplete="name">
               </div>
               <div class="col-sm-5" id="nomt">
-                <label for="NumTitular">NUMERO AGENT</label>
+                <label for="Agent">NUMERO AGENT</label>
                 <input type="number" class="form-control trans no-arrows" id="Agent" required autocomplete="on">
               </div>
             </div>
           </div>
           <div class="modal-footer justify-content-center">
-            <button type="button" id="imagen" class="btn btn-outline-warning"><b>CAMBIAR FONDO</b> </button>
+            <button type="button" id="imagen" class="btn btn-outline-warning"><b>CAMBIAR FONDO</b></button>
             <button type="button" id="guardarCambios" class="btn btn-outline-primary">GUARDAR CAMBIOS</button>
           </div>
         </div>
@@ -69,7 +83,7 @@
 
           <div class="form-group col-sm-4">
             <label for="rol">ROL</label>
-            <select id="rol" class=" custom-select trans">
+            <select id="rol" class="custom-select trans">
               <option value="técnico">INSTALADOR</option>
               <option value="gestor">GESTOR</option>
             </select>
@@ -124,12 +138,12 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal fade" id="tipificarNota" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  <div class="modal fade" id="tipificarNota" tabindex="-1" role="dialog" aria-labelledby="tipificarModalLabel"
     aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content trans">
         <div class="modal-header" id="color">
-          <h5 class="modal-title" id="exampleModalLabel">TIPIFICAR</h5>
+          <h5 class="modal-title" id="tipificarModalLabel">TIPIFICAR</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -138,8 +152,9 @@
           <form id="Formulario">
             <div class="modal-header d-flex justify-content-between align-items-center">
               <div>
-                <select class="custom-select d-inline-block w-auto  trans" id="Motivo"><!--Motivo de llamada-->
+                <select class="custom-select d-inline-block w-auto trans" id="Motivo">
                   <option value="" selected disabled>MOTIVO LLAMADA</option>
+                  <!-- <option value="0">NO CONTACTO</option> -->
                   <option value="1">AGENDAR</option>
                   <option value="2">QUIEBRE</option>
                   <option value="3">NO APLICA SOPORTE</option>
@@ -148,14 +163,14 @@
                   <option value="6">LLAMADA CAÍDA</option>
                 </select>
               </div>
-              <div class="col-sm" id="contingencia"><!--Validar contingencia-->
-                <div class="custom-control form-check-inline  custom-switch ">
-                  <input type="checkbox" class="custom-control-input " id="Contingencia">
+              <div class="col-sm" id="contingencia">
+                <div class="custom-control form-check-inline custom-switch">
+                  <input type="checkbox" class="custom-control-input" id="Contingencia">
                   <label class="custom-control-label trans" for="Contingencia">CONTINGENCIA</label>
                 </div>
               </div>
             </div>
-            <div class="row"><!--Validar si hubo contacto-->
+            <div class="row">
               <div class="col-12" id="contacto">
                 <label class="my-1 mr-2 col-8" for="Contacto">Hubo Contacto</label>
                 <select class="custom-select my-1 mr-sm-2 trans" id="Contacto">
@@ -166,27 +181,27 @@
               </div>
             </div>
 
-            <div class="row px-3 col-auto"><!--checkbox de verificación-->
+            <div class="row px-3 col-auto">
               <div class="cols-sm-6" id="chatbot">
-                <div class="custom-control form-check-inline  custom-switch ">
-                  <input type="checkbox" class="custom-control-input " id="FC">
+                <div class="custom-control form-check-inline custom-switch">
+                  <input type="checkbox" class="custom-control-input" id="FC">
                   <label class="custom-control-label" for="FC">FALLA CHATBOT</label>
                 </div>
               </div>
               <div class="cols-sm-3" id="Acepta">
-                <div class="custom-control form-check-inline custom-switch  ">
+                <div class="custom-control form-check-inline custom-switch">
                   <input type="checkbox" class="custom-control-input" id="Aceptains">
-                  <label class="custom-control-label" for="Aceptains">ACEPTA </label>
+                  <label class="custom-control-label" for="Aceptains">ACEPTA</label>
                 </div>
               </div>
               <div class="cols-sm-3" id="suspender">
-                <div class="custom-control form-check-inline custom-switch  ">
+                <div class="custom-control form-check-inline custom-switch">
                   <input type="checkbox" class="custom-control-input" id="sus">
                   <label class="custom-control-label" for="sus">SUSPENDER</label>
                 </div>
               </div>
             </div>
-            <div class="col-sm" id="Soporte"><!--Soporte No Aplica-->
+            <div class="col-sm" id="Soporte">
               <label for="noSoporte" class="form-label">Soporte No Aplica</label>
               <select id="noSoporte" class="custom-select trans">
                 <option selected value="">SELECCIONE</option>
@@ -208,13 +223,40 @@
               </select>
             </div>
 
-            <div class="row pt-3"><!--Motivo técnico y Motivo Usuario-->
+            <div class="row pt-3">
               <div class="col-12" id="MotivoTec">
                 <label for="Mtecnico">Motivo Técnico</label>
                 <div class="form-group">
                   <textarea class="form-control trans" id="Mtecnico" rows="2" oninput="autoResize(this)"></textarea>
-                    <input type="text" id="direccionSistema" autocomplete="off" class="form-control mt-3 trans" 
-                    placeholder="pega la direccion de agendador"  spellcheck="false"/>
+                  <div class="mt-3" id="DRP">
+                    <label class="form-label"><b>DIRECCION EN RECIBO PUBLICO</b></label>
+                    <div class="row mb-2 no-gutters">
+                      <div class="col-sm-3 px-1">
+                        <label for="via" class="form-label">Vía Principal</label>
+                        <input type="text" class="form-control trans" id="via" placeholder="VIA PRINCIPAL">
+                      </div>
+                      <div class="col-sm-3 px-1">
+                        <label for="cruce" class="form-label">Cruce</label>
+                        <input type="text" class="form-control trans" id="cruce" placeholder="CRUCE">
+                      </div>
+                      <div class="col-sm-3 px-1">
+                        <label for="placa" class="form-label">Placa</label>
+                        <input type="text" class="form-control trans" id="placa" placeholder="PLACA">
+                      </div>
+                      <div class="col-sm-3 px-1">
+                        <label for="complemento" class="form-label">Complemento</label>
+                        <input type="text" class="form-control trans" id="complemento" placeholder="COMPLEMENTO">
+                      </div>
+                    </div>
+                    <div class="row  mb-2">
+                      <div class="col-12 mt-2">
+                        <input type="text" class="form-control trans" id="resultado"
+                          placeholder="Direccion en recibo publico" readonly>
+                      </div>
+                    </div>
+                    <input type="text" id="direccionSistema" autocomplete="off" class="form-control mt-3 trans"
+                      placeholder="pega la direccion de agendador" spellcheck="false" />
+                  </div>
                 </div>
               </div>
               <div class="col-12" id="Musuariod">
@@ -225,8 +267,7 @@
               </div>
             </div>
 
-
-            <div class="row" id="Titular"><!--Nombre y Numero de Titular-->
+            <div class="row" id="Titular">
               <div class="col-sm-7" id="nomt">
                 <label for="NomTitular">Nombre de Titular</label>
                 <input type="text" class="form-control trans" id="NomTitular" required autocomplete="off">
@@ -235,26 +276,30 @@
                 <label for="NumTitular">Numero de Titular</label>
                 <div class="input-group mb-2">
                   <input type="number" class="form-control trans no-arrows" id="NumTitular" required autocomplete="off">
-                  <button type="button" class="btn btn-success">+</button>
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-success">+</button>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="row pt-3"><!--Fecha y Franja cita-->
-              <div class=" col-sm" id="fecha">
-                <label for="Fecha" class="form-label trans ">Fecha Agendamiento</label>
-                <div class="input-group gap-3">
-                  <input type="date" class="form-control trans Fecha" id="Fecha">
-                  <select id="Franja" class="custom-select trans col-2" aria-label="">
+            <div class="row pt-3">
+              <div class="col-sm" id="fecha">
+                <label for="Fecha" class="form-label trans">Fecha Agendamiento</label>
+                <div class="input-group">
+                  <input type="date" class="form-control trans Fecha" id="Fecha" onfocus="this.showPicker && this.showPicker();">
+                  <select id="Franja" class="custom-select trans" style="flex: 0 0 auto; width: auto;" aria-label="Franja">
                     <option id="AM" value="AM">AM</option>
                     <option id="PM" value="PM">PM</option>
                   </select>
-                  <button type="button" id="pedirCuota" class="btn btn1 btn-warning ">Pedir Cuota</button>
+                  <div class="input-group-append">
+                    <button type="button" id="pedirCuota" class="btn btn-warning">Pedir Cuota</button>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="row " id="GPS"><!--GPS y Soporte Fotográfico del técnico-->
+            <div class="row" id="GPS">
               <div class="col-sm-6">
                 <label for="gps" id="gp" class="form-label">GPS</label>
                 <select id="gps" class="custom-select trans" aria-label="Gps">
@@ -264,16 +309,16 @@
               </div>
               <div class="col-sm-6">
                 <label for="SF" id="sf" class="form-label">Soporte Fotográfico</label>
-                <select id="SF" class="custom-select trans" aria-label="">
+                <select id="SF" class="custom-select trans" aria-label="Soporte Fotográfico">
                   <option value="OK">OK</option>
                   <option value="No OK">NO OK</option>
                 </select>
               </div>
             </div>
 
-            <div class="row" id="MoQuiebre"><!--Motivos de quiebres LR-->
+            <div class="row" id="MoQuiebre">
               <div class="col-sm">
-                <label for="motivoQuiebre">Motivo Quiebre</label>
+                <label for="mQuiebre">Motivo Quiebre</label>
                 <input class="form-control col-sm-auto trans" list="motivoQuiebre" id="mQuiebre"
                   placeholder="Escribe el motivo">
                 <datalist id="motivoQuiebre">
@@ -306,7 +351,7 @@
                   <option>CLIENTE DESISTE DEL SERVICIO/SITUACIÓN ECONOMICA</option>
                   <option>CLIENTE DESISTE DEL SERVICIO/NO DA MOTIVO</option>
                   <option>CLIENTE NO ACEPTA INSTALACIÓN PARCIAL</option>
-                  <option>CLIENTE NO ACEPTA COBRO DE DECODIFICADOR ADICIONAL </option>
+                  <option>CLIENTE NO ACEPTA COBRO DE DECODIFICADOR ADICIONAL</option>
                   <option>CLIENTE RECHAZA COBRO DE INSTALACIÓN</option>
                   <option>DATOS DEL CLIENTE ERRADOS</option>
                   <option>SIN DISPONIBILIDAD DE EQUIPOS (EQ)</option>
@@ -327,10 +372,25 @@
     </div>
   </div>
 
+  <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="./dist/js/funciones.js"></script>
   <script src="./dist/js/bootstrap.bundle.min.js"></script>
   <script src="./dist/js/sweetalert2@11.js"></script>
+  <script src="./dist/js/funciones.js"></script>
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js')
+          .then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, function(err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
 </body>
 
 </html>

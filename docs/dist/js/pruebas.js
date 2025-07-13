@@ -692,3 +692,5 @@ function crearNota() {
 
 // Inicializar la aplicación
 const app = new App();
+
+

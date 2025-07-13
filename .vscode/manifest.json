@@ -1,24 +1,39 @@
 {
-    "name": "Tipiguia",
-    "short_name": "Tipiguia",
-    "display_name": "Tipificador de Llamadas",
-    "start_url": "index.html",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#ffffff",
-    "description": "Aplicación para tipificar las llamadas de LR.",
-    "icons": {
-        "16": "icon16.png",
-        "48": "icon48.png",
-        "128": "icon128.png"
+  "name": "Tipificador - Línea de Rescate",
+  "short_name": "Tipificador",
+  "description": "Aplicación para tipificación de llamadas en línea de rescate",
+  "theme_color": "#007bff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "lang": "es",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "./dist/img/LR.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
     },
-    "action": {
-        "default_popup": "index.html",
-        "default_icon": {
-            "16": "icon16.png",
-            "48": "icon48.png",
-            "128": "icon128.png"
-        }
+    {
+      "src": "./dist/img/LR.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     },
-    "permissions": []
+    {
+      "src": "./dist/img/LR.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./dist/img/LR.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
 }

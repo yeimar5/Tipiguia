@@ -42,7 +42,8 @@ function manejarCambio(e) {
   let suspender = document.getElementById(`sus`).checked;
   if (Actualizartodo) {
     switch (mLlamada) {
-      case `1`: // agendar
+/*       case `0`: // agendar también aplica la misma lógica que el caso 1
+ */      case `1`: // agendar
         cambiarColorFondo(`#2d8215`);
         visualizarPantalla([`#contingencia`], `block`);
         visualizarPantalla([`#chatbot`, `#Titular`, `#contacto`], `flex`);
@@ -61,6 +62,7 @@ function manejarCambio(e) {
               `#Acepta`,
               `#chatbot`,
               `#suspender`,
+              `#DRP`,
             ],
             `none`
           );
@@ -77,6 +79,7 @@ function manejarCambio(e) {
               `#Acepta`,
               `#chatbot`,
               `#suspender`,
+              `#DRP`,
             ],
             `none`
           );
@@ -171,7 +174,8 @@ function manejarCambio(e) {
               `#GPS`,
               `#Soporte`,
               `#Acepta`,
-              ,
+              `#DRP`,
+              
             ],
             `none`
           );
@@ -188,19 +192,31 @@ function manejarCambio(e) {
               `#GPS`,
               `#Soporte`,
               `#Acepta`,
-              `#direccionSistema`
+              `#direccionSistema`,
+              `#DRP`,
             ],
             `none`
           );
         } else if (!contingencia) {
           visualizarPantalla([`#MotivoTec`], `block`);
           visualizarPantalla(
-            [`#MoQuiebre`, `#Musuariod`, `#fecha`, `#GPS`, `#Soporte`,`#direccionSistema`],
+            [
+              `#MoQuiebre`,
+              `#Musuariod`,
+              `#fecha`,
+              `#GPS`,
+              `#Soporte`,
+              `#direccionSistema`,
+              `#DRP`,
+            ],
             `none`
           );
         }
-
-        ValueMostrar(`#Mtecnico`, `solicitan reagendar la orden para el día `);
+        if(mLlamada == `1`) {
+          ValueMostrar(`#Mtecnico`, `solicitan reagendar la orden para el día `);
+        }/* else { 
+          ValueMostrar(`#Mtecnico`, `Llega apredio y no tiene contacto para la instalacion  `);
+        } */
         break;
       case `2`: // quiebres
         cambiarColorFondo(`#dc4c4c`);
@@ -308,7 +324,8 @@ function manejarCambio(e) {
               `#contacto`,
               `#Titular`,
               `#contingencia`,
-              `#direccionSistema`
+              `#direccionSistema`,
+              `#DRP`,
             ],
             `none`
           );
@@ -329,7 +346,8 @@ function manejarCambio(e) {
             `#contingencia`,
             `#Acepta`,
             `#suspender`,
-            `#direccionSistema`
+            `#direccionSistema`,
+            `#DRP`,
           ],
           `none`
         );
@@ -340,7 +358,10 @@ function manejarCambio(e) {
         break;
       case `5`: // Gestión piloto
         cambiarColorFondo(`#c3c3c3`);
-        visualizarPantalla([`#MotivoTec`, `#Acepta`,`#direccionSistema`], `block`);
+        visualizarPantalla(
+          [`#MotivoTec`, `#Acepta`, `#direccionSistema`],
+          `block`
+        );
         visualizarPantalla(
           [
             `#MoQuiebre`,
@@ -353,12 +374,13 @@ function manejarCambio(e) {
             `#Titular`,
             `#contingencia`,
             `#suspender`,
+            
           ],
           `none`
         );
 
         if (!aceptaInstalar) {
-          visualizarPantalla([`#Musuariod`], `block`);
+          visualizarPantalla([`#Musuariod`,`#DRP`,], `block`);
           setInnerHTML(`#TMusuario`, "NO SE ACEPTA PORQUE?");
         } else {
           visualizarPantalla([`#Musuariod`], `none`);
@@ -383,11 +405,12 @@ function manejarCambio(e) {
             `#contacto`,
             `#chatbot`,
             `#suspender`,
-            `#direccionSistema`
+            `#direccionSistema`,
+            `#DRP`,
           ],
           `none`
         );
-        ValueMostrar(`#Mtecnico`, ``)
+        ValueMostrar(`#Mtecnico`, ``);
         break;
       default:
         cambiarColorFondo(`#1392F1`);
@@ -404,7 +427,8 @@ function manejarCambio(e) {
             `#contacto`,
             `#chatbot`,
             `#suspender`,
-            `#direccionSistema`
+            `#direccionSistema`,
+            `#DRP`,
           ],
           `none`
         );
@@ -417,11 +441,18 @@ function manejarCambio(e) {
 function copiarYAlertar(t, callback) {
   try {
     // Verificar si contiene "Invalid Date"
-    if (t.includes("Invalid Date" || t.includes("NaN") || t.includes("undefined")|| t.includes("null"))) {
+    if (
+      t.includes(
+        "Invalid Date" ||
+          t.includes("NaN") ||
+          t.includes("undefined") ||
+          t.includes("null")
+      )
+    ) {
       alert("Seleccione una fecha válida, no sea pendej@ 😂🤣😅");
       return; // Salir de la función sin ejecutar el resto
     }
-    
+
     // Si no contiene la cadena problemática, continuar con la lógica normal
     copiarAlPortapapeles(t);
     callback(t);
@@ -478,6 +509,7 @@ function crearNota() {
   let agentAsesor = `agent_` + document.getElementById(`Agent`).value;
   let textoNota = document.getElementById(`textoNota`);
   let direccionAgendador = document.getElementById(`direccionSistema`).value;
+  let direcionenRecibo = document.getElementById('resultado').value;
   //mensajes
   let notaGenerada = ``;
   let titularContacto = `Titular ${nombreTitular} número ${numeroTitular}`;
@@ -485,10 +517,10 @@ function crearNota() {
   let mensajeChatbot = ``;
   let texto = `LINEA RESCATE Se comunica ${trabajador} informando que ${motivoTecnico.value} `;
 
-  if(motivoLlamada === `5`) {   
-    motivoTecnico.addEventListener('paste', evitarPegarContenido); 
+  if (motivoLlamada === `5`) {
+    motivoTecnico.addEventListener("paste", evitarPegarContenido);
   } else {
-    motivoTecnico.removeEventListener('paste', evitarPegarContenido);  
+    motivoTecnico.removeEventListener("paste", evitarPegarContenido);
   }
 
   switch (motivoLlamada) {
@@ -540,7 +572,7 @@ function crearNota() {
             franjaAgenda;
         }
       }
-      
+
       texto += notaGenerada;
       break;
     case `2`: // quiebre
@@ -643,7 +675,7 @@ function crearNota() {
       } else {
         respuesta = `NO se acepta porque ${motivoCliente}.`;
       }
-      texto += `y en sistema está ${direccionAgendador} ${respuesta}.`;
+      texto += ` ${direcionenRecibo}y en sistema está ${direccionAgendador} ${respuesta}.`;
 
       break;
     case `6`:
@@ -652,12 +684,12 @@ function crearNota() {
   }
   texto += gestion;
   texto = texto
-  .replace(/\([^)]*\)/g, '')  // Eliminar paréntesis y su contenido
-  .replace(/\|/g, '')         // Eliminar barras verticales
-  .replace(/\¿/g, 'Ñ')        // Corregir codificación ¿ → Ñ
-  .replace(/\s+/g, ' ')       // Normalizar espacios (incluye múltiples espacios)
-  .trim();                    // Limpiar espacios al inicio/final
-  
+    .replace(/\([^)]*\)/g, "") // Eliminar paréntesis y su contenido
+    .replace(/\|/g, "") // Eliminar barras verticales
+    .replace(/\¿/g, "Ñ") // Corregir codificación ¿ → Ñ
+    .replace(/\s+/g, " ") // Normalizar espacios (incluye múltiples espacios)
+    .trim(); // Limpiar espacios al inicio/final
+
   textoNota.value = texto;
 }
 
@@ -848,30 +880,98 @@ function lanzarModal() {
 function FormatearFecha(fecha) {
   // Divide la fecha en partes
   const [anio, mes, dia] = fecha.split("-");
-  
+
   // Crea la fecha correctamente (mes - 1 porque los meses empiezan en 0)
   const fechaObj = new Date(anio, mes - 1, dia);
-  
+
   // Obtener la fecha actual (solo la fecha, sin hora)
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0); // Establecer hora a 00:00:00 para comparar solo fechas
-  
+
   // Establecer la hora de la fecha ingresada a 00:00:00 para comparar solo fechas
   fechaObj.setHours(0, 0, 0, 0);
-  
+
   // Verificar si la fecha es anterior a hoy
   if (fechaObj < hoy) {
-    alert("La fecha seleccionada no puede ser anterior a hoy. Seleccione una fecha válida 📅⚠️");
+    alert(
+      "La fecha seleccionada no puede ser anterior a hoy. Seleccione una fecha válida 📅⚠️"
+    );
     document.getElementById(`Fecha`).value = null;
-    return  // Retornar false si la fecha es inválida
+    return; // Retornar false si la fecha es inválida
   }
-  
+
   // Si la fecha es válida, formatear y retornar
   const opciones = { weekday: "long", day: "numeric", month: "long" };
   fecha_Agenda = fechaObj.toLocaleDateString("es-ES", opciones);
   return fecha_Agenda;
 }
 
-function evitarPegarContenido(e){
+function evitarPegarContenido(e) {
   e.preventDefault(); // Evita que se pegue el contenido
+}
+
+function convertToUppercase(input) {
+  const cursorPosition = input.selectionStart;
+  input.value = input.value.toUpperCase();
+  input.setSelectionRange(cursorPosition, cursorPosition);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const inputs = ["via", "cruce", "placa", "complemento", "NombreTec"];
+
+  inputs.forEach(function (inputId) {
+    const input = document.getElementById(inputId);
+    if (input) {
+      input.addEventListener("input", function () {
+        // Convierte el valor a mayúsculas en tiempo real
+        const cursorPosition = this.selectionStart;
+        this.value = this.value.toUpperCase();
+        this.setSelectionRange(cursorPosition, cursorPosition);
+
+        // Actualiza el resultado de la dirección
+        if (["via", "cruce", "placa", "complemento"].includes(inputId)) {
+          concatenateInputs();
+        }
+      });
+    }
+  });
+});
+
+
+function concatenateInputs() {
+    const via = document.getElementById('via').value;
+    const cruce = document.getElementById('cruce').value;
+    const placa = document.getElementById('placa').value;
+    const complemento = document.getElementById('complemento').value;
+    
+    const parts = [via, cruce, placa, complemento].filter(part => part.trim() !== '');
+    const result = parts.join(' ');
+    
+    const resultDiv = document.getElementById('resultado');
+    if (result.trim() === '') {
+        resultDiv.textContent = 'direccion recibo';
+        resultDiv.style.color = '#6c757d';
+    } else {
+        resultDiv.textContent = result;
+        resultDiv.style.color = '#495057';
+    }
+}
+
+function concatenateInputs() {
+    const via = document.getElementById('via').value;
+    const cruce = document.getElementById('cruce').value;
+    const placa = document.getElementById('placa').value;
+    const complemento = document.getElementById('complemento').value;
+
+    const parts = [via, cruce, placa, complemento].filter(part => part.trim() !== '');
+    const result = parts.join(' ');
+
+    const resultInput = document.getElementById('resultado');
+    if (result.trim() === '') {
+        resultInput.value = 'direccion recibo';
+        resultInput.style.color = '#6c757d';
+    } else {
+        resultInput.value = result;
+        resultInput.style.color = '#495057';
+    }
 }
