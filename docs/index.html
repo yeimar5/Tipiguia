@@ -7,19 +7,19 @@
   <meta name="theme-color" content="#007bff" />
   <meta name="description" content="Aplicación Tipificador para Línea de Rescate" />
   <title>Tipificador</title>
-  
+
   <!-- PWA Manifest -->
   <link rel="manifest" href="./manifest.json" />
-  
+
   <!-- Estilos -->
   <link rel="stylesheet" href="./dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="./dist/css/style.css">
-  
+
   <!-- Iconos PWA -->
   <link rel="icon" href="./dist/img/LR.png" type="image/png" />
   <link rel="apple-touch-icon" href="./dist/img/LR.png" />
-  
+
   <!-- Metadatos para PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -163,44 +163,19 @@
                   <option value="6">LLAMADA CAÍDA</option>
                 </select>
               </div>
-              <div class="col-sm" id="contingencia">
-                <div class="custom-control form-check-inline custom-switch">
+
+              <div class="d-flex align-items-center">
+                <div class="me-3" id="contingencia">
                   <input type="checkbox" class="custom-control-input" id="Contingencia">
                   <label class="custom-control-label trans" for="Contingencia">CONTINGENCIA</label>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12" id="contacto">
-                <label class="my-1 mr-2 col-8" for="Contacto">Hubo Contacto</label>
-                <select class="custom-select my-1 mr-sm-2 trans" id="Contacto">
-                  <option selected>...</option>
-                  <option value="1">Sin Contacto</option>
-                  <option value="2">Contacto</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row px-3 col-auto">
-              <div class="cols-sm-6" id="chatbot">
-                <div class="custom-control form-check-inline custom-switch">
+                <div id="fallaChatbot">
                   <input type="checkbox" class="custom-control-input" id="FC">
                   <label class="custom-control-label" for="FC">FALLA CHATBOT</label>
                 </div>
               </div>
-              <div class="cols-sm-3" id="Acepta">
-                <div class="custom-control form-check-inline custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="Aceptains">
-                  <label class="custom-control-label" for="Aceptains">ACEPTA</label>
-                </div>
-              </div>
-              <div class="cols-sm-3" id="suspender">
-                <div class="custom-control form-check-inline custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="sus">
-                  <label class="custom-control-label" for="sus">SUSPENDER</label>
-                </div>
-              </div>
             </div>
+
             <div class="col-sm" id="Soporte">
               <label for="noSoporte" class="form-label">Soporte No Aplica</label>
               <select id="noSoporte" class="custom-select trans">
@@ -255,30 +230,74 @@
                       </div>
                     </div>
                     <input type="text" id="direccionSistema" autocomplete="off" class="form-control mt-3 trans"
-                      placeholder="pega la direccion de agendador" spellcheck="false" />
+                      placeholder="Pega la direccion de agendador" spellcheck="false" />
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12" id="contacto">
+                <div class="row mb-3">
+                  <div class="col-12">
+                    <label for="NomTitular">Nombre de Titular</label>
+                    <input type="text" class="form-control trans" id="NomTitular" required autocomplete="off"
+                      placeholder="Ingrese el nombre del titular">
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-5">
+                    <label for="NumTitular">Numero de Titular</label>
+                    <input type="number" class="form-control trans no-arrows" id="NumTitular" required
+                      autocomplete="off" placeholder="Número de teléfono">
+                  </div>
+                  <div class="col-5">
+                    <label for="Contacto">Hubo Contacto</label>
+                    <select class="custom-select trans" id="Contacto">
+                      <option selected>...</option>
+                      <option value="1">Sin Contacto</option>
+                      <option value="2">Contacto</option>
+                    </select>
+                  </div>
+                  <div class="col-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-success btn-block" data-toggle="tooltip" data-placement="top"
+                      title="Agregar número adicional">
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row pt-3">
               <div class="col-12" id="Musuariod">
                 <label id="TMusuario" for="Musuario">Motivo Usuario</label>
                 <div class="form-group">
                   <textarea class="form-control trans" id="Musuario" rows="2" oninput="autoResize(this)"></textarea>
                 </div>
               </div>
-            </div>
+              <div class="row px-3">
+                <div class="col-sm-6" id="Acepta">
+                  <label class="checkbox-container">
+                    <input type="checkbox" class="checkbox-input" id="Aceptains">
+                    <svg class="checkbox-icon" viewBox="0 0 24 24">
+                      <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <span class="checkbox-label">ACEPTA</span>
+                  </label>
+                </div>
 
-            <div class="row" id="Titular">
-              <div class="col-sm-7" id="nomt">
-                <label for="NomTitular">Nombre de Titular</label>
-                <input type="text" class="form-control trans" id="NomTitular" required autocomplete="off">
-              </div>
-              <div class="col-sm-5" id="numt">
-                <label for="NumTitular">Numero de Titular</label>
-                <div class="input-group mb-2">
-                  <input type="number" class="form-control trans no-arrows" id="NumTitular" required autocomplete="off">
-                  <div class="input-group-append">
-                    <button type="button" class="btn btn-success">+</button>
-                  </div>
+                <div class="col-sm-6" id="suspender">
+                  <label class="checkbox-container">
+                    <input type="checkbox" class="checkbox-input" id="sus">
+                    <svg class="checkbox-icon" viewBox="0 0 24 24">
+                      <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                    </svg>
+                    <span class="checkbox-label">SUSPENDER</span>
+                  </label>
                 </div>
               </div>
             </div>
@@ -287,8 +306,10 @@
               <div class="col-sm" id="fecha">
                 <label for="Fecha" class="form-label trans">Fecha Agendamiento</label>
                 <div class="input-group">
-                  <input type="date" class="form-control trans Fecha" id="Fecha" onfocus="this.showPicker && this.showPicker();">
-                  <select id="Franja" class="custom-select trans" style="flex: 0 0 auto; width: auto;" aria-label="Franja">
+                  <input type="date" class="form-control trans Fecha" id="Fecha"
+                    onfocus="this.showPicker && this.showPicker();">
+                  <select id="Franja" class="custom-select trans" style="flex: 0 0 auto; width: auto;"
+                    aria-label="Franja">
                     <option id="AM" value="AM">AM</option>
                     <option id="PM" value="PM">PM</option>
                   </select>
@@ -377,15 +398,15 @@
   <script src="./dist/js/bootstrap.bundle.min.js"></script>
   <script src="./dist/js/sweetalert2@11.js"></script>
   <script src="./dist/js/funciones.js"></script>
-  
+
   <!-- Service Worker Registration -->
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
+      window.addEventListener('load', function () {
         navigator.serviceWorker.register('./sw.js')
-          .then(function(registration) {
+          .then(function (registration) {
             console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          }, function(err) {
+          }, function (err) {
             console.log('ServiceWorker registration failed: ', err);
           });
       });
