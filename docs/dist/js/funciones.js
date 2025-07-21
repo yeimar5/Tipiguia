@@ -916,6 +916,8 @@ function manejarCasoAgenda(valores) {
       },
       elementosBaseAgenda
     );
+    const selectContacto = document.getElementById("Contacto");
+    if (selectContacto) selectContacto.disabled = false;
   }
 
   ValueMostrar("#Mtecnico", "solicitan reagendar la orden para el día ");
