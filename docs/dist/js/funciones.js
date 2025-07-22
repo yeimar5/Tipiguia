@@ -367,8 +367,7 @@ function ValueMostrar(selector, valorValue) {
 // ===========================================
 // INICIALIZACIÓN DE INPUTS
 // ===========================================
-
-document.addEventListener("DOMContentLoaded", function () {
+function inicializarInputsEnMayusculas() {
   UPPERCASE_INPUTS.forEach(function (inputId) {
     const input = document.getElementById(inputId);
     if (input) {
@@ -381,6 +380,30 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   });
+}
+
+function inicializarCheckboxNotaAplicativos() {
+  const checkbox = document.getElementById('notaApp');
+  if (checkbox) {
+    checkbox.addEventListener('change', function() {
+      const textoLabel = this.checked ? 'NOTA APLICATIVOS' : 'NOTA NORMAL';
+      setInnerHTML('#labelText', textoLabel);
+      
+      // Regenerar la nota cuando cambie el estado del checkbox
+      if (typeof crearNota === 'function') {
+        crearNota();
+      }
+    });
+  }
+}
+
+// ===========================================
+// INICIALIZACIÓN PRINCIPAL
+// ===========================================
+
+document.addEventListener("DOMContentLoaded", function () {
+  inicializarInputsEnMayusculas();
+  inicializarCheckboxNotaAplicativos();
 });
 
 // ===========================================
@@ -717,6 +740,12 @@ function crearNota() {
 
   textoFinal += textos.gestion;
   textoFinal = limpiarTexto(textoFinal);
+
+  // Procesar el texto con la función de Nota Aplicativos 
+  if (typeof procesarTextoNotaAplicativos === "function") {
+    textoFinal = procesarTextoNotaAplicativos(textoFinal);
+  }
+
   textoNota.value = textoFinal;
 }
 
@@ -737,7 +766,9 @@ const todosLosElementos = [
   "#fallaChatbot",
   "#Titular",
   "#contacto",
+  "#contacto1",
   "#suspender",
+  "#notaAplicativos",
   "#DRP",
   "#direccionSistema",
   "#nomt",
@@ -812,7 +843,7 @@ function manejarCasoAgenda(valores) {
 
   // Elementos que SIEMPRE se muestran en agenda
   const elementosBaseAgenda = {
-    block: ["#contingencia", "#contacto"],
+    block: ["#contingencia", "#contacto", , "#contacto1"],
     flex: ["#fallaChatbot", "#Titular"],
   };
 
@@ -883,11 +914,11 @@ function manejarCasoAgenda(valores) {
     if (valores.contacto !== "1") {
       const selectContacto = document.getElementById("Contacto");
       selectContacto.selectedIndex = 0; // Fuerza la opción por defecto (index 0)
-      selectContacto.disabled = true; // Bloquea el select para que no pueda modificarse 
+      selectContacto.disabled = true; // Bloquea el select para que no pueda modificarse
       mostrarSoloElementos(
         {
           block: ["#MotivoTec", "#fecha"],
-          flex: ["#suspender"],
+          flex: ["#suspender", "#notaAplicativos"],
         },
         elementosBaseAgenda
       );
@@ -896,7 +927,7 @@ function manejarCasoAgenda(valores) {
         mostrarSoloElementos(
           {
             block: ["#MotivoTec"],
-            flex: ["#suspender"],
+            flex: ["#suspender", "#notaAplicativos"],
           },
           elementosBaseAgenda
         );
@@ -929,7 +960,7 @@ function manejarCasoQuiebre(valores) {
 
   // Elementos que SIEMPRE se muestran en quiebre
   const elementosBaseQuiebre = {
-    block: ["#contingencia", "#contacto"],
+    block: ["#contingencia", "#contacto", "#contacto1"],
     flex: ["#Titular", "#fallaChatbot"],
   };
 
@@ -965,13 +996,17 @@ function manejarCasoQuiebre(valores) {
       elementosBaseQuiebre
     );
     ordenarElementos(
-      document.querySelector("#contacto"),
+      document.querySelector("#contacto", "#contacto1"),
       document.querySelector("#Musuariod")
     );
   } else if (valores.contingencia) {
+    const selectContacto = document.getElementById("Contacto");
+    selectContacto.selectedIndex = 0; // Fuerza la opción por defecto (index 0)
+    selectContacto.disabled = true; // Bloquea el select para que no pueda modificarse
     mostrarSoloElementos(
       {
         block: ["#MotivoTec", "#MoQuiebre", "#nomt", "#numt"],
+        flex: ["#notaAplicativos"],
       },
       elementosBaseQuiebre
     );
@@ -982,6 +1017,8 @@ function manejarCasoQuiebre(valores) {
       },
       elementosBaseQuiebre
     );
+    const selectContacto = document.getElementById("Contacto");
+    if (selectContacto) selectContacto.disabled = false;
   }
 
   ValueMostrar("#Mtecnico", "titular desea cancelar el servicio por ");
@@ -1028,7 +1065,7 @@ function manejarCambio(e) {
       case "4": // Gestión decos
         cambiarColorFondo("#00ccfe");
         mostrarSoloElementos({
-          block: ["#MotivoTec", "#Musuariod", "#contacto"],
+          block: ["#MotivoTec", "#Musuariod", "#contacto", "#contacto1"],
           flex: ["#Titular", "#fallaChatbot"],
         });
         ValueMostrar(
@@ -1068,4 +1105,16 @@ function manejarCambio(e) {
   }
 
   crearNota();
+}
+
+// Función para procesar el texto y eliminar "POR CONTINGENCIA"
+function procesarTextoNotaAplicativos(texto) {
+    const checkbox = document.getElementById('notaApp');
+    if (checkbox && checkbox.checked) {
+        // Eliminar la frase "POR CONTINGENCIA" (case insensitive)
+        const cleanedText = texto.replace(/POR CONTINGENCIA/gi, '').trim();
+        // Limpiar espacios extras que puedan quedar
+        return cleanedText.replace(/\s+/g, ' ').trim();
+    }
+    return texto;
 }

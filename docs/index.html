@@ -165,7 +165,7 @@
               </div>
 
               <div class="d-flex align-items-center">
-                <div class="me-3" id="contingencia">
+                <div class="mr-3" id="contingencia">
                   <input type="checkbox" class="custom-control-input" id="Contingencia">
                   <label class="custom-control-label trans" for="Contingencia">CONTINGENCIA</label>
                 </div>
@@ -235,7 +235,6 @@
                 </div>
               </div>
             </div>
-
             <div class="row">
               <div class="col-12" id="contacto">
                 <div class="row mb-3">
@@ -244,8 +243,11 @@
                     <input type="text" class="form-control trans" id="NomTitular" required autocomplete="off"
                       placeholder="Ingrese el nombre del titular">
                   </div>
-                </div>
-
+                </div> 
+              </div>
+            </div>  
+            <div class="row">
+              <div class="col-12" id="contacto1">
                 <div class="row">
                   <div class="col-5">
                     <label for="NumTitular">Numero de Titular</label>
@@ -269,7 +271,6 @@
                 </div>
               </div>
             </div>
-
             <div class="row pt-3">
               <div class="col-12" id="Musuariod">
                 <label id="TMusuario" for="Musuario">Motivo Usuario</label>
@@ -277,6 +278,9 @@
                   <textarea class="form-control trans" id="Musuario" rows="2" oninput="autoResize(this)"></textarea>
                 </div>
               </div>
+            </div>
+
+            <div class="row pt-3">
               <div class="row px-3">
                 <div class="col-sm-6" id="Acepta">
                   <label class="checkbox-container">
@@ -299,11 +303,22 @@
                     <span class="checkbox-label">SUSPENDER</span>
                   </label>
                 </div>
+                <div class="col-sm-6" id="notaAplicativos">
+                  <label class="checkbox-container">
+                    <input type="checkbox" class="checkbox-input" id="notaApp">
+                    <!-- Icono de nota/documento -->
+                    <svg class="checkbox-icon" viewBox="0 0 24 24">
+                      <path
+                        d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                    </svg>
+                    <span class="checkbox-label" id="labelText">NOTA NORMAL</span>
+                  </label>
+                </div>
               </div>
             </div>
 
             <div class="row pt-3">
-              <div class="col-sm" id="fecha">
+              <div class="col-sm-12" id="fecha">
                 <label for="Fecha" class="form-label trans">Fecha Agendamiento</label>
                 <div class="input-group">
                   <input type="date" class="form-control trans Fecha" id="Fecha"

@@ -229,8 +229,8 @@ textarea {
  display: flex;
   align-items: center; 
   gap: 12px;
-  padding: 15px 20px;
-  background: white;
+  padding: 7px 10px;
+  background: transparent;
   border-radius: 25px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
@@ -267,7 +267,7 @@ textarea {
 
 .checkbox-label {
   font-weight: 600;
-  color: #2c3e50;
+  color: #ffffff;
   font-size: 15px;
   user-select: none;
 }
