@@ -714,6 +714,9 @@ function crearNota() {
   let textoFinal = "";
 
   switch (valores.motivoLlamada) {
+    case "0": // agendar
+      textoFinal = procesarCasoAgenda(valores, textos);
+      break;
     case "1": // agendar
       textoFinal = procesarCasoAgenda(valores, textos);
       break;
@@ -732,7 +735,7 @@ function crearNota() {
     case "6": // Llamada caída
       textoFinal =
         textos.texto +
-        " pero se cae la llamada sin poder validar la información";
+        " y se cae la llamada sin poder validar la información";
       break;
     default:
       textoFinal = textos.texto;
@@ -950,8 +953,12 @@ function manejarCasoAgenda(valores) {
     const selectContacto = document.getElementById("Contacto");
     if (selectContacto) selectContacto.disabled = false;
   }
-
-  ValueMostrar("#Mtecnico", "solicitan reagendar la orden para el día ");
+  // Actualizar el texto del técnico según el caso
+  if (valores.mLlamada === "1") {
+    ValueMostrar("#Mtecnico", "titular solicita agendar la orden para el día ");
+  } else if (valores.mLlamada === "0") {
+    ValueMostrar("#Mtecnico", "se encuentra en predio y no logra contacto con titular  ");
+  }
 }
 
 // Función para manejar caso quiebre en manejarCambio
@@ -1053,6 +1060,9 @@ function manejarCambio(e) {
 
   if (Actualizartodo) {
     switch (valores.mLlamada) {
+      case "0": // agendar
+        manejarCasoAgenda(valores);
+        break;
       case "1": // agendar
         manejarCasoAgenda(valores);
         break;

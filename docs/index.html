@@ -140,7 +140,7 @@
   <!-- Modal -->
   <div class="modal fade" id="tipificarNota" tabindex="-1" role="dialog" aria-labelledby="tipificarModalLabel"
     aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog" role="document">
       <div class="modal-content trans">
         <div class="modal-header" id="color">
           <h5 class="modal-title" id="tipificarModalLabel">TIPIFICAR</h5>
@@ -154,8 +154,8 @@
               <div>
                 <select class="custom-select d-inline-block w-auto trans" id="Motivo">
                   <option value="" selected disabled>MOTIVO LLAMADA</option>
-                  <!-- <option value="0">NO CONTACTO</option> -->
                   <option value="1">AGENDAR</option>
+                  <option value="0">INCUMPLIMIENTO</option>
                   <option value="2">QUIEBRE</option>
                   <option value="3">NO APLICA SOPORTE</option>
                   <option value="4">GESTIÓN DECOS</option>
@@ -188,7 +188,7 @@
                 <option value="6">REAGENDAMIENTO POR LLUVIA</option>
                 <option value="7">TAREA ASIGNADA EN DIA O JORNADA DIFERENTE</option>
                 <option value="8">TAREA EN OTRO ESTADO</option>
-                <option value="9">TÉCNICO NO ALCANZA A LLEGAR, CASA CLIENTE</option>
+                <option value="9">TÉCNICO NO ALCANZA A LLEGAR A PREDIO</option>
                 <option value="10">TÉCNICO NO ENCUENTRA DIRECCIÓN DEL PREDIO</option>
                 <option value="11">BASEPORT ADICIONAL</option>
                 <option value="12">CAMBIO DE FRANJA</option>
@@ -251,8 +251,7 @@
                 <div class="row">
                   <div class="col-5">
                     <label for="NumTitular">Numero de Titular</label>
-                    <input type="number" class="form-control trans no-arrows" id="NumTitular" required
-                      autocomplete="off" placeholder="Número de teléfono">
+                    <input type="tel" class="form-control trans no-arrows" id="NumTitular" required autocomplete="off" placeholder="Número de teléfono">
                   </div>
                   <div class="col-5">
                     <label for="Contacto">Hubo Contacto</label>
@@ -263,10 +262,7 @@
                     </select>
                   </div>
                   <div class="col-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-success btn-block" data-toggle="tooltip" data-placement="top"
-                      title="Agregar número adicional">
-                      +
-                    </button>
+                    <button type="button" id="agregarNumero" class="btn btn-success btn-block" data-toggle="tooltip" data-placement="top" title="Agregar número adicional">+</button>
                   </div>
                 </div>
               </div>
@@ -285,10 +281,10 @@
                 <div class="col-sm-6" id="Acepta">
                   <label class="checkbox-container">
                     <input type="checkbox" class="checkbox-input" id="Aceptains">
-                    <svg class="checkbox-icon" viewBox="0 0 24 24">
+                    <!-- <svg class="checkbox-icon" viewBox="0 0 24 24">
                       <path
                         d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                    </svg>
+                    </svg> -->
                     <span class="checkbox-label">ACEPTA</span>
                   </label>
                 </div>
@@ -296,10 +292,10 @@
                 <div class="col-sm-6" id="suspender">
                   <label class="checkbox-container">
                     <input type="checkbox" class="checkbox-input" id="sus">
-                    <svg class="checkbox-icon" viewBox="0 0 24 24">
+                    <!-- <svg class="checkbox-icon" viewBox="0 0 24 24">
                       <path
                         d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
-                    </svg>
+                    </svg> -->
                     <span class="checkbox-label">SUSPENDER</span>
                   </label>
                 </div>

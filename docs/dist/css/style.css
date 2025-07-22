@@ -1,5 +1,4 @@
-html,
-body {
+html{
   height: 100%;
   margin: 0;
 }
@@ -23,11 +22,7 @@ body {
   backdrop-filter: blur(7px);
   border-radius: 10px;
   background: transparent;
-  color: rgb(
-    200,
-    200,
-    200
-  ); /* Corregido: removí el comentario dentro de la regla */
+  color: rgb(200,200,200); 
 }
 
 option {
@@ -61,6 +56,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 body {
+  height: 100%;
+  margin: 0;
   background-image: url("../img/4.jpg");
   background-size: cover;
   background-attachment: fixed;
