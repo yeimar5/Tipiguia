@@ -136,8 +136,7 @@ function resetearFormularios() {
   if (formularioElement && typeof formularioElement.reset === "function") {
     formularioElement.reset();
   }
-  const selectContacto = document.getElementById("Contacto");
-  selectContacto.disabled = false; // Habilitar el select de contacto
+  toggleElementStat("Contacto",false);
   resetearTextareas();
 }
 
@@ -383,14 +382,14 @@ function inicializarInputsEnMayusculas() {
 }
 
 function inicializarCheckboxNotaAplicativos() {
-  const checkbox = document.getElementById('notaApp');
+  const checkbox = document.getElementById("notaApp");
   if (checkbox) {
-    checkbox.addEventListener('change', function() {
-      const textoLabel = this.checked ? 'NOTA APLICATIVOS' : 'NOTA NORMAL';
-      setInnerHTML('#labelText', textoLabel);
-      
+    checkbox.addEventListener("change", function () {
+      const textoLabel = this.checked ? "NOTA APLICATIVOS" : "NOTA NORMAL";
+      setInnerHTML("#labelText", textoLabel);
+
       // Regenerar la nota cuando cambie el estado del checkbox
-      if (typeof crearNota === 'function') {
+      if (typeof crearNota === "function") {
         crearNota();
       }
     });
@@ -491,6 +490,7 @@ function obtenerValoresFormulario() {
     nombreTitular: document.getElementById("NomTitular").value,
     contingenciaActiva: document.getElementById("Contingencia").checked,
     aLaEsperadeInstalacion: document.getElementById("Aceptains").checked,
+    aceptarRecibo: document.getElementById("aceptarRecibo").checked,
     trabajador: document.getElementById("rol").value,
     contactoConTitular: document.getElementById("Contacto").value,
     motivoQuiebre: document.getElementById("mQuiebre").value,
@@ -516,6 +516,45 @@ function generarTextosBase(valores) {
     fechaFormateada: FormatearFecha(valores.fecha),
     texto: `LINEA RESCATE Se comunica ${valores.trabajador} informando que ${valores.motivoTecnico.value} `,
   };
+}
+
+function procesarCasoIncumplimiento(valores, textos) {
+  let notaGenerada = "";
+  let mensajeChatbot = "";
+
+  let texto = textos.texto + mensajeChatbot + ` ${textos.titularContacto} `;
+
+  if (valores.trabajador === "técnico") {
+    mensajeChatbot = valores.fallaChatbot
+      ? "Se valida soporte por falla reportada en chatbot"
+      : "Se valida chatbot ok.";
+
+    if (valores.contingenciaActiva) {
+      notaGenerada = "POR CONTINGENCIA se deja orden pendiente en aplicativos";
+    } else {
+      if (valores.contactoConTitular === "1") {
+        notaGenerada = `No contesta, Se Valida GPS ${valores.gpsActivo} Se Valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}`;
+        if (valores.gpsActivo === "OK" && valores.soporteFotografico === "OK") {
+          notaGenerada +=
+            " Se deja orden pendiente en aplicativos por no contacto con cliente";
+        } else {
+          notaGenerada +=
+            " Se le indica a técnico dirigirse al predio y Subir Soporte fotográfico";
+        }
+      } else if (valores.contactoConTitular === "2") {
+        notaGenerada += ` contesta e indica que ${valores.motivoCliente}`;
+        if (valores.aLaEsperadeInstalacion) {
+          notaGenerada +=
+            " indica que esta a la espera de instalación, valida datos correctos";
+        } else if (!valores.suspenderOrden) {
+          notaGenerada += "se deja orden pendiente por agendar";
+        } else {
+          notaGenerada += ` se reagenda para ${textos.fechaFormateada} En la franja ${valores.franjaAgenda}`;
+        }
+      }
+    }
+  }
+  return texto + notaGenerada;
 }
 
 // Función para procesar caso de agenda
@@ -696,7 +735,7 @@ function procesarCasoGestionDecos(valores, textos) {
 
 // Función para procesar caso de dirección piloto
 function procesarCasoDireccionPiloto(valores, textos) {
-  const respuesta = valores.aLaEsperadeInstalacion
+  const respuesta = valores.aceptarRecibo
     ? "SI se da aceptación al recibo publico"
     : `NO se acepta porque ${valores.motivoCliente}`;
 
@@ -715,7 +754,7 @@ function crearNota() {
 
   switch (valores.motivoLlamada) {
     case "0": // agendar
-      textoFinal = procesarCasoAgenda(valores, textos);
+      textoFinal = procesarCasoIncumplimiento(valores, textos);
       break;
     case "1": // agendar
       textoFinal = procesarCasoAgenda(valores, textos);
@@ -734,8 +773,7 @@ function crearNota() {
       break;
     case "6": // Llamada caída
       textoFinal =
-        textos.texto +
-        " y se cae la llamada sin poder validar la información";
+        textos.texto + " y se cae la llamada sin poder validar la información";
       break;
     default:
       textoFinal = textos.texto;
@@ -744,7 +782,7 @@ function crearNota() {
   textoFinal += textos.gestion;
   textoFinal = limpiarTexto(textoFinal);
 
-  // Procesar el texto con la función de Nota Aplicativos 
+  // Procesar el texto con la función de Nota Aplicativos
   if (typeof procesarTextoNotaAplicativos === "function") {
     textoFinal = procesarTextoNotaAplicativos(textoFinal);
   }
@@ -827,6 +865,13 @@ function mostrarSoloElementos(configuracion, elementosBase = {}) {
   }
 }
 
+function toggleElementStat(elementId, isDisabled) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.disabled = isDisabled;
+    }
+}
+
 // Función para obtener valores del formulario para manejarCambio
 function obtenerValoresManejarCambio() {
   return {
@@ -836,8 +881,76 @@ function obtenerValoresManejarCambio() {
     trabajador: document.querySelector("#rol").value,
     contingencia: document.getElementById("Contingencia").checked,
     aceptaInstalar: document.getElementById("Aceptains").checked,
+    aceptarRecibo: document.getElementById("aceptarRecibo").checked,
     suspender: document.getElementById("sus").checked,
   };
+}
+function manejarCasoIncumplimiento(valores) {
+  cambiarColorFondo("#0314f8ff");
+  
+  // Elementos que SIEMPRE se muestran en agenda
+  const elementosBaseIncumplimiento = {
+    block: ["#contingencia", "#contacto", "#contacto1", "#MotivoTec"],
+    flex: ["#fallaChatbot", "#Titular"],
+  };
+
+  if (valores.trabajador === "técnico") {
+    if (!valores.contingencia) {
+      toggleElementStat("Contacto", false);
+      if (valores.contacto === "...") {
+        mostrarSoloElementos(elementosBaseIncumplimiento);
+      } else if (valores.contacto === "1") {
+        mostrarSoloElementos(
+          {
+            flex: ["#GPS"],
+          },
+          elementosBaseIncumplimiento
+        );
+      } else {
+        if (!valores.suspender && !valores.aceptaInstalar) {
+          mostrarSoloElementos(
+            {
+              block: ["#Musuariod"],
+              flex: ["#suspender", "#Acepta"],
+            },
+            elementosBaseIncumplimiento
+          );
+        } else if (valores.suspender && !valores.aceptaInstalar) {
+          mostrarSoloElementos(
+            {
+              block: ["#fecha"],
+              flex: ["#suspender"],
+            },
+            elementosBaseIncumplimiento
+          );
+        } else if (!valores.suspender && valores.aceptaInstalar) {
+          mostrarSoloElementos(
+            {
+              flex: ["#Acepta"],
+            },
+            elementosBaseIncumplimiento
+          );
+        }
+      }
+    } else {
+      // Cuando contingencia es true
+      toggleElementStat("Contacto", true);
+      // Aquí puedes agregar la lógica adicional que necesites cuando contingencia es verdadero
+      // Por ejemplo, mostrar elementos específicos o ejecutar otras acciones
+    }
+  } else {
+    toggleElementStat("Contacto", true);
+    alert(
+      `No se puede gestionar incumplimiento desde el rol ${valores.trabajador}`,
+      2
+    );
+    return;
+  }
+  
+  ValueMostrar(
+    "#Mtecnico",
+    "se encuentra en predio y no logra contacto con cliente,  "
+  );
 }
 
 // Función para manejar caso agendamiento en manejarCambio
@@ -915,9 +1028,7 @@ function manejarCasoAgenda(valores) {
     }
   } else if (valores.contingencia) {
     if (valores.contacto !== "1") {
-      const selectContacto = document.getElementById("Contacto");
-      selectContacto.selectedIndex = 0; // Fuerza la opción por defecto (index 0)
-      selectContacto.disabled = true; // Bloquea el select para que no pueda modificarse
+      toggleElementStat("Contacto",true);
       mostrarSoloElementos(
         {
           block: ["#MotivoTec", "#fecha"],
@@ -950,15 +1061,10 @@ function manejarCasoAgenda(valores) {
       },
       elementosBaseAgenda
     );
-    const selectContacto = document.getElementById("Contacto");
-    if (selectContacto) selectContacto.disabled = false;
+    toggleElementStat("Contacto",false);
   }
   // Actualizar el texto del técnico según el caso
-  if (valores.mLlamada === "1") {
-    ValueMostrar("#Mtecnico", "titular solicita agendar la orden para el día ");
-  } else if (valores.mLlamada === "0") {
-    ValueMostrar("#Mtecnico", "se encuentra en predio y no logra contacto con titular  ");
-  }
+  ValueMostrar("#Mtecnico", "titular solicita agendar la orden para el día ");
 }
 
 // Función para manejar caso quiebre en manejarCambio
@@ -1007,9 +1113,7 @@ function manejarCasoQuiebre(valores) {
       document.querySelector("#Musuariod")
     );
   } else if (valores.contingencia) {
-    const selectContacto = document.getElementById("Contacto");
-    selectContacto.selectedIndex = 0; // Fuerza la opción por defecto (index 0)
-    selectContacto.disabled = true; // Bloquea el select para que no pueda modificarse
+    toggleElementStat("Contacto",true);
     mostrarSoloElementos(
       {
         block: ["#MotivoTec", "#MoQuiebre", "#nomt", "#numt"],
@@ -1024,8 +1128,7 @@ function manejarCasoQuiebre(valores) {
       },
       elementosBaseQuiebre
     );
-    const selectContacto = document.getElementById("Contacto");
-    if (selectContacto) selectContacto.disabled = false;
+    toggleElementStat("Contacto",false);
   }
 
   ValueMostrar("#Mtecnico", "titular desea cancelar el servicio por ");
@@ -1055,13 +1158,17 @@ function manejarCasoSoporteNoAplica(valores) {
 function manejarCambio(e) {
   Actualizartodo();
   setInnerHTML("#TMusuario", "MOTIVO USUARIO");
+  setInnerHTML("#labelAcepta", "CLIENTE ACEPTA INSTALAR");
+  setInnerHTML("#labelSuspender", "SUSPENDER ORDEN");
 
   const valores = obtenerValoresManejarCambio();
 
   if (Actualizartodo) {
     switch (valores.mLlamada) {
       case "0": // agendar
-        manejarCasoAgenda(valores);
+        manejarCasoIncumplimiento(valores);
+        setInnerHTML("#labelAcepta", "CLIENTE A LA ESPERA");
+        setInnerHTML("#labelSuspender", "AGENDAR");
         break;
       case "1": // agendar
         manejarCasoAgenda(valores);
@@ -1085,14 +1192,13 @@ function manejarCambio(e) {
         break;
       case "5": // Gestión piloto
         cambiarColorFondo("#c3c3c3");
+        setInnerHTML("#labelAcepta","ACEPTAR RECIBO")
         mostrarSoloElementos({
-          flex: ["#Acepta"],
           block: ["#MotivoTec", "#direccionSistema", "#DRP"],
         });
 
-        if (!valores.aceptaInstalar) {
+        if (!valores.aceptarRecibo) {
           mostrarSoloElementos({
-            flex: ["#Acepta"],
             block: ["#MotivoTec", "#direccionSistema", "#Musuariod", "#DRP"],
           });
           setInnerHTML("#TMusuario", "NO SE ACEPTA PORQUE?");
@@ -1119,12 +1225,12 @@ function manejarCambio(e) {
 
 // Función para procesar el texto y eliminar "POR CONTINGENCIA"
 function procesarTextoNotaAplicativos(texto) {
-    const checkbox = document.getElementById('notaApp');
-    if (checkbox && checkbox.checked) {
-        // Eliminar la frase "POR CONTINGENCIA" (case insensitive)
-        const cleanedText = texto.replace(/POR CONTINGENCIA/gi, '').trim();
-        // Limpiar espacios extras que puedan quedar
-        return cleanedText.replace(/\s+/g, ' ').trim();
-    }
-    return texto;
+  const checkbox = document.getElementById("notaApp");
+  if (checkbox && checkbox.checked) {
+    // Eliminar la frase "POR CONTINGENCIA" (case insensitive)
+    const cleanedText = texto.replace(/POR CONTINGENCIA/gi, "").trim();
+    // Limpiar espacios extras que puedan quedar
+    return cleanedText.replace(/\s+/g, " ").trim();
+  }
+  return texto;
 }
