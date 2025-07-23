@@ -70,7 +70,7 @@
         </div>
 
         <!-- Primera fila: Nombre y Rol -->
-        <div class="row p-3">
+        <div class="row pt-3">
           <div class="form-group col-sm-8">
             <label for="NombreTec">NOMBRE</label>
             <div style="position: relative;">
@@ -197,6 +197,14 @@
                 <option value="15">AVERIA</option>
               </select>
             </div>
+            <div id="jornadaSelect" class="pt-3">
+              <label for="tipoJornada" class="px-3">FRANJA DE LA ORDEN:</label>
+              <select id="tipoJornada" >
+                <option value="">...</option>
+                <option value="AM">AM</option>
+                <option value="PM">PM</option>
+              </select>
+            </div>
 
             <div class="row pt-3">
               <div class="col-12" id="MotivoTec">
@@ -277,7 +285,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row pt-2">
               <div class="col-12" id="Musuariod">
                 <label id="TMusuario" for="Musuario">Motivo Usuario</label>
                 <div class="form-group">

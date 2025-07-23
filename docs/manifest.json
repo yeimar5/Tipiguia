@@ -1,0 +1,20 @@
+{
+  "name": "Tipificador - Línea de Rescate",
+  "short_name": "Tipificador",
+  "description": "Aplicación para tipificación de llamadas en línea de rescate",
+  "theme_color": "#007bff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "./",
+  "start_url": "./",
+  "lang": "es",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "./dist/img/LR.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}

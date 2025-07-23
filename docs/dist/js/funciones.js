@@ -136,7 +136,7 @@ function resetearFormularios() {
   if (formularioElement && typeof formularioElement.reset === "function") {
     formularioElement.reset();
   }
-  toggleElementStat("Contacto",false);
+  toggleElementStat("Contacto", false);
   resetearTextareas();
 }
 
@@ -399,6 +399,14 @@ function inicializarCheckboxNotaAplicativos() {
 // ===========================================
 // INICIALIZACIÓN PRINCIPAL
 // ===========================================
+/* document.getElementById('tuSelectPrincipal').addEventListener('change', function() {
+    const jornadaDiv = document.getElementById('jornadaSelect');
+    if (this.value === '7') {
+        jornadaDiv.classList.remove('hidden');
+    } else {
+        jornadaDiv.classList.add('hidden');
+    }
+}); */
 
 document.addEventListener("DOMContentLoaded", function () {
   inicializarInputsEnMayusculas();
@@ -481,7 +489,7 @@ function ordenarElementos(elem1, elem2) {
 // FUNCIONES DE CREACIÓN DE NOTA
 // ===========================================
 
-// Función para obtener todos los valores del formulario
+// También verifica que la función obtenerValoresFormulario esté correcta
 function obtenerValoresFormulario() {
   return {
     motivoLlamada: document.querySelector("#Motivo").value,
@@ -611,66 +619,85 @@ function procesarCasoAgenda(valores, textos) {
   return texto + notaGenerada;
 }
 
-// Función para procesar caso de quiebre
+// Función para procesar caso de quiebre - MODIFICADA
 function procesarCasoQuiebre(valores, textos) {
-  let texto = textos.texto;
+  let notaGenerada = "";
   let mensajeChatbot = "";
+
+  let texto = textos.texto + mensajeChatbot + ` ${textos.titularContacto} `;
 
   if (valores.trabajador === "técnico") {
     mensajeChatbot = valores.fallaChatbot
-      ? ", se valida soporte por falla reportada en chatbot"
-      : ", se valida chatbot ok.";
-  }
+      ? "Se valida soporte por falla reportada en chatbot"
+      : "Se valida chatbot ok.";
 
-  texto += mensajeChatbot;
-
-  if (
-    valores.contactoConTitular === "1" ||
-    valores.contactoConTitular === "..."
-  ) {
-    if (valores.trabajador === "gestor") {
-      texto += `${textos.titularContacto}. No contesta se le indica a gestor que intente mas tarde para proceder con la gestión.`;
+    if (valores.contingenciaActiva) {
+      notaGenerada = "POR CONTINGENCIA se deja orden suspendida en aplicativos";
     } else {
-      if (valores.contingenciaActiva) {
-        texto = `QC - ${valores.motivoQuiebre} - ${texto} no ${textos.titularContacto} POR CONTINGENCIA se deja orden suspendida en aplicativos`;
-      } else if (
-        valores.gpsActivo === "OK" &&
-        valores.soporteFotografico === "OK"
+      if (
+        valores.contactoConTitular === "1" ||
+        valores.contactoConTitular === "..."
       ) {
-        texto = `QC - ${valores.motivoQuiebre} - ${texto} ${textos.titularContacto}. No contesta. Se valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}. Se valida GPS ${valores.gpsActivo}. Se deja orden suspendida en aplicativos.`;
-      } else {
-        texto += `${textos.titularContacto}. No contesta. Se valida GPS ${valores.gpsActivo}. Se valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}. Se le indica al técnico dirigirse al predio y subir soporte fotográfico.`;
+        if (valores.trabajador === "gestor") {
+          notaGenerada = `No contesta se le indica a gestor que intente mas tarde para proceder con la gestión.`;
+        } else {
+          if (
+            valores.gpsActivo === "OK" &&
+            valores.soporteFotografico === "OK"
+          ) {
+            notaGenerada = `QC - ${valores.motivoQuiebre} - ${texto} No contesta. Se valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}. Se valida GPS ${valores.gpsActivo}. Se deja orden suspendida en aplicativos.`;
+          } else {
+            notaGenerada = `No contesta. Se valida GPS ${valores.gpsActivo}. Se valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}. Se le indica al técnico dirigirse al predio y subir soporte fotográfico.`;
+          }
+        }
+      } else if (valores.contactoConTitular === "2") {
+        // AQUÍ ESTÁ EL CAMBIO PRINCIPAL
+        const motivosEspeciales = [
+          "TELÉFONO DEL CLIENTE ERRADO",
+          "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN",
+          "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN",
+        ];
+
+        // Si el checkbox está marcado O si es un motivo especial
+        if (
+          valores.aLaEsperadeInstalacion ||
+          motivosEspeciales.includes(valores.motivoQuiebre)
+        ) {
+          return procesarMotivoEspecial(valores, textos, texto);
+        } else {
+          // Caso normal de quiebre
+          notaGenerada = valores.suspenderOrden
+            ? `QC - ${valores.motivoQuiebre} - ${texto} ${valores.motivoCliente}. Se deja orden suspendida en aplicativos.`
+            : `QC - ${valores.motivoQuiebre} - ${texto} ${valores.motivoCliente}. Se hace objeción pero desiste, valida datos, se procede a quebrar orden.`;
+        }
       }
     }
-  } else if (valores.contactoConTitular === "2") {
-    const motivosEspeciales = [
-      "TELÉFONO DEL CLIENTE ERRADO",
-      "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN",
-      "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN",
-    ];
-
-    if (!motivosEspeciales.includes(valores.motivoQuiebre)) {
-      texto = valores.suspenderOrden
-        ? `QC - ${valores.motivoQuiebre} - ${texto} ${textos.titularContacto} ${valores.motivoCliente}. Se deja orden suspendida en aplicativos.`
-        : `QC - ${valores.motivoQuiebre} - ${texto} ${textos.titularContacto} ${valores.motivoCliente}. Se hace objeción pero desiste, valida datos, se procede a quebrar orden.`;
-    } else {
-      texto = procesarMotivoEspecial(valores, textos, texto);
-    }
   }
 
-  return texto;
+  texto = textos.texto + mensajeChatbot + ` ${textos.titularContacto} `;
+  return texto + notaGenerada;
 }
 
 // Función auxiliar para procesar motivos especiales en quiebre
 function procesarMotivoEspecial(valores, textos, texto) {
+  // Si el checkbox está marcado O si el motivo es "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN"
   if (
+    valores.aLaEsperadeInstalacion ||
     valores.motivoQuiebre === "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN"
   ) {
+    // Usar el motivoCliente si tiene contenido, si no usar "contesta"
+    const motivoTexto =
+      valores.motivoCliente && valores.motivoCliente.trim() !== ""
+        ? valores.motivoCliente
+        : "contesta";
+
     return (
       texto +
-      `${valores.motivoCliente}. Se hace objeción, acepta instalación y valida datos correctos.`
+      `${motivoTexto}. Se hace objeción, acepta instalación y valida datos correctos.`
     );
-  } else if (
+  }
+
+  if (
     valores.motivoQuiebre ===
     "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN"
   ) {
@@ -678,19 +705,28 @@ function procesarMotivoEspecial(valores, textos, texto) {
       texto +
       `${textos.titularContacto} ${valores.motivoCliente}. Solicita que lo llamen en 10 minutos.`
     );
-  } else if (valores.motivoQuiebre === "TELÉFONO DEL CLIENTE ERRADO") {
+  }
+
+  if (valores.motivoQuiebre === "TELÉFONO DEL CLIENTE ERRADO") {
     if (valores.trabajador === "gestor") {
       return `QC - ${valores.motivoQuiebre} - ${texto} ${textos.titularContacto} ${valores.motivoCliente}. se indica que debe enviar técnico a predio para poder suspender la orden.`;
     } else {
       return `QC - ${valores.motivoQuiebre} - ${texto} ${textos.titularContacto} ${valores.motivoCliente}. Se valida SOPORTE FOTOGRÁFICO OK, se valida GPS OK, se procede a suspender orden.`;
     }
   }
+
   return texto;
 }
 
 // Función para procesar caso de soporte no aplica
 function procesarCasoSoporteNoAplica(valores, textos) {
   const soporteNoAplica = document.querySelector("#noSoporte").value;
+  const tipoJornada = document.querySelector("#tipoJornada")?.value || null;
+  const mensajesCaso7 = {
+    AM: ", se valida orden se encuentra en franja AM se le indica que en linea rescate solo gestionamos ordenes en AM máximo hasta las 1 pm, se le indica a técnico validar con su gestor",
+    PM: ", se valida y orden esta en PM se indica que ordenes pm solo se pueden atender despues de medio dia, se le indica a técnico validar con su gestor",
+  };
+
   const mensajes = {
     1: "se valida chatbot y no ha realizado el proceso, se le indica que debe realizar el proceso antes de comunicarse con la linea y si hay fallo reportarlo con su gestor para que reporten a centro comando, se le brinda ticket",
     2: "se valida chatbot y no ha esperado respuesta se le recuerda parámetros del aplicativo a tener en cuenta antes de comunicarse con la linea y si hay alguna falla reportarlo con centro comando. se le brinda ticket",
@@ -698,7 +734,7 @@ function procesarCasoSoporteNoAplica(valores, textos) {
     4: `${textos.titularContacto} contesta ${valores.motivoCliente} se le indica que en linea de rescate no se gestiona ordenes porque le falten materiales debe realizar autogestión o validar con su gestor`,
     5: `${textos.titularContacto} contesta ${valores.motivoCliente} se le informa que esta gestión no se realiza por linea de rescate que valide con cierre controlado o con su gestor`,
     6: `${textos.titularContacto} contesta ${valores.motivoCliente} se le indica a Técnico que debe hacer autogestión o validar con gestor ya que en linea de rescate no se gestiona ordenes por lluvias`,
-    7: "se valida orden se encuentra en franja am se le indica que en linea rescate solo gestionamos ordenes en am máximo hasta las 1 pm se le indica a técnico hacer autogestión o validar con su gestor",
+    7: mensajesCaso7[tipoJornada],
     8: "se valida orden esta se encuentra en otro estado se le indica a Técnico no se puede gestionar esta orden se le indica validar con gestor",
     9: `${textos.titularContacto} contesta ${valores.motivoCliente} se le indica que en linea de rescate no se gestiona orden porque no pueda llegar al predio debe validar con gestor o hacer autogestión`,
     10: "se le indica comunicarse con gestor o hacer autogestión ya que desde linea de rescate no se gestionan por ese motivo",
@@ -706,9 +742,12 @@ function procesarCasoSoporteNoAplica(valores, textos) {
     12: "se valida orden se encuentra en franja am se le indica que en linea rescate solo se puede hacer cambio de franja máximo hasta las 12 pm se le indica a técnico hacer autogestión o validar con su gestor",
     13: `${textos.titularContacto} contesta ${valores.motivoCliente} se le informa a Técnico hacer autogestión por dirección errada`,
     14: `${textos.titularContacto} ${valores.motivoCliente} se solicita la baja de perfil en speedy`,
-    15: "se valida orden y es una avería, se le indica que desde linea de rescate no se gestiona que se comunique con gestor o cierre controlado",
+    15: "se valida orden y es una avería, se le indica que desde linea rescate no se gestiona que se comunique con gestor o cierre controlado",
   };
-
+  /* if (soporteNoAplica === '7' && (!tipoJornada || tipoJornada === '')) {
+    alert('Por favor seleccione el tipo de orden (AM/PM) para la tarea asignada en día o jornada diferente');
+    return false;
+  } */
   return textos.texto + mensajes[soporteNoAplica];
 }
 
@@ -814,6 +853,7 @@ const todosLosElementos = [
   "#direccionSistema",
   "#nomt",
   "#numt",
+  "#jornadaSelect",
 ];
 
 // Función mejorada que acepta elementos base que siempre se muestran
@@ -866,10 +906,10 @@ function mostrarSoloElementos(configuracion, elementosBase = {}) {
 }
 
 function toggleElementStat(elementId, isDisabled) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.disabled = isDisabled;
-    }
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.disabled = isDisabled;
+  }
 }
 
 // Función para obtener valores del formulario para manejarCambio
@@ -887,7 +927,7 @@ function obtenerValoresManejarCambio() {
 }
 function manejarCasoIncumplimiento(valores) {
   cambiarColorFondo("#0314f8ff");
-  
+
   // Elementos que SIEMPRE se muestran en agenda
   const elementosBaseIncumplimiento = {
     block: ["#contingencia", "#contacto", "#contacto1", "#MotivoTec"],
@@ -918,7 +958,7 @@ function manejarCasoIncumplimiento(valores) {
         } else if (valores.suspender && !valores.aceptaInstalar) {
           mostrarSoloElementos(
             {
-              block: ["#fecha"],
+              block: ["#Musuariod", "#fecha"],
               flex: ["#suspender"],
             },
             elementosBaseIncumplimiento
@@ -926,6 +966,7 @@ function manejarCasoIncumplimiento(valores) {
         } else if (!valores.suspender && valores.aceptaInstalar) {
           mostrarSoloElementos(
             {
+              block: ["#Musuariod"],
               flex: ["#Acepta"],
             },
             elementosBaseIncumplimiento
@@ -935,6 +976,12 @@ function manejarCasoIncumplimiento(valores) {
     } else {
       // Cuando contingencia es true
       toggleElementStat("Contacto", true);
+      mostrarSoloElementos(
+        {
+          flex: ["#notaAplicativos"],
+        },
+        elementosBaseIncumplimiento
+      );
       // Aquí puedes agregar la lógica adicional que necesites cuando contingencia es verdadero
       // Por ejemplo, mostrar elementos específicos o ejecutar otras acciones
     }
@@ -946,7 +993,7 @@ function manejarCasoIncumplimiento(valores) {
     );
     return;
   }
-  
+
   ValueMostrar(
     "#Mtecnico",
     "se encuentra en predio y no logra contacto con cliente,  "
@@ -1028,7 +1075,7 @@ function manejarCasoAgenda(valores) {
     }
   } else if (valores.contingencia) {
     if (valores.contacto !== "1") {
-      toggleElementStat("Contacto",true);
+      toggleElementStat("Contacto", true);
       mostrarSoloElementos(
         {
           block: ["#MotivoTec", "#fecha"],
@@ -1061,7 +1108,7 @@ function manejarCasoAgenda(valores) {
       },
       elementosBaseAgenda
     );
-    toggleElementStat("Contacto",false);
+    toggleElementStat("Contacto", false);
   }
   // Actualizar el texto del técnico según el caso
   ValueMostrar("#Mtecnico", "titular solicita agendar la orden para el día ");
@@ -1104,7 +1151,7 @@ function manejarCasoQuiebre(valores) {
     mostrarSoloElementos(
       {
         block: ["#MotivoTec", "#Musuariod", "#MoQuiebre"],
-        flex: ["#suspender"],
+        flex: ["#suspender", "#Acepta"],
       },
       elementosBaseQuiebre
     );
@@ -1113,7 +1160,7 @@ function manejarCasoQuiebre(valores) {
       document.querySelector("#Musuariod")
     );
   } else if (valores.contingencia) {
-    toggleElementStat("Contacto",true);
+    toggleElementStat("Contacto", true);
     mostrarSoloElementos(
       {
         block: ["#MotivoTec", "#MoQuiebre", "#nomt", "#numt"],
@@ -1128,7 +1175,7 @@ function manejarCasoQuiebre(valores) {
       },
       elementosBaseQuiebre
     );
-    toggleElementStat("Contacto",false);
+    toggleElementStat("Contacto", false);
   }
 
   ValueMostrar("#Mtecnico", "titular desea cancelar el servicio por ");
@@ -1149,9 +1196,36 @@ function manejarCasoSoporteNoAplica(valores) {
     mostrarSoloElementos({
       block: ["#MotivoTec", "#Soporte"],
     });
+    if (valores.soporteNA === "7") {
+      mostrarSoloElementos({
+        block: ["#MotivoTec", "#Soporte"],
+        flex: ["#jornadaSelect"],
+      });
+    }
   }
 
   ValueMostrar("#Mtecnico", "");
+}
+
+function manejarCasoDecos(valores) {
+  const elementosBaseDecos = {
+    block: ["#MotivoTec",  "#contacto", "#contacto1"],
+    flex: ["#Titular", "#fallaChatbot"],
+  };
+  cambiarColorFondo("#00ccfe");
+  mostrarSoloElementos(
+    elementosBaseDecos,
+  );
+  if (valores.contacto === "2"){
+    mostrarSoloElementos({
+      block: ["#Musuariod"]},
+    elementosBaseDecos,
+  );
+  }
+  ValueMostrar(
+    "#Mtecnico",
+    "titular solicita adicionar un decodificador a la orden para un total de "
+  );
 }
 
 // Función principal para manejarCambio
@@ -1180,19 +1254,11 @@ function manejarCambio(e) {
         manejarCasoSoporteNoAplica(valores);
         break;
       case "4": // Gestión decos
-        cambiarColorFondo("#00ccfe");
-        mostrarSoloElementos({
-          block: ["#MotivoTec", "#Musuariod", "#contacto", "#contacto1"],
-          flex: ["#Titular", "#fallaChatbot"],
-        });
-        ValueMostrar(
-          "#Mtecnico",
-          "titular solicita adicionar un decodificador a la orden para un total de "
-        );
+        manejarCasoDecos(valores);
         break;
       case "5": // Gestión piloto
         cambiarColorFondo("#c3c3c3");
-        setInnerHTML("#labelAcepta","ACEPTAR RECIBO")
+        setInnerHTML("#labelAcepta", "ACEPTAR RECIBO");
         mostrarSoloElementos({
           block: ["#MotivoTec", "#direccionSistema", "#DRP"],
         });
