@@ -275,6 +275,7 @@
                     <select class="custom-select trans" id="Contacto">
                       <option selected>...</option>
                       <!-- <option value="contactado">Contacto</option> -->
+                      <option value="2">Contacto</option>
                       <option value="1">Sin Contacto</option>
                       <option value="ocupado">Línea ocupada</option>
                       <option value="fuera_servicio">Número fuera de servicio</option>
@@ -283,7 +284,6 @@
                       <option value="cuelga">Cliente cuelga inmediatamente</option>
                       <option value="tercero">Atiende tercera persona</option>
                       <option value="rechaza_llamada">Rechaza la llamada</option>
-                      <option value="2">Contacto</option>
                     </select>
                   </div>
                   <div class="col-2 d-flex align-items-end">
@@ -427,20 +427,6 @@
   <script src="./dist/js/bootstrap.bundle.min.js"></script>
   <script src="./dist/js/sweetalert2@11.js"></script>
   <script src="./dist/js/funciones.js"></script>
-
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./sw.js')
-          .then(function (registration) {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          }, function (err) {
-            console.log('ServiceWorker registration failed: ', err);
-          });
-      });
-    }
-  </script>
-</body>
+  </body>
 
 </html>
