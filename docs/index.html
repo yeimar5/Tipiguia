@@ -199,7 +199,7 @@
             </div>
             <div id="jornadaSelect" class="pt-3">
               <label for="tipoJornada" class="px-3">FRANJA DE LA ORDEN:</label>
-              <select id="tipoJornada">
+              <select id="tipoJornada" >
                 <option value="">...</option>
                 <option value="AM">AM</option>
                 <option value="PM">PM</option>
@@ -262,31 +262,23 @@
                 </div>
               </div>
             </div>
-            <div class="row" >
+            <div class="row">
               <div class="col-12" id="contacto1">
                 <div class="row">
-                  <div class="col-3">
+                  <div class="col-5">
                     <label for="NumTitular">Numero de Titular</label>
                     <input type="tel" class="form-control trans no-arrows" id="NumTitular" required autocomplete="off"
                       placeholder="Número de teléfono">
                   </div>
-                  <div class="col-auto">
+                  <div class="col-5">
                     <label for="Contacto">Hubo Contacto</label>
                     <select class="custom-select trans" id="Contacto">
                       <option selected>...</option>
-                      <option value="contactado">Contacto</option>
                       <option value="1">Sin Contacto</option>
-                      <option value="ocupado">Línea ocupada</option>
-                      <option value="fuera_servicio">Número fuera de servicio</option>
-                      <option value="equivocado">Número equivocado</option>
-                      <option value="buzon">Contestó buzón de voz</option>
-                      <option value="cuelga">Cliente cuelga inmediatamente</option>
-                      <option value="tercero">Atiende tercera persona</option>
-                      <option value="rechaza_llamada">Rechaza la llamada</option>
+                      <option value="2">Contacto</option>
                     </select>
                   </div>
-                  
-                  <div class="col-1 d-flex align-items-end">
+                  <div class="col-2 d-flex align-items-end">
                     <button type="button" id="agregarNumero" class="btn btn-success btn-block" data-toggle="tooltip"
                       data-placement="top" title="Agregar número adicional">+</button>
                   </div>
