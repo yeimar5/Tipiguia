@@ -19,6 +19,31 @@ const ADDRESS_INPUTS = ["via", "cruce", "placa", "complemento"];
 const INVALID_STRINGS = ["Invalid Date", "NaN", "undefined", "null"];
 
 // ===========================================
+// CONSTANTES PARA MAPEO DE SIN CONTACTO
+// ===========================================
+
+const TEXTO_SIN_CONTACTO = {
+  "1": "No contesta",
+  "ocupado": "línea ocupada",
+  "fuera_servicio": "número fuera de servicio",
+  "equivocado": "número equivocado",
+  "buzon": "se va a correo de voz",
+  "cuelga": "cuelga la llamada",
+  "tercero": "contesta tercero",
+  "rechaza_llamada": "rechaza la llamada"
+};
+
+// ===========================================
+// FUNCIONES AUXILIARES PARA SIN CONTACTO
+// ===========================================
+
+function esSinContacto(valorContacto) {
+  // "2" es contacto exitoso, "..." es valor por defecto
+  // Todo lo demás son tipos de sin contacto
+  return valorContacto !== "2" && valorContacto !== "..." && TEXTO_SIN_CONTACTO.hasOwnProperty(valorContacto);
+}
+
+// ===========================================
 // INICIALIZACIÓN Y EVENT LISTENERS
 // ===========================================
 
@@ -540,8 +565,9 @@ function procesarCasoIncumplimiento(valores, textos) {
     if (valores.contingenciaActiva) {
       notaGenerada = "POR CONTINGENCIA se deja orden pendiente en aplicativos";
     } else {
-      if (valores.contactoConTitular === "1") {
-        notaGenerada = `No contesta, Se Valida GPS ${valores.gpsActivo} Se Valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}`;
+      if (esSinContacto(valores.contactoConTitular)) {
+        const textoSinContacto = obtenerTextoSinContacto(valores.contactoConTitular);
+        notaGenerada = `${textoSinContacto}, Se Valida GPS ${valores.gpsActivo} Se Valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}`;
         if (valores.gpsActivo === "OK" && valores.soporteFotografico === "OK") {
           notaGenerada +=
             " Se deja orden pendiente en aplicativos por no contacto con cliente";
@@ -1209,18 +1235,18 @@ function manejarCasoSoporteNoAplica(valores) {
 
 function manejarCasoDecos(valores) {
   const elementosBaseDecos = {
-    block: ["#MotivoTec",  "#contacto", "#contacto1"],
+    block: ["#MotivoTec", "#contacto", "#contacto1"],
     flex: ["#Titular", "#fallaChatbot"],
   };
   cambiarColorFondo("#00ccfe");
-  mostrarSoloElementos(
-    elementosBaseDecos,
-  );
-  if (valores.contacto === "2"){
-    mostrarSoloElementos({
-      block: ["#Musuariod"]},
-    elementosBaseDecos,
-  );
+  mostrarSoloElementos(elementosBaseDecos);
+  if (valores.contacto === "2") {
+    mostrarSoloElementos(
+      {
+        block: ["#Musuariod"],
+      },
+      elementosBaseDecos
+    );
   }
   ValueMostrar(
     "#Mtecnico",
