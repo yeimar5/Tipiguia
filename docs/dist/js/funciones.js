@@ -88,8 +88,7 @@ function manejarClick(evento) {
     },
     copiar3: () =>
       copiarYAlertar(document.getElementById(`atis`).value, alerta),
-    btnCopiarNota: () =>
-      copiarYAlertar(document.getElementById(`textoNota`).value, alerta),
+    btnCopiarNota: copiarNotaConValidacion,
     pedirCuota: pedirCuota,
     limpiar: resetearFormularios,
     Tipificar: lanzarModal,
@@ -173,6 +172,9 @@ function resetearFormularios() {
   }
   toggleElementStat("Contacto", false);
   resetearTextareas();
+  
+  // ✨ NUEVA LÍNEA - Limpiar resaltados
+  limpiarResaltados();
 }
 
 // ===========================================
@@ -1341,3 +1343,338 @@ function procesarTextoNotaAplicativos(texto) {
   }
   return texto;
 }
+
+// ===========================================
+// VALIDACIÓN PARA COPIAR NOTA - VERSIÓN SIMPLE
+// ===========================================
+
+function validarAntesDeCopirarNota() {
+  const errores = [];
+  const motivoLlamada = document.getElementById("Motivo").value;
+  
+  // Campos específicos según el motivo (SIN campos básicos)
+  const camposPorMotivo = {
+    "0": { // Incumplimiento
+      Contacto: "Tipo de contacto",
+      // Pedir fecha solo si hay contacto exitoso (2) y cliente desea agendar (suspender)
+      ...(document.getElementById("Contacto")?.value === "2" && document.getElementById("sus")?.checked
+        ? { Fecha: "Fecha de agenda", Franja: "Franja horaria" }
+        : {}),
+      telefono: "Número de teléfono"
+        },
+        "1": { // Agenda
+      Contacto: "Tipo de contacto",
+      // Pedir fecha solo si NO está checkeado suspender (sus)
+      ...(document.getElementById("sus")?.checked === false
+        ? { Fecha: "Fecha de agenda", Franja: "Franja horaria" }
+        : {}),
+      telefono: "Número de teléfono"
+        },
+        "2": { // Quiebre
+      Contacto: "Tipo de contacto",
+      mQuiebre: "Motivo de quiebre",
+      telefono: "Número de teléfono"
+        },
+        "3": { // Soporte no aplica
+      noSoporte: "Tipo de soporte",
+      telefono: "Número de teléfono"
+        },
+        "4": { // Gestión decos
+      Contacto: "Tipo de contacto",
+      telefono: "Número de teléfono"
+        },
+        "5": { // Dirección piloto
+      direccionSistema: "Dirección del sistema",
+      resultado: "Dirección de recibo",
+        },
+        "6": {} // Llamada caída - sin campos adicionales
+      };
+  
+  // Validar campos del motivo actual
+  const camposRequeridos = camposPorMotivo[motivoLlamada] || {};
+  Object.entries(camposRequeridos).forEach(([campo, descripcion]) => {
+    const elemento = document.getElementById(campo);
+    if (!elemento || !elemento.value || elemento.value.trim() === "" || elemento.value === "...") {
+      errores.push(`❌ Falta: ${descripcion}`);
+    }
+  });
+  
+  // Validaciones condicionales inteligentes
+  errores.push(...validarCamposCondicionales(motivoLlamada));
+  
+  return errores;
+}
+
+function validarCamposCondicionales(motivoLlamada) {
+  const errores = [];
+  const contacto = document.getElementById("Contacto")?.value;
+  
+  // Si hay contacto exitoso (2), debe tener motivo del cliente
+  if (contacto === "2") {
+    const motivoCliente = document.getElementById("Musuario")?.value;
+    if (!motivoCliente || motivoCliente.trim() === "") {
+      errores.push("❌ Falta: Motivo del cliente (cuando hay contacto exitoso)");
+    }
+  }
+  
+  // Validaciones específicas por motivo
+  switch (motivoLlamada) {
+    case "2": // Quiebre
+      // Si es quiebre con contacto exitoso, verificar motivo específico
+      if (contacto === "2") {
+        const motivoQuiebre = document.getElementById("mQuiebre")?.value;
+        if (!motivoQuiebre || motivoQuiebre === "...") {
+          errores.push("❌ Falta: Motivo específico de quiebre");
+        }
+      }
+      break;
+      
+    case "3": // Soporte no aplica
+      const tipoSoporte = document.getElementById("noSoporte")?.value;
+      // Si es tipo 7 (jornada), requiere AM/PM
+      if (tipoSoporte === "7") {
+        const jornada = document.getElementById("tipoJornada")?.value;
+        if (!jornada || jornada === "") {
+          errores.push("❌ Falta: Tipo de jornada (AM/PM)");
+        }
+      }
+      break;
+      
+    case "5": // Dirección piloto
+      const aceptaRecibo = document.getElementById("aceptarRecibo")?.checked;
+      if (!aceptaRecibo) {
+        const motivoNoAcepta = document.getElementById("Musuario")?.value;
+        if (!motivoNoAcepta || motivoNoAcepta.trim() === "") {
+          errores.push("❌ Falta: Motivo por el cual no acepta el recibo");
+        }
+      }
+      break;
+  }
+  
+  // Validar fecha no sea anterior a hoy (si existe)
+  const fecha = document.getElementById("Fecha")?.value;
+  if (fecha) {
+    const fechaSeleccionada = new Date(fecha);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    fechaSeleccionada.setHours(0, 0, 0, 0);
+    
+    if (fechaSeleccionada < hoy) {
+      errores.push("❌ La fecha de agenda no puede ser anterior a hoy");
+    }
+  }
+  
+  return errores;
+}
+// ===========================================
+// RESALTADO VISUAL DE CAMPOS FALTANTES
+// ===========================================
+
+function resaltarCamposFaltantes() {
+  // Primero limpiar todos los resaltados anteriores
+  document.querySelectorAll('.campo-faltante').forEach(el => {
+    el.classList.remove('campo-faltante');
+  });
+  
+  // Obtener los errores actuales
+  const errores = validarAntesDeCopirarNota();
+  
+  if (errores.length === 0) return; // Si no hay errores, no resaltar nada
+  
+  const motivoLlamada = document.getElementById("Motivo").value;
+  const contacto = document.getElementById("Contacto")?.value;
+  
+  // Lista de todos los campos que podrían necesitar resaltado
+  const camposParaRevisar = [
+    'Contacto', 'Fecha', 'Franja', 'mQuiebre', 'noSoporte', // Por motivo
+    'direccionSistema', 'resultado', 'Musuario', 'tipoJornada' // Condicionales
+  ];
+  
+  // Resaltar campos que están vacíos y son requeridos
+  camposParaRevisar.forEach(campo => {
+    const elemento = document.getElementById(campo);
+    if (elemento && esRequeridoYVacio(campo, motivoLlamada, contacto)) {
+      elemento.classList.add('campo-faltante');
+      
+      // Hacer scroll suave al primer campo faltante
+      if (!document.querySelector('.campo-faltante.primer-faltante')) {
+        elemento.classList.add('primer-faltante');
+        setTimeout(() => {
+          elemento.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+        }, 100);
+      }
+    }
+  });
+}
+
+function esRequeridoYVacio(campo, motivoLlamada, contacto) {
+  const elemento = document.getElementById(campo);
+  const valor = elemento?.value;
+  const estaVacio = !valor || valor.trim() === "" || valor === "...";
+  
+  if (!estaVacio) return false; // Si no está vacío, no resaltar
+  
+  // YA NO HAY CAMPOS BÁSICOS - Eliminamos esta parte:
+  // const basicos = ['NombreTec', 'atis', 'telefono', 'NomTitular'];
+  // if (basicos.includes(campo)) return true;
+  
+  // Campos por motivo
+  const requeridosPorMotivo = {
+    "0": ['Contacto', 'Fecha', 'Franja'], // Incumplimiento
+    "1": ['Contacto', 'Fecha', 'Franja'], // Agenda  
+    "2": ['Contacto', 'mQuiebre'], // Quiebre
+    "3": ['noSoporte'], // Soporte
+    "4": ['Contacto'], // Decos
+    "5": ['direccionSistema', 'resultado'], // Piloto
+    "6": [] // Llamada caída
+  };
+  
+  const camposMotivo = requeridosPorMotivo[motivoLlamada] || [];
+  if (camposMotivo.includes(campo)) {
+    // Casos especiales
+    if ((campo === 'Fecha' || campo === 'Franja') && 
+        document.getElementById("Contingencia")?.checked) {
+      return false; // No requerido si hay contingencia
+    }
+    return true;
+  }
+  
+  // Campos condicionales
+  if (campo === 'Musuario' && contacto === "2") return true;
+  if (campo === 'tipoJornada' && motivoLlamada === "3" && 
+      document.getElementById("noSoporte")?.value === "7") return true;
+  if (campo === 'Musuario' && motivoLlamada === "5" && 
+      !document.getElementById("aceptarRecibo")?.checked) return true;
+  
+  return false;
+}
+
+// Agregar los estilos CSS
+function agregarEstilosResaltado() {
+  // Verificar si ya se agregaron los estilos
+  if (document.getElementById('estilos-validacion')) return;
+  
+  const style = document.createElement('style');
+  style.id = 'estilos-validacion';
+  style.textContent = `
+    .campo-faltante {
+      border: 3px solid #ff4757 !important;
+      background-color: #ffe8e8 !important;
+      box-shadow: 0 0 10px rgba(255, 71, 87, 0.3) !important;
+      animation: pulsoRojo 2s ease-in-out infinite;
+    }
+    
+    .campo-faltante:focus {
+      border-color: #ff3742 !important;
+      box-shadow: 0 0 15px rgba(255, 71, 87, 0.5) !important;
+    }
+    
+    @keyframes pulsoRojo {
+      0% { 
+        box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
+      }
+      50% { 
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
+        transform: scale(1.01);
+      }
+      100% { 
+        box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
+      }
+    }
+    
+    /* Efecto de éxito cuando se completa */
+    .campo-completado {
+      border: 2px solid #2ed573 !important;
+      background-color: #f0fff4 !important;
+      animation: completadoVerde 1s ease;
+    }
+    
+    @keyframes completadoVerde {
+      0% { background-color: #f0fff4; }
+      50% { background-color: #d4edda; }
+      100% { background-color: #f0fff4; }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function copiarNotaConValidacion() {
+  const errores = validarAntesDeCopirarNota();
+  
+  if (errores.length > 0) {
+    // Resaltar campos faltantes
+    resaltarCamposFaltantes();
+    
+    // Mostrar errores con mejor formato
+    const mensajeHTML = `
+      <div style="text-align: left; max-height: 300px; overflow-y: auto;">
+        <p><strong>🚫 No se puede copiar la nota.</strong></p>
+        <p>Por favor complete los siguientes campos:</p>
+        <ul style="list-style: none; padding-left: 0;">
+          ${errores.map(error => `<li style="margin: 5px 0; color: #d63031;">${error}</li>`).join('')}
+        </ul>
+        <hr style="margin: 15px 0;">
+        <p style="font-size: 14px; color: #636e72;">
+          💡 <em>Los campos faltantes están resaltados en rojo</em>
+        </p>
+      </div>
+    `;
+    
+    Swal.fire({
+      title: '⚠️ Campos Incompletos',
+      html: mensajeHTML,
+      icon: 'warning',
+      confirmButtonColor: '#d63031',
+      confirmButtonText: '📝 Completar campos',
+      allowOutsideClick: false,
+      width: '500px'
+    });
+    
+    return false;
+  }
+  
+  // Si no hay errores, limpiar resaltados y copiar
+  document.querySelectorAll('.campo-faltante').forEach(el => {
+    el.classList.remove('campo-faltante');
+    el.classList.add('campo-completado');
+    // Quitar el efecto de completado después de 2 segundos
+    setTimeout(() => el.classList.remove('campo-completado'), 2000);
+  });
+  
+  const textoNota = document.getElementById("textoNota").value;
+  copiarYAlertar(textoNota, alerta);
+  return true;
+}
+
+// ===========================================
+// FUNCIÓN PARA LIMPIAR RESALTADOS
+// ===========================================
+
+function limpiarResaltados() {
+  // Quitar todas las clases de resaltado
+  document.querySelectorAll('.campo-faltante, .campo-completado, .primer-faltante').forEach(el => {
+    el.classList.remove('campo-faltante', 'campo-completado', 'primer-faltante');
+  });
+}
+
+// ===========================================
+// INICIALIZACIÓN AUTOMÁTICA
+// ===========================================
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener("DOMContentLoaded", function() {
+  setTimeout(() => {
+    agregarEstilosResaltado();
+    console.log("✅ Sistema de validación inicializado");
+  }, 100);
+});
+
+// También en window.onload por si acaso
+window.addEventListener("load", function() {
+  agregarEstilosResaltado();
+});
+
+
