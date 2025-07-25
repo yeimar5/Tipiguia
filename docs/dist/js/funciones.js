@@ -573,6 +573,7 @@ function procesarCasoIncumplimiento(valores, textos) {
       : "Se valida chatbot ok.";
 
     if (valores.contingenciaActiva) {
+      valores.contactoConTitular = "..."; 
       notaGenerada = "POR CONTINGENCIA se deja orden pendiente en aplicativos";
     } else {
       if (esSinContacto(valores.contactoConTitular)) {
@@ -613,6 +614,7 @@ function procesarCasoAgenda(valores, textos) {
       : "Se valida chatbot ok.";
 
     if (valores.contingenciaActiva) {
+      valores.contactoConTitular = "..."; 
       notaGenerada = valores.suspenderOrden
         ? "POR CONTINGENCIA se deja orden pendiente en aplicativos."
         : ` POR CONTINGENCIA ${agendaNota}`;
@@ -668,6 +670,7 @@ function procesarCasoQuiebre(valores, textos) {
       : "Se valida chatbot ok.";
 
     if (valores.contingenciaActiva) {
+      valores.contactoConTitular = "..."; 
       notaGenerada = "POR CONTINGENCIA se deja orden suspendida en aplicativos";
     } else {
       if ((esSinContacto(valores.contactoConTitular))||
@@ -1331,7 +1334,7 @@ function procesarTextoNotaAplicativos(texto) {
   const checkbox = document.getElementById("notaApp");
   if (checkbox && checkbox.checked) {
     let cleanedText = texto.replace(/POR CONTINGENCIA/gi, "").trim();
-    cleanedText = cleanedText.replace(/se marca al número/gi, "").trim();
+    cleanedText = cleanedText.replace(/se marca al /gi, "").trim();
     
     // Limpiar espacios extras que puedan quedar
     return cleanedText.replace(/\s+/g, " ").trim();
