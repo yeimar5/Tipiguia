@@ -22,7 +22,6 @@ const INVALID_STRINGS = ["Invalid Date", "NaN", "undefined", "null"];
 // CONSTANTES PARA MAPEO DE SIN CONTACTO
 // ===========================================
 
-
 const TEXTO_SIN_CONTACTO = {
   1: " pero no contesta el teléfono",
   ocupado: " indica que la línea está ocupada",
@@ -51,6 +50,14 @@ function esSinContacto(valorContacto) {
 // Devuelve el texto correspondiente al valor de sin contacto
 function obtenerTextoSinContacto(valorContacto) {
   return TEXTO_SIN_CONTACTO[valorContacto] || "Sin contacto";
+}
+
+function esFechaAnteriorAHoy(fechaStr) {
+  const fecha = new Date(fechaStr);
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  fecha.setHours(0, 0, 0, 0);
+  return fecha < hoy;
 }
 
 // ===========================================
@@ -172,7 +179,7 @@ function resetearFormularios() {
   }
   toggleElementStat("Contacto", false);
   resetearTextareas();
-  
+
   // ✨ NUEVA LÍNEA - Limpiar resaltados
   limpiarResaltados();
 }
@@ -219,7 +226,6 @@ function guardarEnLocalStorage() {
 
 window.onload = function () {
   cargarImagenFondoGuardada();
-  // Mantener cualquier otra lógica de inicialización original
   const nombreAsesor = localStorage.getItem("nombreAsesor");
   const agentAsesor = localStorage.getItem("agentAsesor");
 };
@@ -269,7 +275,7 @@ function FormatearFecha(fecha) {
   hoy.setHours(0, 0, 0, 0);
   fechaObj.setHours(0, 0, 0, 0);
 
-  if (fechaObj < hoy) {
+  if (esFechaAnteriorAHoy(fecha)) {
     alert(
       "La fecha seleccionada no puede ser anterior a hoy. Seleccione una fecha válida 📅⚠️"
     );
@@ -345,9 +351,7 @@ function actualizarNota(event) {
 function Actualizartodo() {
   const formulario = document.querySelector("#Formulario");
   formulario.addEventListener("input", (event) => {
-    if (actualizarNota(event)) {
-      actualizarNotaCompleta();
-    }
+    actualizarNotaCompleta();
   });
 }
 
@@ -433,18 +437,6 @@ function inicializarCheckboxNotaAplicativos() {
   }
 }
 
-// ===========================================
-// INICIALIZACIÓN PRINCIPAL
-// ===========================================
-/* document.getElementById('tuSelectPrincipal').addEventListener('change', function() {
-    const jornadaDiv = document.getElementById('jornadaSelect');
-    if (this.value === '7') {
-        jornadaDiv.classList.remove('hidden');
-    } else {
-        jornadaDiv.classList.add('hidden');
-    }
-}); */
-
 document.addEventListener("DOMContentLoaded", function () {
   inicializarInputsEnMayusculas();
   inicializarCheckboxNotaAplicativos();
@@ -525,31 +517,58 @@ function ordenarElementos(elem1, elem2) {
 // ===========================================
 // FUNCIONES DE CREACIÓN DE NOTA
 // ===========================================
+const ids = [
+  "Motivo",
+  "Mtecnico",
+  "NumTitular",
+  "NomTitular",
+  "Contingencia",
+  "Aceptains",
+  "aceptarRecibo",
+  "rol",
+  "Contacto",
+  "mQuiebre",
+  "Musuario",
+  "Fecha",
+  "Franja",
+  "gps",
+  "SF",
+  "FC",
+  "sus",
+  "NomAgent",
+  "Agent",
+  "direccionSistema",
+  "resultado",
+];
 
-// También verifica que la función obtenerValoresFormulario esté correcta
+const campos = {};
+ids.forEach((id) => {
+  campos[id] = document.getElementById(id);
+});
+
 function obtenerValoresFormulario() {
   return {
-    motivoLlamada: document.querySelector("#Motivo").value,
-    motivoTecnico: document.getElementById("Mtecnico"),
-    numeroTitular: document.getElementById("NumTitular").value,
-    nombreTitular: document.getElementById("NomTitular").value,
-    contingenciaActiva: document.getElementById("Contingencia").checked,
-    aLaEsperadeInstalacion: document.getElementById("Aceptains").checked,
-    aceptarRecibo: document.getElementById("aceptarRecibo").checked,
-    trabajador: document.getElementById("rol").value,
-    contactoConTitular: document.getElementById("Contacto").value,
-    motivoQuiebre: document.getElementById("mQuiebre").value,
-    motivoCliente: document.getElementById("Musuario").value,
-    fecha: document.getElementById("Fecha").value,
-    franjaAgenda: document.getElementById("Franja").value,
-    gpsActivo: document.getElementById("gps").value,
-    soporteFotografico: document.getElementById("SF").value,
-    fallaChatbot: document.getElementById("FC").checked,
-    suspenderOrden: document.getElementById("sus").checked,
-    nombreAsesor: document.getElementById("NomAgent").value,
-    agentAsesor: `agent_${document.getElementById("Agent").value}`,
-    direccionAgendador: document.getElementById("direccionSistema").value,
-    direcionenRecibo: document.getElementById("resultado").value,
+    motivoLlamada: campos.Motivo.value,
+    motivoTecnico: campos.Mtecnico,
+    numeroTitular: campos.NumTitular.value,
+    nombreTitular: campos.NomTitular.value,
+    contingenciaActiva: campos.Contingencia.checked,
+    aLaEsperadeInstalacion: campos.Aceptains.checked,
+    aceptarRecibo: campos.aceptarRecibo.checked,
+    trabajador: campos.rol.value,
+    contactoConTitular: campos.Contacto.value,
+    motivoQuiebre: campos.mQuiebre.value,
+    motivoCliente: campos.Musuario.value,
+    fecha: campos.Fecha.value,
+    franjaAgenda: campos.Franja.value,
+    gpsActivo: campos.gps.value,
+    soporteFotografico: campos.SF.value,
+    fallaChatbot: campos.FC.checked,
+    suspenderOrden: campos.sus.checked,
+    nombreAsesor: campos.NomAgent.value,
+    agentAsesor: `agent_${campos.Agent.value}`,
+    direccionAgendador: campos.direccionSistema.value,
+    direcionenRecibo: campos.resultado.value,
   };
 }
 
@@ -575,7 +594,7 @@ function procesarCasoIncumplimiento(valores, textos) {
       : "Se valida chatbot ok.";
 
     if (valores.contingenciaActiva) {
-      valores.contactoConTitular = "..."; 
+      valores.contactoConTitular = "...";
       notaGenerada = "POR CONTINGENCIA se deja orden pendiente en aplicativos";
     } else {
       if (esSinContacto(valores.contactoConTitular)) {
@@ -616,7 +635,7 @@ function procesarCasoAgenda(valores, textos) {
       : "Se valida chatbot ok.";
 
     if (valores.contingenciaActiva) {
-      valores.contactoConTitular = "..."; 
+      valores.contactoConTitular = "...";
       notaGenerada = valores.suspenderOrden
         ? "POR CONTINGENCIA se deja orden pendiente en aplicativos."
         : ` POR CONTINGENCIA ${agendaNota}`;
@@ -630,8 +649,7 @@ function procesarCasoAgenda(valores, textos) {
 
   if (esSinContacto(valores.contactoConTitular)) {
     if (valores.trabajador === "gestor") {
-      notaGenerada =
-        `${textoSinContacto} se le indica a gestor que intente mas tarde para proceder con la gestión.`;
+      notaGenerada = `${textoSinContacto} se le indica a gestor que intente mas tarde para proceder con la gestión.`;
     } else {
       notaGenerada = `${textoSinContacto}, Se Valida GPS ${valores.gpsActivo} Se Valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}`;
 
@@ -658,81 +676,96 @@ function procesarCasoAgenda(valores, textos) {
   return texto + notaGenerada;
 }
 
-// Función para procesar caso de quiebre - MODIFICADA
+// Función para procesar caso de quiebre
+// Función para procesar caso de quiebre
 function procesarCasoQuiebre(valores, textos) {
   const textoSinContacto = obtenerTextoSinContacto(valores.contactoConTitular);
   let notaGenerada = "";
   let mensajeChatbot = "";
-
-  let texto = textos.texto + mensajeChatbot + ` ${textos.titularContacto} `;
+  let prefijoQC = ""; // Para manejar el prefijo QC al inicio
 
   if (valores.trabajador === "técnico") {
     mensajeChatbot = valores.fallaChatbot
-      ? "Se valida soporte por falla reportada en chatbot"
-      : "Se valida chatbot ok.";
+      ? " Se valida soporte por falla reportada en chatbot."
+      : " Se valida chatbot ok.";
 
     if (valores.contingenciaActiva) {
-      valores.contactoConTitular = "..."; 
-      notaGenerada = "POR CONTINGENCIA se deja orden suspendida en aplicativos";
+      valores.contactoConTitular = "...";
+      notaGenerada =
+        " POR CONTINGENCIA se deja orden suspendida en aplicativos";
     } else {
-      if ((esSinContacto(valores.contactoConTitular))||
+      if (
+        esSinContacto(valores.contactoConTitular) ||
         valores.contactoConTitular === "..."
       ) {
         if (valores.trabajador === "gestor") {
-          notaGenerada = `${textoSinContacto} se le indica a gestor que intente mas tarde para proceder con la gestión.`;
+          notaGenerada = ` ${textoSinContacto} se le indica a gestor que intente mas tarde para proceder con la gestión.`;
         } else {
           if (
             valores.gpsActivo === "OK" &&
             valores.soporteFotografico === "OK"
           ) {
-            notaGenerada = `QC - ${valores.motivoQuiebre} - ${texto} ${textoSinContacto}. Se valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}. Se valida GPS ${valores.gpsActivo}. Se deja orden suspendida en aplicativos.`;
+            // QC y motivo van al inicio
+            prefijoQC = `QC - ${valores.motivoQuiebre} - `;
+            notaGenerada = `${textoSinContacto}. Se valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}. Se valida GPS ${valores.gpsActivo}. Se deja orden suspendida en aplicativos.`;
           } else {
-            notaGenerada = `${textoSinContacto}. Se valida GPS ${valores.gpsActivo}. Se valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}. Se le indica al técnico dirigirse al predio y subir soporte fotográfico.`;
+            notaGenerada = ` ${textoSinContacto}. Se valida GPS ${valores.gpsActivo}. Se valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}. Se le indica al técnico dirigirse al predio y subir soporte fotográfico.`;
           }
         }
       } else if (valores.contactoConTitular === "2") {
-        // AQUÍ ESTÁ EL CAMBIO PRINCIPAL
         const motivosEspeciales = [
           "TELÉFONO DEL CLIENTE ERRADO",
           "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN",
           "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN",
         ];
 
-        // Si el checkbox está marcado O si es un motivo especial
         if (
           valores.aLaEsperadeInstalacion ||
           motivosEspeciales.includes(valores.motivoQuiebre)
         ) {
-          return procesarMotivoEspecial(valores, textos, texto);
+          return procesarMotivoEspecial(valores, textos);
         } else {
-          // Caso normal de quiebre
+          // QC y motivo van al inicio
+          prefijoQC = `QC - ${valores.motivoQuiebre} - `;
           notaGenerada = valores.suspenderOrden
-            ? `QC - ${valores.motivoQuiebre} - ${texto} ${valores.motivoCliente}. Se deja orden suspendida en aplicativos.`
-            : `QC - ${valores.motivoQuiebre} - ${texto} ${valores.motivoCliente}. Se hace objeción pero desiste, valida datos, se procede a quebrar orden.`;
+            ? `${valores.motivoCliente}. Se deja orden suspendida en aplicativos.`
+            : `${valores.motivoCliente}. Se hace objeción pero desiste, valida datos, se procede a quebrar orden.`;
         }
       }
     }
   }
 
-  texto = textos.texto + mensajeChatbot + ` ${textos.titularContacto} `;
-  return texto + notaGenerada;
-}
+  let textoFinal;
+  if (prefijoQC) {
+    // Si hay prefijo QC, restructurar completamente la oración
+    textoFinal = `${prefijoQC}${textos.texto}${mensajeChatbot} ${textos.titularContacto} ${notaGenerada}`;
+  } else {
+    // Si no hay prefijo QC, usar la estructura normal
+    textoFinal = `${textos.texto}${mensajeChatbot} ${textos.titularContacto} ${notaGenerada}`;
+  }
 
+  return textoFinal;
+}
 // Función auxiliar para procesar motivos especiales en quiebre
-function procesarMotivoEspecial(valores, textos, texto) {
-  // Si el checkbox está marcado O si el motivo es "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN"
+function procesarMotivoEspecial(valores, textos) {
+  const mensajeChatbot = valores.fallaChatbot
+    ? " Se valida soporte por falla reportada en chatbot."
+    : " Se valida chatbot ok.";
+
+  const textoBase =
+    textos.texto + mensajeChatbot + ` ${textos.titularContacto} `;
+
   if (
     valores.aLaEsperadeInstalacion ||
     valores.motivoQuiebre === "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN"
   ) {
-    // Usar el motivoCliente si tiene contenido, si no usar "contesta"
     const motivoTexto =
       valores.motivoCliente && valores.motivoCliente.trim() !== ""
         ? valores.motivoCliente
         : "contesta";
 
     return (
-      texto +
+      textoBase +
       `${motivoTexto}. Se hace objeción, acepta instalación y valida datos correctos.`
     );
   }
@@ -742,20 +775,20 @@ function procesarMotivoEspecial(valores, textos, texto) {
     "GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN"
   ) {
     return (
-      texto +
-      `${textos.titularContacto} ${valores.motivoCliente}. Solicita que lo llamen en 10 minutos.`
+      textoBase +
+      `${valores.motivoCliente}. Solicita que lo llamen en 10 minutos.`
     );
   }
 
   if (valores.motivoQuiebre === "TELÉFONO DEL CLIENTE ERRADO") {
     if (valores.trabajador === "gestor") {
-      return `QC - ${valores.motivoQuiebre} - ${texto} ${textos.titularContacto} ${valores.motivoCliente}. se indica que debe enviar técnico a predio para poder suspender la orden.`;
+      return `QC -${textoBase} ${valores.motivoCliente}. ${valores.motivoQuiebre} - Se indica que debe enviar técnico a predio para poder suspender la orden.`;
     } else {
-      return `QC - ${valores.motivoQuiebre} - ${texto} ${textos.titularContacto} ${valores.motivoCliente}. Se valida SOPORTE FOTOGRÁFICO OK, se valida GPS OK, se procede a suspender orden.`;
+      return `QC -${textoBase}  ${valores.motivoCliente}.  ${valores.motivoQuiebre} - Se valida SOPORTE FOTOGRÁFICO OK, se valida GPS OK, se procede a suspender orden.`;
     }
   }
 
-  return texto;
+  return textoBase;
 }
 
 // Función para procesar caso de soporte no aplica
@@ -768,26 +801,39 @@ function procesarCasoSoporteNoAplica(valores, textos) {
   };
 
   const mensajes = {
-    1: "se valida chatbot y no ha realizado el proceso, se le indica que debe realizar el proceso antes de comunicarse con la linea y si hay fallo reportarlo con su gestor para que reporten a centro comando, se le brinda ticket",
-    2: "se valida chatbot y no ha esperado respuesta se le recuerda parámetros del aplicativo a tener en cuenta antes de comunicarse con la linea y si hay alguna falla reportarlo con centro comando. se le brinda ticket",
-    3: "se entrega ticket",
-    4: `${textos.titularContacto} contesta ${valores.motivoCliente} se le indica que en linea de rescate no se gestiona ordenes porque le falten materiales debe realizar autogestión o validar con su gestor`,
-    5: `${textos.titularContacto} contesta ${valores.motivoCliente} se le informa que esta gestión no se realiza por linea de rescate que valide con cierre controlado o con su gestor`,
-    6: `${textos.titularContacto} contesta ${valores.motivoCliente} se le indica a Técnico que debe hacer autogestión o validar con gestor ya que en linea de rescate no se gestiona ordenes por lluvias`,
+    1: "Se valida que el técnico no ha realizado el proceso en el chatbot. Se le indica que debe completarlo antes de comunicarse con la línea y, en caso de falla, reportarlo con su gestor para que sea escalado a Centro Comando. Se brinda ticket.",
+
+    2: "Se valida que el técnico no ha esperado respuesta del chatbot. Se le recuerdan los parámetros del aplicativo que debe tener en cuenta antes de comunicarse con la línea. Si persiste el error, debe reportarlo a Centro Comando. Se brinda ticket.",
+
+    3: "Se entrega ticket.",
+
+    4: `${textos.titularContacto} contesta ${valores.motivoCliente}. Se le informa que en Línea de Rescate no se gestionan órdenes por falta de materiales. Debe realizar autogestión o comunicarse con su gestor.`,
+
+    5: `${textos.titularContacto} contesta ${valores.motivoCliente}. Se le indica que esta gestión no se realiza a través de Línea de Rescate. Debe validar con su gestor o con cierre controlado.`,
+
+    6: `${textos.titularContacto} contesta ${valores.motivoCliente}. Se le informa que en caso de lluvias, la gestión debe realizarla a través de su gestor o mediante autogestión, ya que no se gestiona por Línea de Rescate.`,
+
     7: mensajesCaso7[tipoJornada],
-    8: "se valida orden esta se encuentra en otro estado se le indica a Técnico no se puede gestionar esta orden se le indica validar con gestor",
-    9: `${textos.titularContacto} contesta ${valores.motivoCliente} se le indica que en linea de rescate no se gestiona orden porque no pueda llegar al predio debe validar con gestor o hacer autogestión`,
-    10: "se le indica comunicarse con gestor o hacer autogestión ya que desde linea de rescate no se gestionan por ese motivo",
-    11: `${textos.titularContacto} contesta ${valores.motivoCliente} se indica a técnico que este proceso no lo hace LR que debe validar con su gestor o con cierre controlado.`,
-    12: "se valida orden se encuentra en franja am se le indica que en linea rescate solo se puede hacer cambio de franja máximo hasta las 12 pm se le indica a técnico hacer autogestión o validar con su gestor",
-    13: `${textos.titularContacto} contesta ${valores.motivoCliente} se le informa a Técnico hacer autogestión por dirección errada`,
-    14: `${textos.titularContacto} ${valores.motivoCliente} se solicita la baja de perfil en speedy`,
-    15: "se valida orden y es una avería, se le indica que desde linea rescate no se gestiona que se comunique con gestor o cierre controlado",
+
+    8: "Se valida que la orden se encuentra en otro estado. Se le informa al técnico que no es posible gestionarla desde Línea de Rescate y debe validarlo con su gestor.",
+
+    9: `${textos.titularContacto} contesta ${valores.motivoCliente}. Se le indica que si no puede llegar al predio, debe gestionar con su gestor o realizar autogestión, ya que no se atiende por Línea de Rescate.`,
+
+    10: "Se le informa que debe comunicarse con su gestor o realizar autogestión, ya que este tipo de gestión no se realiza por Línea de Rescate.",
+
+    11: `${textos.titularContacto} contesta ${valores.motivoCliente}. Se le indica que este proceso no se realiza por Línea de Rescate y debe gestionarlo con su gestor o con cierre controlado.`,
+
+    12: "Se valida que la orden está programada en franja AM. Se informa que el cambio de franja solo puede realizarse hasta las 12:00 p.m. desde Línea de Rescate. Se le sugiere hacer autogestión o contactar a su gestor.",
+
+    13: `${textos.titularContacto} contesta ${valores.motivoCliente}. Se le indica que debe hacer autogestión debido a dirección errada.`,
+
+    14: `${textos.titularContacto} ${valores.motivoCliente}. Se solicita la baja de perfil en Speedy.`,
+
+    15: "Se valida que la orden corresponde a una avería. Se informa que este tipo de gestiones no se realizan por Línea de Rescate y debe comunicarse con su gestor o cierre controlado.",
+
+    16: "Se indica que en Línea de Rescate no se gestiona el caso cuando el cliente ya no desea el traslado porque permanece en el mismo predio y no lo necesita. Debe comunicarse con su gestor o realizar autogestión.",
   };
-  /* if (soporteNoAplica === '7' && (!tipoJornada || tipoJornada === '')) {
-    alert('Por favor seleccione el tipo de orden (AM/PM) para la tarea asignada en día o jornada diferente');
-    return false;
-  } */
+
   return textos.texto + mensajes[soporteNoAplica];
 }
 
@@ -805,10 +851,8 @@ function procesarCasoGestionDecos(valores, textos) {
 
   if (valores.contactoConTitular === "2") {
     texto += " se valida datos correctos y se actualiza TAG de equipos";
-
-    } else if (esSinContacto(valores.contactoConTitular)) {
-    texto +=
-      ` ${textoSinContacto} se indica a técnico que le diga al titular que este pendiente de la llamada e intente nuevamente`;
+  } else if (esSinContacto(valores.contactoConTitular)) {
+    texto += ` ${textoSinContacto} se indica a técnico que le diga al titular que este pendiente de la llamada e intente nuevamente`;
   }
 
   return texto;
@@ -834,7 +878,7 @@ function crearNota() {
   let textoFinal = "";
 
   switch (valores.motivoLlamada) {
-    case "0": // agendar
+    case "0": // incumplimiento
       textoFinal = procesarCasoIncumplimiento(valores, textos);
       break;
     case "1": // agendar
@@ -898,53 +942,27 @@ const todosLosElementos = [
   "#jornadaSelect",
 ];
 
-// Función mejorada que acepta elementos base que siempre se muestran
-function mostrarSoloElementos(configuracion, elementosBase = {}) {
-  // Ocultar todos primero
-  todosLosElementos.forEach((selector) => {
+function aplicarDisplay(selectores, displayValue) {
+  (selectores || []).forEach((selector) => {
     const elemento = document.querySelector(selector);
     if (elemento) {
-      elemento.style.display = "none";
+      elemento.style.display = displayValue;
     }
   });
+}
 
-  // Mostrar elementos base primero (siempre visibles)
-  if (elementosBase.block) {
-    elementosBase.block.forEach((selector) => {
-      const elemento = document.querySelector(selector);
-      if (elemento) {
-        elemento.style.display = "block";
-      }
-    });
-  }
+// Función que acepta elementos base que siempre se muestran
+function mostrarSoloElementos(configuracion, elementosBase = {}) {
+  // Ocultar todos primero
+  aplicarDisplay(todosLosElementos, "none");
 
-  if (elementosBase.flex) {
-    elementosBase.flex.forEach((selector) => {
-      const elemento = document.querySelector(selector);
-      if (elemento) {
-        elemento.style.display = "flex";
-      }
-    });
-  }
+  // Mostrar elementos base
+  aplicarDisplay(elementosBase.block, "block");
+  aplicarDisplay(elementosBase.flex, "flex");
 
-  // Mostrar elementos específicos de la configuración
-  if (configuracion.block) {
-    configuracion.block.forEach((selector) => {
-      const elemento = document.querySelector(selector);
-      if (elemento) {
-        elemento.style.display = "block";
-      }
-    });
-  }
-
-  if (configuracion.flex) {
-    configuracion.flex.forEach((selector) => {
-      const elemento = document.querySelector(selector);
-      if (elemento) {
-        elemento.style.display = "flex";
-      }
-    });
-  }
+  // Mostrar elementos de la configuración específica
+  aplicarDisplay(configuracion.block, "block");
+  aplicarDisplay(configuracion.flex, "flex");
 }
 
 function toggleElementStat(elementId, isDisabled) {
@@ -970,15 +988,27 @@ function obtenerValoresManejarCambio() {
 function manejarCasoIncumplimiento(valores) {
   cambiarColorFondo("#0314f8ff");
 
-  // Elementos que SIEMPRE se muestran en agenda
+  // Elementos que SIEMPRE se muestran en incumplimiento
   const elementosBaseIncumplimiento = {
     block: ["#contingencia", "#contacto", "#contacto1", "#MotivoTec"],
     flex: ["#fallaChatbot", "#Titular"],
   };
 
+  toggleElementStat("Contacto", false);
+
   if (valores.trabajador === "técnico") {
-    if (!valores.contingencia) {
+    if (valores.contingencia) {
+      // SOLO cuando contingencia está ACTIVA, bloquear el select
+      toggleElementStat("Contacto", true);
+      mostrarSoloElementos(
+        {
+          flex: ["#notaAplicativos"],
+        },
+        elementosBaseIncumplimiento
+      );
+    } else {
       toggleElementStat("Contacto", false);
+
       if (valores.contacto === "...") {
         mostrarSoloElementos(elementosBaseIncumplimiento);
       } else if (esSinContacto(valores.contacto)) {
@@ -1015,19 +1045,9 @@ function manejarCasoIncumplimiento(valores) {
           );
         }
       }
-    } else {
-      // Cuando contingencia es true
-      toggleElementStat("Contacto", true);
-      mostrarSoloElementos(
-        {
-          flex: ["#notaAplicativos"],
-        },
-        elementosBaseIncumplimiento
-      );
-      // Aquí puedes agregar la lógica adicional que necesites cuando contingencia es verdadero
-      // Por ejemplo, mostrar elementos específicos o ejecutar otras acciones
     }
   } else {
+    // Si no es técnico, bloquear pero con mensaje
     toggleElementStat("Contacto", true);
     alert(
       `No se puede gestionar incumplimiento desde el rol ${valores.trabajador}`,
@@ -1048,9 +1068,11 @@ function manejarCasoAgenda(valores) {
 
   // Elementos que SIEMPRE se muestran en agenda
   const elementosBaseAgenda = {
-    block: ["#contingencia", "#contacto", , "#contacto1"],
+    block: ["#contingencia", "#contacto", "#contacto1"],
     flex: ["#fallaChatbot", "#Titular"],
   };
+
+  toggleElementStat("Contacto", false);
 
   if (
     valores.trabajador === "gestor" &&
@@ -1102,7 +1124,7 @@ function manejarCasoAgenda(valores) {
       mostrarSoloElementos(
         {
           block: ["#MotivoTec", "#Musuariod"],
-          flex: [, "#suspender"],
+          flex: ["#suspender"],
         },
         elementosBaseAgenda
       );
@@ -1116,8 +1138,10 @@ function manejarCasoAgenda(valores) {
       );
     }
   } else if (valores.contingencia) {
+    // SOLO cuando contingencia está ACTIVA, bloquear el select
+    toggleElementStat("Contacto", true);
+
     if (valores.contacto !== "1") {
-      toggleElementStat("Contacto", true);
       mostrarSoloElementos(
         {
           block: ["#MotivoTec", "#fecha"],
@@ -1152,7 +1176,7 @@ function manejarCasoAgenda(valores) {
     );
     toggleElementStat("Contacto", false);
   }
-  // Actualizar el texto del técnico según el caso
+
   ValueMostrar("#Mtecnico", "titular solicita agendar la orden para el día ");
 }
 
@@ -1166,6 +1190,8 @@ function manejarCasoQuiebre(valores) {
     flex: ["#Titular", "#fallaChatbot"],
   };
 
+  toggleElementStat("Contacto", false);
+
   if (
     valores.trabajador === "gestor" &&
     (valores.contacto === "..." || esSinContacto(valores.contacto))
@@ -1173,7 +1199,6 @@ function manejarCasoQuiebre(valores) {
     mostrarSoloElementos(
       {
         block: ["#MotivoTec"],
-        /* flex: ["#contacto"] */
       },
       elementosBaseQuiebre
     );
@@ -1202,6 +1227,7 @@ function manejarCasoQuiebre(valores) {
       document.querySelector("#Musuariod")
     );
   } else if (valores.contingencia) {
+    // SOLO cuando contingencia está ACTIVA, bloquear el select
     toggleElementStat("Contacto", true);
     mostrarSoloElementos(
       {
@@ -1227,7 +1253,7 @@ function manejarCasoQuiebre(valores) {
 function manejarCasoSoporteNoAplica(valores) {
   cambiarColorFondo("#F18F13");
 
-  const soportesConTitular = ["11", "6", "13", "14", "3", "9", "4"];
+  const soportesConTitular = ["11", "6", "13", "14", "3", "9", "4", "16"];
 
   if (soportesConTitular.includes(valores.soporteNA)) {
     mostrarSoloElementos({
@@ -1281,7 +1307,7 @@ function manejarCambio(e) {
 
   if (Actualizartodo) {
     switch (valores.mLlamada) {
-      case "0": // agendar
+      case "0": // incumplimiento
         manejarCasoIncumplimiento(valores);
         setInnerHTML("#labelAcepta", "CLIENTE A LA ESPERA");
         setInnerHTML("#labelSuspender", "AGENDAR");
@@ -1337,7 +1363,7 @@ function procesarTextoNotaAplicativos(texto) {
   if (checkbox && checkbox.checked) {
     let cleanedText = texto.replace(/POR CONTINGENCIA/gi, "").trim();
     cleanedText = cleanedText.replace(/se marca al /gi, "").trim();
-    
+
     // Limpiar espacios extras que puedan quedar
     return cleanedText.replace(/\s+/g, " ").trim();
   }
@@ -1351,84 +1377,117 @@ function procesarTextoNotaAplicativos(texto) {
 function validarAntesDeCopirarNota() {
   const errores = [];
   const motivoLlamada = document.getElementById("Motivo").value;
-  
-  // Campos específicos según el motivo (SIN campos básicos)
+  const contingenciaActiva = document.getElementById("Contingencia")?.checked;
+
+  // Campos específicos según el motivo
   const camposPorMotivo = {
-    "0": { // Incumplimiento
-      Contacto: "Tipo de contacto",
+    0: {
+      // Incumplimiento
+      NumTitular: "Número de teléfono del titular",
+      NomTitular: "Nombre del titular",
+      // Solo validar contacto si NO hay contingencia activa
+      ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
       // Pedir fecha solo si hay contacto exitoso (2) y cliente desea agendar (suspender)
-      ...(document.getElementById("Contacto")?.value === "2" && document.getElementById("sus")?.checked
+      ...(document.getElementById("Contacto")?.value === "2" &&
+      document.getElementById("sus")?.checked
         ? { Fecha: "Fecha de agenda", Franja: "Franja horaria" }
         : {}),
-      telefono: "Número de teléfono"
-        },
-        "1": { // Agenda
-      Contacto: "Tipo de contacto",
+    },
+    1: {
+      // Agenda
+      NumTitular: "Número de teléfono del titular",
+      NomTitular: "Nombre del titular",
+      // Solo validar contacto si NO hay contingencia activa
+      ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
       // Pedir fecha solo si NO está checkeado suspender (sus)
       ...(document.getElementById("sus")?.checked === false
         ? { Fecha: "Fecha de agenda", Franja: "Franja horaria" }
         : {}),
-      telefono: "Número de teléfono"
-        },
-        "2": { // Quiebre
-      Contacto: "Tipo de contacto",
+    },
+    2: {
+      // Quiebre
+      NumTitular: "Número de teléfono del titular",
+      NomTitular: "Nombre del titular",
+      // Solo validar contacto si NO hay contingencia activa
+      ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
       mQuiebre: "Motivo de quiebre",
-      telefono: "Número de teléfono"
-        },
-        "3": { // Soporte no aplica
+    },
+    3: {
+      // Soporte no aplica
+      NumTitular: "Número de teléfono del titular",
+      NomTitular: "Nombre del titular",
       noSoporte: "Tipo de soporte",
-      telefono: "Número de teléfono"
-        },
-        "4": { // Gestión decos
-      Contacto: "Tipo de contacto",
-      telefono: "Número de teléfono"
-        },
-        "5": { // Dirección piloto
+    },
+    4: {
+      // Gestión decos
+      NumTitular: "Número de teléfono del titular",
+      NomTitular: "Nombre del titular",
+      // Solo validar contacto si NO hay contingencia activa
+      ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
+    },
+    5: {
+      // Dirección piloto
+      NumTitular: "Número de teléfono del titular",
+      NomTitular: "Nombre del titular",
       direccionSistema: "Dirección del sistema",
       resultado: "Dirección de recibo",
-        },
-        "6": {} // Llamada caída - sin campos adicionales
-      };
-  
+    },
+    6: {
+      // Llamada caída
+      NumTitular: "Número de teléfono del titular",
+      NomTitular: "Nombre del titular",
+    },
+  };
+
   // Validar campos del motivo actual
   const camposRequeridos = camposPorMotivo[motivoLlamada] || {};
   Object.entries(camposRequeridos).forEach(([campo, descripcion]) => {
     const elemento = document.getElementById(campo);
-    if (!elemento || !elemento.value || elemento.value.trim() === "" || elemento.value === "...") {
+    if (
+      !elemento ||
+      !elemento.value ||
+      elemento.value.trim() === "" ||
+      elemento.value === "..."
+    ) {
       errores.push(`❌ Falta: ${descripcion}`);
     }
   });
-  
+
   // Validaciones condicionales inteligentes
-  errores.push(...validarCamposCondicionales(motivoLlamada));
-  
+  errores.push(
+    ...validarCamposCondicionales(motivoLlamada, contingenciaActiva)
+  );
+
   return errores;
 }
 
-function validarCamposCondicionales(motivoLlamada) {
+function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
   const errores = [];
   const contacto = document.getElementById("Contacto")?.value;
-  
-  // Si hay contacto exitoso (2), debe tener motivo del cliente
-  if (contacto === "2") {
+
+  // Solo validar contacto si NO hay contingencia activa
+  // Si hay contacto exitoso (2) y no hay contingencia, debe tener motivo del cliente
+  if (contacto === "2" && !contingenciaActiva) {
     const motivoCliente = document.getElementById("Musuario")?.value;
     if (!motivoCliente || motivoCliente.trim() === "") {
-      errores.push("❌ Falta: Motivo del cliente (cuando hay contacto exitoso)");
+      errores.push(
+        "❌ Falta: Motivo del cliente (cuando hay contacto exitoso)"
+      );
     }
   }
-  
+
   // Validaciones específicas por motivo
   switch (motivoLlamada) {
     case "2": // Quiebre
-      // Si es quiebre con contacto exitoso, verificar motivo específico
-      if (contacto === "2") {
+      // Si es quiebre con contacto exitoso y no hay contingencia, verificar motivo específico
+      if (contacto === "2" && !contingenciaActiva) {
         const motivoQuiebre = document.getElementById("mQuiebre")?.value;
         if (!motivoQuiebre || motivoQuiebre === "...") {
           errores.push("❌ Falta: Motivo específico de quiebre");
         }
       }
       break;
-      
+
     case "3": // Soporte no aplica
       const tipoSoporte = document.getElementById("noSoporte")?.value;
       // Si es tipo 7 (jornada), requiere AM/PM
@@ -1439,7 +1498,7 @@ function validarCamposCondicionales(motivoLlamada) {
         }
       }
       break;
-      
+
     case "5": // Dirección piloto
       const aceptaRecibo = document.getElementById("aceptarRecibo")?.checked;
       if (!aceptaRecibo) {
@@ -1450,59 +1509,204 @@ function validarCamposCondicionales(motivoLlamada) {
       }
       break;
   }
-  
+
   // Validar fecha no sea anterior a hoy (si existe)
   const fecha = document.getElementById("Fecha")?.value;
-  if (fecha) {
-    const fechaSeleccionada = new Date(fecha);
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
-    fechaSeleccionada.setHours(0, 0, 0, 0);
-    
-    if (fechaSeleccionada < hoy) {
-      errores.push("❌ La fecha de agenda no puede ser anterior a hoy");
-    }
+  if (fecha && esFechaAnteriorAHoy(fecha)) {
+    errores.push("❌ La fecha de agenda no puede ser anterior a hoy");
   }
-  
+
   return errores;
+}
+
+// ===========================================
+// FUNCIÓN FALTANTE PARA VALIDAR CAMPOS REQUERIDOS
+// ===========================================
+
+function esRequeridoYVacio(campo, motivoLlamada, contacto) {
+  const elemento = document.getElementById(campo);
+  if (!elemento) return false;
+
+  const valor = elemento.value;
+  const estaVacio = !valor || valor.trim() === "" || valor === "...";
+
+  if (!estaVacio) return false; // Si no está vacío, no necesita resaltado
+
+  const contingenciaActiva = document.getElementById("Contingencia")?.checked;
+
+  // Definir qué campos son requeridos según el motivo
+  const camposPorMotivo = {
+    0: {
+      // Incumplimiento
+      NumTitular: true,
+      NomTitular: true,
+      // Solo requerir contacto si NO hay contingencia activa
+      Contacto: !contingenciaActiva,
+      // Fecha y Franja solo si hay contacto exitoso Y cliente desea agendar
+      Fecha: contacto === "2" && document.getElementById("sus")?.checked,
+      Franja: contacto === "2" && document.getElementById("sus")?.checked,
+    },
+    1: {
+      // Agenda
+      NumTitular: true,
+      NomTitular: true,
+      // Solo requerir contacto si NO hay contingencia activa
+      Contacto: !contingenciaActiva,
+      // Fecha y Franja solo si NO está checkeado suspender
+      Fecha: !document.getElementById("sus")?.checked,
+      Franja: !document.getElementById("sus")?.checked,
+    },
+    2: {
+      // Quiebre
+      NumTitular: true,
+      NomTitular: true,
+      // Solo requerir contacto si NO hay contingencia activa
+      Contacto: !contingenciaActiva,
+      mQuiebre: true,
+      // Musuario solo si hay contacto exitoso y no hay contingencia
+      Musuario: contacto === "2" && !contingenciaActiva,
+    },
+    3: {
+      // Soporte no aplica
+      NumTitular: true,
+      NomTitular: true,
+      noSoporte: true,
+      // tipoJornada solo si noSoporte es "7"
+      tipoJornada: document.getElementById("noSoporte")?.value === "7",
+      // Musuario para ciertos tipos de soporte
+      Musuario: ["11", "6", "13", "14", "3", "9", "4"].includes(
+        document.getElementById("noSoporte")?.value
+      ),
+    },
+    4: {
+      // Gestión decos
+      NumTitular: true,
+      NomTitular: true,
+      // Solo requerir contacto si NO hay contingencia activa
+      Contacto: !contingenciaActiva,
+      // Musuario solo si hay contacto exitoso y no hay contingencia
+      Musuario: contacto === "2" && !contingenciaActiva,
+    },
+    5: {
+      // Dirección piloto
+      NumTitular: true,
+      NomTitular: true,
+      direccionSistema: true,
+      resultado: true,
+      // Musuario solo si NO acepta recibo
+      Musuario: !document.getElementById("aceptarRecibo")?.checked,
+    },
+    6: {
+      // Llamada caída
+      NumTitular: true,
+      NomTitular: true,
+    },
+  };
+
+  // Obtener la configuración para el motivo actual
+  const configuracion = camposPorMotivo[motivoLlamada] || {};
+
+  // Verificar si este campo es requerido según la configuración
+  return configuracion[campo] === true;
 }
 // ===========================================
 // RESALTADO VISUAL DE CAMPOS FALTANTES
 // ===========================================
 
+function agregarEventListenersParaResaltado() {
+  // Lista de todos los campos que pueden ser resaltados
+  const camposParaMonitorear = [
+    "NumTitular",
+    "NomTitular",
+    "Contacto",
+    "Fecha",
+    "Franja",
+    "mQuiebre",
+    "noSoporte",
+    "direccionSistema",
+    "resultado",
+    "Musuario",
+    "tipoJornada",
+  ];
+
+  camposParaMonitorear.forEach((campoId) => {
+    const campo = document.getElementById(campoId);
+    if (campo) {
+      // Para inputs de texto, textarea, y selects
+      campo.addEventListener("input", () => quitarResaltadoCampo(campo));
+      campo.addEventListener("change", () => quitarResaltadoCampo(campo));
+      campo.addEventListener("keydown", () => quitarResaltadoCampo(campo));
+
+      // Para selects específicamente (cuando cambia la selección)
+      if (campo.tagName === "SELECT") {
+        campo.addEventListener("focus", () => {
+          // Quitar resaltado inmediatamente al hacer focus en un select
+          if (campo.classList.contains("campo-faltante")) {
+            quitarResaltadoCampo(campo);
+          }
+        });
+      }
+    }
+  });
+}
+
+function quitarResaltadoCampo(campo) {
+  if (campo.classList.contains("campo-faltante")) {
+    campo.classList.remove("campo-faltante", "primer-faltante");
+
+    // Agregar efecto visual de "completado" brevemente
+    campo.classList.add("campo-completado");
+    setTimeout(() => {
+      campo.classList.remove("campo-completado");
+    }, 1500);
+  }
+}
+
 function resaltarCamposFaltantes() {
   // Primero limpiar todos los resaltados anteriores
-  document.querySelectorAll('.campo-faltante').forEach(el => {
-    el.classList.remove('campo-faltante');
+  document.querySelectorAll(".campo-faltante").forEach((el) => {
+    el.classList.remove("campo-faltante", "primer-faltante");
   });
-  
+
   // Obtener los errores actuales
   const errores = validarAntesDeCopirarNota();
-  
+
   if (errores.length === 0) return; // Si no hay errores, no resaltar nada
-  
+
   const motivoLlamada = document.getElementById("Motivo").value;
   const contacto = document.getElementById("Contacto")?.value;
-  
+
   // Lista de todos los campos que podrían necesitar resaltado
   const camposParaRevisar = [
-    'Contacto', 'Fecha', 'Franja', 'mQuiebre', 'noSoporte', // Por motivo
-    'direccionSistema', 'resultado', 'Musuario', 'tipoJornada' // Condicionales
+    "NumTitular",
+    "NomTitular",
+    "Contacto",
+    "Fecha",
+    "Franja",
+    "mQuiebre",
+    "noSoporte",
+    "direccionSistema",
+    "resultado",
+    "Musuario",
+    "tipoJornada",
   ];
-  
+
+  let primerCampoEncontrado = false;
+
   // Resaltar campos que están vacíos y son requeridos
-  camposParaRevisar.forEach(campo => {
+  camposParaRevisar.forEach((campo) => {
     const elemento = document.getElementById(campo);
     if (elemento && esRequeridoYVacio(campo, motivoLlamada, contacto)) {
-      elemento.classList.add('campo-faltante');
-      
+      elemento.classList.add("campo-faltante");
+
       // Hacer scroll suave al primer campo faltante
-      if (!document.querySelector('.campo-faltante.primer-faltante')) {
-        elemento.classList.add('primer-faltante');
+      if (!primerCampoEncontrado) {
+        elemento.classList.add("primer-faltante");
+        primerCampoEncontrado = true;
         setTimeout(() => {
-          elemento.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center' 
+          elemento.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
           });
         }, 100);
       }
@@ -1510,171 +1714,89 @@ function resaltarCamposFaltantes() {
   });
 }
 
-function esRequeridoYVacio(campo, motivoLlamada, contacto) {
-  const elemento = document.getElementById(campo);
-  const valor = elemento?.value;
-  const estaVacio = !valor || valor.trim() === "" || valor === "...";
-  
-  if (!estaVacio) return false; // Si no está vacío, no resaltar
-  
-  // YA NO HAY CAMPOS BÁSICOS - Eliminamos esta parte:
-  // const basicos = ['NombreTec', 'atis', 'telefono', 'NomTitular'];
-  // if (basicos.includes(campo)) return true;
-  
-  // Campos por motivo
-  const requeridosPorMotivo = {
-    "0": ['Contacto', 'Fecha', 'Franja'], // Incumplimiento
-    "1": ['Contacto', 'Fecha', 'Franja'], // Agenda  
-    "2": ['Contacto', 'mQuiebre'], // Quiebre
-    "3": ['noSoporte'], // Soporte
-    "4": ['Contacto'], // Decos
-    "5": ['direccionSistema', 'resultado'], // Piloto
-    "6": [] // Llamada caída
-  };
-  
-  const camposMotivo = requeridosPorMotivo[motivoLlamada] || [];
-  if (camposMotivo.includes(campo)) {
-    // Casos especiales
-    if ((campo === 'Fecha' || campo === 'Franja') && 
-        document.getElementById("Contingencia")?.checked) {
-      return false; // No requerido si hay contingencia
-    }
-    return true;
-  }
-  
-  // Campos condicionales
-  if (campo === 'Musuario' && contacto === "2") return true;
-  if (campo === 'tipoJornada' && motivoLlamada === "3" && 
-      document.getElementById("noSoporte")?.value === "7") return true;
-  if (campo === 'Musuario' && motivoLlamada === "5" && 
-      !document.getElementById("aceptarRecibo")?.checked) return true;
-  
-  return false;
-}
-
-// Agregar los estilos CSS
-function agregarEstilosResaltado() {
-  // Verificar si ya se agregaron los estilos
-  if (document.getElementById('estilos-validacion')) return;
-  
-  const style = document.createElement('style');
-  style.id = 'estilos-validacion';
-  style.textContent = `
-    .campo-faltante {
-      border: 3px solid #ff4757 !important;
-      background-color: #ffe8e8 !important;
-      box-shadow: 0 0 10px rgba(255, 71, 87, 0.3) !important;
-      animation: pulsoRojo 2s ease-in-out infinite;
-    }
-    
-    .campo-faltante:focus {
-      border-color: #ff3742 !important;
-      box-shadow: 0 0 15px rgba(255, 71, 87, 0.5) !important;
-    }
-    
-    @keyframes pulsoRojo {
-      0% { 
-        box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
-      }
-      50% { 
-        box-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
-        transform: scale(1.01);
-      }
-      100% { 
-        box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
-      }
-    }
-    
-    /* Efecto de éxito cuando se completa */
-    .campo-completado {
-      border: 2px solid #2ed573 !important;
-      background-color: #f0fff4 !important;
-      animation: completadoVerde 1s ease;
-    }
-    
-    @keyframes completadoVerde {
-      0% { background-color: #f0fff4; }
-      50% { background-color: #d4edda; }
-      100% { background-color: #f0fff4; }
-    }
-  `;
-  document.head.appendChild(style);
-}
-
 function copiarNotaConValidacion() {
   const errores = validarAntesDeCopirarNota();
-  
+
   if (errores.length > 0) {
     // Resaltar campos faltantes
     resaltarCamposFaltantes();
-    
+
     // Mostrar errores con mejor formato
     const mensajeHTML = `
       <div style="text-align: left; max-height: 300px; overflow-y: auto;">
         <p><strong>🚫 No se puede copiar la nota.</strong></p>
         <p>Por favor complete los siguientes campos:</p>
         <ul style="list-style: none; padding-left: 0;">
-          ${errores.map(error => `<li style="margin: 5px 0; color: #d63031;">${error}</li>`).join('')}
+          ${errores
+            .map(
+              (error) =>
+                `<li style="margin: 5px 0; color: #d63031;">${error}</li>`
+            )
+            .join("")}
         </ul>
         <hr style="margin: 15px 0;">
         <p style="font-size: 14px; color: #636e72;">
-          💡 <em>Los campos faltantes están resaltados en rojo</em>
+          💡 <em>Los campos faltantes están resaltados en rojo y desaparecerán al escribir</em>
         </p>
       </div>
     `;
-    
+
     Swal.fire({
-      title: '⚠️ Campos Incompletos',
+      title: "⚠️ Campos Incompletos",
       html: mensajeHTML,
-      icon: 'warning',
-      confirmButtonColor: '#d63031',
-      confirmButtonText: '📝 Completar campos',
+      icon: "warning",
+      confirmButtonColor: "#d63031",
+      confirmButtonText: "📝 Completar campos",
       allowOutsideClick: false,
-      width: '500px'
+      width: "500px",
     });
-    
+
     return false;
   }
-  
+
   // Si no hay errores, limpiar resaltados y copiar
-  document.querySelectorAll('.campo-faltante').forEach(el => {
-    el.classList.remove('campo-faltante');
-    el.classList.add('campo-completado');
-    // Quitar el efecto de completado después de 2 segundos
-    setTimeout(() => el.classList.remove('campo-completado'), 2000);
-  });
-  
+  limpiarResaltados();
+
   const textoNota = document.getElementById("textoNota").value;
   copiarYAlertar(textoNota, alerta);
   return true;
 }
 
 // ===========================================
-// FUNCIÓN PARA LIMPIAR RESALTADOS
+// FUNCIÓN PARA LIMPIAR RESALTADOS MEJORADA
 // ===========================================
 
 function limpiarResaltados() {
-  // Quitar todas las clases de resaltado
-  document.querySelectorAll('.campo-faltante, .campo-completado, .primer-faltante').forEach(el => {
-    el.classList.remove('campo-faltante', 'campo-completado', 'primer-faltante');
-  });
+  // Quitar todas las clases de resaltado con transición suave
+  document
+    .querySelectorAll(".campo-faltante, .campo-completado, .primer-faltante")
+    .forEach((el) => {
+      el.classList.remove(
+        "campo-faltante",
+        "campo-completado",
+        "primer-faltante"
+      );
+    });
 }
 
 // ===========================================
-// INICIALIZACIÓN AUTOMÁTICA
+// INICIALIZACIÓN AUTOMÁTICA MEJORADA
 // ===========================================
 
+// Función para inicializar todo el sistema de resaltado
+function inicializarSistemaResaltado() {
+  agregarEventListenersParaResaltado();
+  console.log("✅ Sistema de resaltado dinámico inicializado");
+}
+
 // Inicializar cuando el DOM esté listo
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   setTimeout(() => {
-    agregarEstilosResaltado();
-    console.log("✅ Sistema de validación inicializado");
+    inicializarSistemaResaltado();
   }, 100);
 });
 
 // También en window.onload por si acaso
-window.addEventListener("load", function() {
-  agregarEstilosResaltado();
+window.addEventListener("load", function () {
+  inicializarSistemaResaltado();
 });
-
-

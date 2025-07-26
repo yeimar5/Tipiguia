@@ -195,11 +195,12 @@
                 <option value="13">DIRECCIÓN ERRADA</option>
                 <option value="14">BAJA DE PERFIL</option>
                 <option value="15">AVERIA</option>
+                <option value="16">CLIENTE DESISTE DEL TRASLADO, CONTINUA CON SERVICIO ACTUAL</option>
               </select>
             </div>
             <div id="jornadaSelect" class="pt-3">
               <label for="tipoJornada" class="px-3">FRANJA DE LA ORDEN:</label>
-              <select id="tipoJornada" >
+              <select id="tipoJornada">
                 <option value="">...</option>
                 <option value="AM">AM</option>
                 <option value="PM">PM</option>
@@ -372,41 +373,43 @@
                 <input class="form-control col-sm-auto trans" list="motivoQuiebre" id="mQuiebre"
                   placeholder="Escribe el motivo">
                 <datalist id="motivoQuiebre">
-                  <option>PLAN ERRADO CLIENTE SOLICITO MAS DECOS</option>
-                  <option>PLAN ERRADO CLIENTE SOLICITO MENOS DECOS</option>
-                  <option>PLAN ERRADO VELOCIDAD BA</option>
-                  <option>PLAN ERRADO OFERTA PRIMARIA</option>
-                  <option>PLAN ERRADO OFERTA SUPLEMENTARIA</option>
-                  <option>YA TIENE SERVICIO MOVISTAR INSTALADO</option>
-                  <option>CLIENTE DESISTE DEL SERVICIO, INCONFORMIDAD TARIFAS</option>
-                  <option>CLIENTE DESISTE DEL TRASLADO, SOLICITA RETIRO</option>
-                  <option>CLIENTE DESISTE DEL TRASLADO, CONTINUA CON SERVICIO ACTUAL</option>
-                  <option>CLIENTE SOLICITO TRASLADO DE OTRO PRODUCTO</option>
-                  <option>CLIENTE SOLICITO OPERACIÓN COMERCIAL DIFERENTE</option>
-                  <option>CLIENTE DESEA EL PRODUCTO EN UNA FECHA POSTERIOR</option>
-                  <option>CLIENTE NO SOLICITO EL SERVICIO</option>
-                  <option>FALLA APLICATIVOS Y/O PROBLEMAS SALIDA DE LLAMADAS</option>
-                  <option>CONDICIONES DEL PREDIO NO APTAS PARA LA INSTALACIÓN</option>
-                  <option>INCUMPLIMIENTO DE CITA ATRIBUIBLE A TITULAR</option>
-                  <option>GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN</option>
-                  <option>GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN</option>
-                  <option>GESTIÓN INCOMPLETA EN APLICATIVOS POR LR</option>
                   <option>CAMBIO PLAN POR DECISION DEL CLIENTE</option>
+                  <option>CLIENTE DESEA EL PRODUCTO EN UNA FECHA POSTERIOR</option>
+                  <option>CLIENTE DESEA TRASLADO EN UNA FECHA POSTERIOR</option>
                   <option>CLIENTE DESISTE DEL SERVICIO POR DECISION PROPIA</option>
                   <option>CLIENTE DESISTE DEL SERVICIO POR RECLAMO NO SOLUCIONADO</option>
+                  <option>CLIENTE DESISTE DEL SERVICIO, INCONFORMIDAD TARIFAS</option>
                   <option>CLIENTE DESISTE DEL SERVICIO/DEMORAS EN LA INSTALACIÓN</option>
                   <option>CLIENTE DESISTE DEL SERVICIO/ELIGE LA COMPETENCIA</option>
                   <option>CLIENTE DESISTE DEL SERVICIO/INCONSISTENCIA EN LA OFERTA</option>
+                  <option>CLIENTE DESISTE DEL SERVICIO/NO DA MOTIVO</option>
                   <option>CLIENTE DESISTE DEL SERVICIO/RETENIDO POR OTRO OPERADOR</option>
                   <option>CLIENTE DESISTE DEL SERVICIO/SITUACIÓN ECONOMICA</option>
-                  <option>CLIENTE DESISTE DEL SERVICIO/NO DA MOTIVO</option>
-                  <option>CLIENTE NO ACEPTA INSTALACIÓN PARCIAL</option>
+                  <option>CLIENTE DESISTE DEL TRASLADO, CONTINUA CON SERVICIO ACTUAL</option>
+                  <option>CLIENTE DESISTE DEL TRASLADO, SOLICITA RETIRO</option>
                   <option>CLIENTE NO ACEPTA COBRO DE DECODIFICADOR ADICIONAL</option>
+                  <option>CLIENTE NO ACEPTA INSTALACIÓN PARCIAL</option>
+                  <option>CLIENTE NO RESIDE EN PREDIO DE INSTALACION</option>
+                  <option>CLIENTE NO SOLICITO EL SERVICIO</option>
                   <option>CLIENTE RECHAZA COBRO DE INSTALACIÓN</option>
+                  <option>CLIENTE SOLICITO OPERACIÓN COMERCIAL DIFERENTE</option>
+                  <option>CLIENTE SOLICITO TRASLADO DE OTRO PRODUCTO</option>
+                  <option>CONDICIONES DEL PREDIO NO APTAS PARA LA INSTALACIÓN</option>
                   <option>DATOS DEL CLIENTE ERRADOS</option>
+                  <option>FALLA APLICATIVOS Y/O PROBLEMAS SALIDA DE LLAMADAS</option>
+                  <option>GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN</option>
+                  <option>GESTIÓN COMERCIAL/CLIENTE SOLICITA LLAMAR EN 10 MIN</option>
+                  <option>GESTIÓN INCOMPLETA EN APLICATIVOS POR LR</option>
+                  <option>INCUMPLIMIENTO DE CITA ATRIBUIBLE A TITULAR</option>
+                  <option>PLAN ERRADO CLIENTE SOLICITO MAS DECOS</option>
+                  <option>PLAN ERRADO CLIENTE SOLICITO MENOS DECOS</option>
+                  <option>PLAN ERRADO OFERTA PRIMARIA</option>
+                  <option>PLAN ERRADO OFERTA SUPLEMENTARIA</option>
+                  <option>PLAN ERRADO VELOCIDAD BA</option>
                   <option>SIN DISPONIBILIDAD DE EQUIPOS (EQ)</option>
                   <option>SIN PERMISO PARA INSTALAR</option>
                   <option>TELÉFONO DEL CLIENTE ERRADO</option>
+                  <option>YA TIENE SERVICIO MOVISTAR INSTALADO</option>
                 </datalist>
               </div>
             </div>
@@ -427,6 +430,6 @@
   <script src="./dist/js/bootstrap.bundle.min.js"></script>
   <script src="./dist/js/sweetalert2@11.js"></script>
   <script src="./dist/js/funciones.js"></script>
-  </body>
+</body>
 
 </html>

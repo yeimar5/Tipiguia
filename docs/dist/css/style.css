@@ -340,3 +340,56 @@ textarea {
     height: 14px;
   }
 }
+
+.campo-faltante {
+  border: 3px solid #ff4757 !important;
+  background-color: #ffe8e8 !important;
+  box-shadow: 0 0 10px rgba(255, 71, 87, 0.3) !important;
+  animation: pulsoRojo 2s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.campo-faltante:focus {
+  border-color: #ff3742 !important;
+  box-shadow: 0 0 15px rgba(255, 71, 87, 0.5) !important;
+}
+
+@keyframes pulsoRojo {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
+    transform: scale(1.01);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
+  }
+}
+
+.campo-completado {
+  border: 2px solid #2ed573 !important;
+  background-color: #f0fff4 !important;
+  animation: completadoVerde 1.5s ease;
+  transition: all 0.3s ease;
+}
+
+@keyframes completadoVerde {
+  0% {
+    background-color: #f0fff4;
+    transform: scale(1);
+  }
+  30% {
+    background-color: #d4edda;
+    transform: scale(1.02);
+  }
+  100% {
+    background-color: #f0fff4;
+    transform: scale(1);
+  }
+}
+
+input, select, textarea {
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
