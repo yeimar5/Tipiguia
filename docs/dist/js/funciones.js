@@ -873,7 +873,7 @@ function procesarCasoDireccionPiloto(valores, textos) {
   if (direccionNoLegible && direccionNoLegible.checked) {
     // Si la dirección no es legible, generar nota especial
     const textoNoLegible = valores.direcionenRecibo || "DIRECCION NO ES LEGIBLE";
-    return textos.texto + ` ${textoNoLegible}, por lo cual NO se acepta el recibo público ${valores.motivoCliente}.`;
+    return textos.texto + ` ${textoNoLegible}, por lo cual NO se acepta el recibo público`;
   }
   
   // 🔄 LÓGICA ORIGINAL (cuando la dirección SÍ es legible)
@@ -1395,60 +1395,63 @@ function validarAntesDeCopirarNota() {
   const errores = [];
   const motivoLlamada = document.getElementById("Motivo").value;
   const contingenciaActiva = document.getElementById("Contingencia")?.checked;
+  const contacto = document.getElementById("Contacto")?.value;
+  const clienteAgenda = document.getElementById("sus")?.checked; // ✅ Agregado
 
   // Campos específicos según el motivo
   const camposPorMotivo = {
     0: {
-      // Incumplimiento
+      // ✅ INCUMPLIMIENTO CORREGIDO
       NumTitular: "Número de teléfono del titular",
       NomTitular: "Nombre del titular",
       // Solo validar contacto si NO hay contingencia activa
       ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
-      // Pedir fecha solo si hay contacto exitoso (2) y cliente desea agendar (suspender)
-      ...(document.getElementById("Contacto")?.value === "2" &&
-      document.getElementById("sus")?.checked
-        ? { Fecha: "Fecha de agenda", Franja: "Franja horaria" }
+      // ✅ CORRECCIÓN: Fecha y Franja solo si NO hay contingencia Y contacto exitoso Y cliente agenda
+      ...(!contingenciaActiva && contacto === "2" && clienteAgenda
+        ? { 
+            Fecha: "Fecha de agenda", 
+            Franja: "Franja horaria" 
+          }
+        : {}),
+      // Motivo usuario solo si hay contacto exitoso y no hay contingencia
+      ...(!contingenciaActiva && contacto === "2"
+        ? { Musuario: "Motivo del cliente" }
         : {}),
     },
     1: {
-      // Agenda
+      // ✅ AGENDA CORREGIDO
       NumTitular: "Número de teléfono del titular",
       NomTitular: "Nombre del titular",
-      // Solo validar contacto si NO hay contingencia activa
       ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
-      // Pedir fecha solo si NO está checkeado suspender (sus)
-      ...(document.getElementById("sus")?.checked === false
+      // ✅ CORRECCIÓN: Fecha y Franja SIEMPRE se piden EXCEPTO si Aceptains O sus están marcados
+      ...(!document.getElementById("Aceptains")?.checked && !document.getElementById("sus")?.checked
         ? { Fecha: "Fecha de agenda", Franja: "Franja horaria" }
         : {}),
     },
     2: {
-      // Quiebre
+      // Quiebre (sin cambios)
       NumTitular: "Número de teléfono del titular",
       NomTitular: "Nombre del titular",
-      // Solo validar contacto si NO hay contingencia activa
       ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
       mQuiebre: "Motivo de quiebre",
     },
     3: {
-      // Soporte no aplica
-      NumTitular: "Número de teléfono del titular",
-      NomTitular: "Nombre del titular",
+      // ✅ SOPORTE NO APLICA CORREGIDO - NO se requiere nombre ni número de titular
       noSoporte: "Tipo de soporte",
     },
     4: {
-      // Gestión decos
+      // Gestión decos (sin cambios)
       NumTitular: "Número de teléfono del titular",
       NomTitular: "Nombre del titular",
-      // Solo validar contacto si NO hay contingencia activa
       ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
     },
     5: {
-      // Dirección piloto
+      // Dirección piloto (sin cambios)
       direccionSistema: "Dirección del sistema",
       resultado: "Dirección de recibo",
     },
     6: {
-      // Llamada caída
+      // Llamada caída (sin cambios)
     },
   };
 
@@ -1466,7 +1469,7 @@ function validarAntesDeCopirarNota() {
     }
   });
 
-  // Validaciones condicionales inteligentes
+  // Validaciones condicionales específicas
   errores.push(
     ...validarCamposCondicionales(motivoLlamada, contingenciaActiva)
   );
@@ -1474,12 +1477,15 @@ function validarAntesDeCopirarNota() {
   return errores;
 }
 
+// ===========================================
+// FUNCIÓN AUXILIAR PARA VALIDACIONES CONDICIONALES
+// ===========================================
+
 function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
   const errores = [];
   const contacto = document.getElementById("Contacto")?.value;
 
-  // Solo validar contacto si NO hay contingencia activa
-  // Si hay contacto exitoso (2) y no hay contingencia, debe tener motivo del cliente
+  // Solo validar motivo del cliente si hay contacto exitoso y no hay contingencia
   if (contacto === "2" && !contingenciaActiva) {
     const motivoCliente = document.getElementById("Musuario")?.value;
     if (!motivoCliente || motivoCliente.trim() === "") {
@@ -1492,7 +1498,6 @@ function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
   // Validaciones específicas por motivo
   switch (motivoLlamada) {
     case "2": // Quiebre
-      // Si es quiebre con contacto exitoso y no hay contingencia, verificar motivo específico
       if (contacto === "2" && !contingenciaActiva) {
         const motivoQuiebre = document.getElementById("mQuiebre")?.value;
         if (!motivoQuiebre || motivoQuiebre === "...") {
@@ -1503,11 +1508,19 @@ function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
 
     case "3": // Soporte no aplica
       const tipoSoporte = document.getElementById("noSoporte")?.value;
-      // Si es tipo 7 (jornada), requiere AM/PM
+      // Validar jornada si es tipo 7
       if (tipoSoporte === "7") {
         const jornada = document.getElementById("tipoJornada")?.value;
         if (!jornada || jornada === "") {
           errores.push("❌ Falta: Tipo de jornada (AM/PM)");
+        }
+      }
+      // Validar motivo usuario para ciertos tipos de soporte
+      const soportesConMotivo = ["11", "6", "13", "14", "3", "9", "4"];
+      if (soportesConMotivo.includes(tipoSoporte)) {
+        const motivoUsuario = document.getElementById("Musuario")?.value;
+        if (!motivoUsuario || motivoUsuario.trim() === "") {
+          errores.push("❌ Falta: Motivo del usuario (para este tipo de soporte)");
         }
       }
       break;
@@ -1535,7 +1548,6 @@ function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
 // ===========================================
 // FUNCIÓN FALTANTE PARA VALIDAR CAMPOS REQUERIDOS
 // ===========================================
-
 function esRequeridoYVacio(campo, motivoLlamada, contacto) {
   const elemento = document.getElementById(campo);
   if (!elemento) return false;
@@ -1546,69 +1558,63 @@ function esRequeridoYVacio(campo, motivoLlamada, contacto) {
   if (!estaVacio) return false; // Si no está vacío, no necesita resaltado
 
   const contingenciaActiva = document.getElementById("Contingencia")?.checked;
+  const clienteAgenda = document.getElementById("sus")?.checked; // ✅ Agregado
 
   // Definir qué campos son requeridos según el motivo
   const camposPorMotivo = {
     0: {
-      // Incumplimiento
+      // ✅ INCUMPLIMIENTO CORREGIDO
       NumTitular: true,
       NomTitular: true,
       // Solo requerir contacto si NO hay contingencia activa
       Contacto: !contingenciaActiva,
-      // Fecha y Franja solo si hay contacto exitoso Y cliente desea agendar
-      Fecha: contacto === "2" && document.getElementById("sus")?.checked,
-      Franja: contacto === "2" && document.getElementById("sus")?.checked,
-    },
-    1: {
-      // Agenda
-      NumTitular: true,
-      NomTitular: true,
-      // Solo requerir contacto si NO hay contingencia activa
-      Contacto: !contingenciaActiva,
-      // Fecha y Franja solo si NO está checkeado suspender
-      Fecha: !document.getElementById("sus")?.checked,
-      Franja: !document.getElementById("sus")?.checked,
-    },
-    2: {
-      // Quiebre
-      NumTitular: true,
-      NomTitular: true,
-      // Solo requerir contacto si NO hay contingencia activa
-      Contacto: !contingenciaActiva,
-      mQuiebre: true,
+      // ✅ CORRECCIÓN: Fecha y Franja solo si NO hay contingencia Y hay contacto exitoso Y cliente agenda
+      Fecha: !contingenciaActiva && contacto === "2" && clienteAgenda,
+      Franja: !contingenciaActiva && contacto === "2" && clienteAgenda,
       // Musuario solo si hay contacto exitoso y no hay contingencia
       Musuario: contacto === "2" && !contingenciaActiva,
     },
-    3: {
-      // Soporte no aplica
+    1: {
+      // ✅ AGENDA CORREGIDO
       NumTitular: true,
       NomTitular: true,
+      Contacto: !contingenciaActiva,
+      // ✅ CORRECCIÓN: Fecha y Franja SIEMPRE se piden EXCEPTO si Aceptains O sus están marcados
+      Fecha: !document.getElementById("Aceptains")?.checked && !document.getElementById("sus")?.checked,
+      Franja: !document.getElementById("Aceptains")?.checked && !document.getElementById("sus")?.checked,
+      Musuario: contacto === "2" && !contingenciaActiva,
+    },
+    2: {
+      // Quiebre (sin cambios)
+      NumTitular: true,
+      NomTitular: true,
+      Contacto: !contingenciaActiva,
+      mQuiebre: true,
+      Musuario: contacto === "2" && !contingenciaActiva,
+    },
+    3: {
+      // ✅ SOPORTE NO APLICA CORREGIDO - NO se requiere nombre ni número de titular
       noSoporte: true,
-      // tipoJornada solo si noSoporte es "7"
       tipoJornada: document.getElementById("noSoporte")?.value === "7",
-      // Musuario para ciertos tipos de soporte
       Musuario: ["11", "6", "13", "14", "3", "9", "4"].includes(
         document.getElementById("noSoporte")?.value
       ),
     },
     4: {
-      // Gestión decos
+      // Gestión decos (sin cambios)
       NumTitular: true,
       NomTitular: true,
-      // Solo requerir contacto si NO hay contingencia activa
       Contacto: !contingenciaActiva,
-      // Musuario solo si hay contacto exitoso y no hay contingencia
       Musuario: contacto === "2" && !contingenciaActiva,
     },
     5: {
-      // Dirección piloto
+      // Dirección piloto (sin cambios)
       direccionSistema: true,
       resultado: true,
-      // Musuario solo si NO acepta recibo
       Musuario: !document.getElementById("aceptarRecibo")?.checked,
     },
     6: {
-      // Llamada caída
+      // Llamada caída (sin cambios)
     },
   };
 
@@ -2098,10 +2104,12 @@ function integrarContactosConcatenadosEnNota() {
 }
 
 // Función para conectar el botón "+" 
-function conectarBotonAgregarExacto() {
+/* function conectarBotonAgregarExacto() {
   const botonAgregar = document.getElementById('agregarNumero');
   
   if (botonAgregar) {
+    // Verificar si ya tiene nuestro event listener
+    
     
     // Marcar el botón como conectado
     botonAgregar.setAttribute('data-contactos-connected', 'true');
@@ -2129,7 +2137,7 @@ function conectarBotonAgregarExacto() {
   } else {
     console.warn('⚠️ No se encontró el botón con id "agregarNumero"');
   }
-}
+} */
 
 // Función de inicialización principal (VERSIÓN CORREGIDA)
 function inicializarSistemaContactosExactos() {
