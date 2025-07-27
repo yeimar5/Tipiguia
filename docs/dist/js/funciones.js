@@ -1800,3 +1800,400 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", function () {
   inicializarSistemaResaltado();
 });
+
+// ===========================================
+// SISTEMA PARA DUPLICAR CONTACTOS EXACTOS - VERSIÓN CORREGIDA
+// ===========================================
+
+let contadorContactosExactos = 1; // Empezamos en 1 porque ya existe el contacto principal
+let funcionOriginalGuardada = null; // Variable para guardar la función original solo una vez
+
+// Función para agregar un nuevo contacto (conectada al botón +)
+function agregarNuevoContactoExacto() {
+  contadorContactosExactos++;
+  
+  // Buscar el contenedor padre donde está el contacto original
+  const contactoOriginal = document.getElementById('contacto1');
+  if (!contactoOriginal) {
+    console.error('❌ No se encontró el elemento con id "contacto1"');
+    return false;
+  }
+  
+  const rowPadre = contactoOriginal.closest('.row');
+  if (!rowPadre) {
+    console.error('❌ No se encontró el div.row padre');
+    return false;
+  }
+  
+  // Crear el nuevo HTML exacto
+  const nuevoContactoHTML = crearContactoExactoHTML(contadorContactosExactos);
+  
+  // Insertar después del último contacto
+  const ultimoContacto = document.querySelector('[data-contacto-id]:last-of-type');
+  const elementoReferencia = ultimoContacto ? ultimoContacto.closest('.row') : rowPadre;
+  
+  elementoReferencia.insertAdjacentHTML('afterend', nuevoContactoHTML);
+  
+  // Inicializar event listeners para el nuevo contacto
+  inicializarEventListenersContactoExacto(contadorContactosExactos);
+  
+  console.log(`✅ Nuevo contacto exacto agregado: #${contadorContactosExactos}`);
+  
+  // Actualizar la nota SOLO si existe la función
+  if (typeof crearNota === 'function') {
+    crearNota();
+  }
+  
+  return contadorContactosExactos;
+}
+
+// Función para crear el HTML exacto del nuevo contacto
+function crearContactoExactoHTML(numero) {
+  return `
+    <div class="row" data-contacto-id="${numero}">
+      <div class="col-12" id="contacto${numero}">
+        <div class="row">
+          <div class="col-5">
+            <label for="NumTitular${numero}">Numero de Titular ${numero}</label>
+            <input type="tel" class="form-control trans no-arrows" id="NumTitular${numero}" 
+                   autocomplete="off" placeholder="Número de teléfono ${numero}">
+          </div>
+          <div class="col-5">
+            <label for="Contacto${numero}">Hubo Contacto ${numero}</label>
+            <select class="custom-select trans" id="Contacto${numero}">
+              <option selected>...</option>
+              <option value="2">Contacto</option>
+              <option value="1">Sin Contacto</option>
+              <option value="ocupado">Línea ocupada</option>
+              <option value="fuera_servicio">Número fuera de servicio</option>
+              <option value="equivocado">Número equivocado</option>
+              <option value="buzon">Contestó buzón de voz</option>
+              <option value="cuelga">Cliente cuelga inmediatamente</option>
+              <option value="tercero">Atiende tercera persona</option>
+              <option value="rechaza_llamada">Rechaza la llamada</option>
+            </select>
+          </div>
+          <div class="col-2 d-flex align-items-end">
+            <button type="button" class="btn btn-danger btn-block" 
+                    onclick="eliminarContactoExacto(${numero})" 
+                    data-toggle="tooltip" data-placement="top" 
+                    title="Eliminar contacto ${numero}">-</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Función para inicializar event listeners del nuevo contacto
+function inicializarEventListenersContactoExacto(numero) {
+  const numeroInput = document.getElementById(`NumTitular${numero}`);
+  const contactoSelect = document.getElementById(`Contacto${numero}`);
+  
+  if (numeroInput) {
+    numeroInput.addEventListener('input', function() {
+      // Actualizar nota cuando cambie el número
+      if (typeof crearNota === 'function') {
+        crearNota();
+      }
+    });
+  }
+  
+  if (contactoSelect) {
+    contactoSelect.addEventListener('change', function() {
+      // Actualizar nota cuando cambie el tipo de contacto
+      if (typeof crearNota === 'function') {
+        crearNota();
+      }
+    });
+  }
+}
+
+// Función para eliminar un contacto específico
+function eliminarContactoExacto(numero) {
+  const contactoRow = document.querySelector(`[data-contacto-id="${numero}"]`);
+  if (contactoRow) {
+    if (confirm(`¿Estás seguro de eliminar el Contacto #${numero}?`)) {
+      contactoRow.remove();
+      console.log(`✅ Contacto #${numero} eliminado`);
+      
+      // Actualizar la nota
+      if (typeof crearNota === 'function') {
+        crearNota();
+      }
+    }
+  }
+}
+
+// Función para obtener todos los contactos (original + adicionales)
+function obtenerTodosLosContactosExactos() {
+  const contactos = [];
+  
+  // Contacto original
+  const numOriginal = document.getElementById('NumTitular')?.value || '';
+  const contactoOriginal = document.getElementById('Contacto')?.value || '...';
+  
+  if (numOriginal.trim() && contactoOriginal !== '...') {
+    contactos.push({
+      numero: 1,
+      telefono: numOriginal,
+      tipoContacto: contactoOriginal,
+      esOriginal: true
+    });
+  }
+  
+  // Contactos adicionales
+  document.querySelectorAll('[data-contacto-id]').forEach(elemento => {
+    const numero = elemento.getAttribute('data-contacto-id');
+    const telefono = document.getElementById(`NumTitular${numero}`)?.value || '';
+    const tipoContacto = document.getElementById(`Contacto${numero}`)?.value || '...';
+    
+    if (telefono.trim() && tipoContacto !== '...') {
+      contactos.push({
+        numero: parseInt(numero),
+        telefono: telefono,
+        tipoContacto: tipoContacto,
+        esOriginal: false
+      });
+    }
+  });
+  
+  return contactos;
+}
+
+// Función para generar el texto de contactos concatenados para la nota
+function generarTextoContactosConcatenados(nombreTitular) {
+  const contactos = obtenerTodosLosContactosExactos();
+  
+  if (contactos.length === 0) {
+    // Si no hay contactos válidos, usar la lógica original
+    const numOriginal = document.getElementById('NumTitular')?.value || '';
+    const contactoOriginal = document.getElementById('Contacto')?.value || '...';
+    
+    if (numOriginal.trim()) {
+      if (contactoOriginal === '2') {
+        return `Titular ${nombreTitular} se marca al número ${numOriginal} contesta `;
+      } else if (esSinContacto(contactoOriginal)) {
+        const textoSinContacto = obtenerTextoSinContacto(contactoOriginal);
+        return `Titular ${nombreTitular} se marca al número ${numOriginal} ${textoSinContacto}`;
+      }
+    }
+    
+    return `Titular ${nombreTitular} se marca al número `;
+  }
+  
+  if (contactos.length === 1) {
+    // Un solo contacto - usar lógica original
+    const contacto = contactos[0];
+    
+    if (contacto.tipoContacto === '2') {
+      return `Titular ${nombreTitular} se marca al número ${contacto.telefono} contesta `;
+    } else if (esSinContacto(contacto.tipoContacto)) {
+      const textoSinContacto = obtenerTextoSinContacto(contacto.tipoContacto);
+      return `Titular ${nombreTitular} se marca al número ${contacto.telefono} ${textoSinContacto}`;
+    }
+  }
+  
+  // Múltiples contactos - concatenar
+  let textoCompleto = `Titular ${nombreTitular} `;
+  let hayContactoExitoso = false;
+  let textoContactoExitoso = '';
+  
+  contactos.forEach((contacto, index) => {
+    if (contacto.tipoContacto === '2') {
+      hayContactoExitoso = true;
+      textoContactoExitoso = `se marca al número ${contacto.telefono} contesta `;
+    } else if (esSinContacto(contacto.tipoContacto)) {
+      const textoSinContacto = obtenerTextoSinContacto(contacto.tipoContacto);
+      
+      if (index === 0) {
+        textoCompleto += `se marca al número ${contacto.telefono} ${textoSinContacto}`;
+      } else if (index === contactos.length - 1 && !hayContactoExitoso) {
+        textoCompleto += ` y se marca al número ${contacto.telefono} ${textoSinContacto}`;
+      } else if (!hayContactoExitoso) {
+        textoCompleto += `, se marca al número ${contacto.telefono} ${textoSinContacto}`;
+      }
+    }
+  });
+  
+  // Si hay contacto exitoso, agregarlo al final
+  if (hayContactoExitoso) {
+    if (contactos.length > 1) {
+      // Si hubo intentos fallidos antes del exitoso
+      const intentosFallidos = contactos.filter(c => esSinContacto(c.tipoContacto));
+      if (intentosFallidos.length > 0) {
+        textoCompleto += `, finalmente ${textoContactoExitoso}`;
+      } else {
+        textoCompleto += textoContactoExitoso;
+      }
+    } else {
+      textoCompleto = textoContactoExitoso.replace('se marca al número', `Titular ${nombreTitular} se marca al número`);
+    }
+  }
+  
+  return textoCompleto;
+}
+
+// Función para modificar la función crearNota existente (VERSIÓN CORREGIDA)
+function integrarContactosConcatenadosEnNota() {
+  // Verificar si ya hemos guardado la función original
+  if (funcionOriginalGuardada !== null) {
+    console.log('⚠️ Sistema ya integrado, evitando duplicación');
+    return;
+  }
+  
+  // Guardar referencia a la función original SOLO una vez
+  funcionOriginalGuardada = window.crearNota;
+  
+  if (typeof funcionOriginalGuardada !== 'function') {
+    console.warn('⚠️ No se encontró la función crearNota original');
+    return;
+  }
+  
+  // Sobrescribir la función crearNota
+  window.crearNota = function() {
+    // Llamar a la función original PRIMERO
+    funcionOriginalGuardada();
+    
+    // Obtener valores necesarios
+    const nombreTitular = document.getElementById('NomTitular')?.value || '';
+    
+    // Solo proceder si hay nombre de titular
+    if (!nombreTitular.trim()) {
+      return;
+    }
+    
+    // Generar texto de contactos concatenados
+    const textoContactos = generarTextoContactosConcatenados(nombreTitular);
+    
+    // Obtener el contenido actual de la nota
+    const textoNota = document.getElementById('textoNota');
+    if (!textoNota) return;
+    
+    let contenidoNota = textoNota.value;
+    
+    // Patrón más específico para evitar reemplazos múltiples
+    const patronTitular = new RegExp(`Titular\\s+${nombreTitular.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+se marca al número[^,\\.]*`, 'i');
+    
+    if (patronTitular.test(contenidoNota)) {
+      // Reemplazar el patrón existente con el texto concatenado
+      contenidoNota = contenidoNota.replace(patronTitular, textoContactos);
+    } else {
+      // Buscar patrón más general como fallback
+      const patronGeneral = /Titular\s+[^\s]+(?:\s+[^\s]+)*\s+se marca al número[^,\.]*/i;
+      if (patronGeneral.test(contenidoNota)) {
+        contenidoNota = contenidoNota.replace(patronGeneral, textoContactos);
+      }
+    }
+    
+    // Actualizar el contenido de la nota
+    textoNota.value = contenidoNota;
+  };
+  
+  console.log('✅ Función crearNota integrada con contactos concatenados (sin duplicación)');
+}
+
+// Función para conectar el botón "+" existente (VERSIÓN CORREGIDA)
+function conectarBotonAgregarExacto() {
+  const botonAgregar = document.getElementById('agregarNumero');
+  
+  if (botonAgregar) {
+    // Verificar si ya tiene nuestro event listener
+    if (botonAgregar.hasAttribute('data-contactos-connected')) {
+      console.log('⚠️ Botón ya conectado, evitando duplicación');
+      return;
+    }
+    
+    // Marcar el botón como conectado
+    botonAgregar.setAttribute('data-contactos-connected', 'true');
+    
+    // Agregar el event listener con prevención de múltiples ejecuciones
+    botonAgregar.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Prevenir múltiples clics rápidos
+      if (botonAgregar.disabled) return;
+      
+      botonAgregar.disabled = true;
+      
+      try {
+        agregarNuevoContactoExacto();
+      } finally {
+        // Rehabilitar el botón después de un pequeño delay
+        setTimeout(() => {
+          botonAgregar.disabled = false;
+        }, 300);
+      }
+    });
+    
+    console.log('✅ Botón "agregarNumero" conectado exitosamente (protegido contra duplicación)');
+  } else {
+    console.warn('⚠️ No se encontró el botón con id "agregarNumero"');
+  }
+}
+
+// Función de inicialización principal (VERSIÓN CORREGIDA)
+function inicializarSistemaContactosExactos() {
+  // Verificar si ya está inicializado
+  if (window.ContactosExactosInicializado) {
+    console.log('⚠️ Sistema ya inicializado, evitando duplicación');
+    return;
+  }
+  
+  console.log('🚀 Inicializando sistema de contactos exactos...');
+  
+  // Marcar como inicializado
+  window.ContactosExactosInicializado = true;
+  
+  // Conectar botón agregar
+  conectarBotonAgregarExacto();
+  
+  // Integrar con sistema de notas
+  integrarContactosConcatenadosEnNota();
+  
+  console.log('✅ Sistema de contactos exactos inicializado correctamente');
+}
+
+// ===========================================
+// FUNCIONES PÚBLICAS
+// ===========================================
+
+// Hacer funciones disponibles globalmente
+window.ContactosExactos = {
+  agregar: agregarNuevoContactoExacto,
+  eliminar: eliminarContactoExacto,
+  obtenerTodos: obtenerTodosLosContactosExactos,
+  generarTexto: generarTextoContactosConcatenados,
+  inicializar: inicializarSistemaContactosExactos,
+  // Función para reiniciar el sistema si es necesario
+  reiniciar: function() {
+    window.ContactosExactosInicializado = false;
+    funcionOriginalGuardada = null;
+    contadorContactosExactos = 1;
+    const botonAgregar = document.getElementById('agregarNumero');
+    if (botonAgregar) {
+      botonAgregar.removeAttribute('data-contactos-connected');
+    }
+    console.log('🔄 Sistema de contactos reiniciado');
+  }
+};
+
+// Inicialización automática con protección contra múltiples ejecuciones
+document.addEventListener('DOMContentLoaded', function() {
+  if (!window.ContactosExactosInicializado) {
+    setTimeout(() => {
+      inicializarSistemaContactosExactos();
+    }, 500);
+  }
+});
+
+// También en window.onload por si acaso
+window.addEventListener('load', function() {
+  if (!window.ContactosExactosInicializado) {
+    setTimeout(() => {
+      inicializarSistemaContactosExactos();
+    }, 800);
+  }
+});
+
