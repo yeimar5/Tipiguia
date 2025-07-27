@@ -317,6 +317,12 @@ function formatoOracion(texto) {
 // ===========================================
 
 function concatenateInputs() {
+  // Si el checkbox está marcado, no hacer concatenación automática
+  const checkbox = document.getElementById("direccionNoLegible");
+  if (checkbox && checkbox.checked) {
+    return;
+  }
+  
   const via = document.getElementById("via").value || "";
   const cruce = document.getElementById("cruce").value || "";
   const placa = document.getElementById("placa").value || "";
@@ -440,6 +446,7 @@ function inicializarCheckboxNotaAplicativos() {
 document.addEventListener("DOMContentLoaded", function () {
   inicializarInputsEnMayusculas();
   inicializarCheckboxNotaAplicativos();
+  inicializarCheckboxDireccionNoLegible(); 
 });
 
 // ===========================================
@@ -860,6 +867,16 @@ function procesarCasoGestionDecos(valores, textos) {
 
 // Función para procesar caso de dirección piloto
 function procesarCasoDireccionPiloto(valores, textos) {
+  // 🆕 VERIFICAR SI LA DIRECCIÓN NO ES LEGIBLE
+  const direccionNoLegible = document.getElementById("direccionNoLegible");
+  
+  if (direccionNoLegible && direccionNoLegible.checked) {
+    // Si la dirección no es legible, generar nota especial
+    const textoNoLegible = valores.direcionenRecibo || "DIRECCION NO ES LEGIBLE";
+    return textos.texto + ` ${textoNoLegible}, por lo cual NO se acepta el recibo público ${valores.motivoCliente}.`;
+  }
+  
+  // 🔄 LÓGICA ORIGINAL (cuando la dirección SÍ es legible)
   const respuesta = valores.aceptarRecibo
     ? "SI se da aceptación al recibo publico"
     : `NO se acepta porque ${valores.motivoCliente}`;
@@ -1427,15 +1444,11 @@ function validarAntesDeCopirarNota() {
     },
     5: {
       // Dirección piloto
-      NumTitular: "Número de teléfono del titular",
-      NomTitular: "Nombre del titular",
       direccionSistema: "Dirección del sistema",
       resultado: "Dirección de recibo",
     },
     6: {
       // Llamada caída
-      NumTitular: "Número de teléfono del titular",
-      NomTitular: "Nombre del titular",
     },
   };
 
@@ -1589,8 +1602,6 @@ function esRequeridoYVacio(campo, motivoLlamada, contacto) {
     },
     5: {
       // Dirección piloto
-      NumTitular: true,
-      NomTitular: true,
       direccionSistema: true,
       resultado: true,
       // Musuario solo si NO acepta recibo
@@ -1598,8 +1609,6 @@ function esRequeridoYVacio(campo, motivoLlamada, contacto) {
     },
     6: {
       // Llamada caída
-      NumTitular: true,
-      NomTitular: true,
     },
   };
 
@@ -1786,7 +1795,6 @@ function limpiarResaltados() {
 // Función para inicializar todo el sistema de resaltado
 function inicializarSistemaResaltado() {
   agregarEventListenersParaResaltado();
-  console.log("✅ Sistema de resaltado dinámico inicializado");
 }
 
 // Inicializar cuando el DOM esté listo
@@ -2037,10 +2045,7 @@ function generarTextoContactosConcatenados(nombreTitular) {
 // Función para modificar la función crearNota existente (VERSIÓN CORREGIDA)
 function integrarContactosConcatenadosEnNota() {
   // Verificar si ya hemos guardado la función original
-  if (funcionOriginalGuardada !== null) {
-    console.log('⚠️ Sistema ya integrado, evitando duplicación');
-    return;
-  }
+  
   
   // Guardar referencia a la función original SOLO una vez
   funcionOriginalGuardada = window.crearNota;
@@ -2090,19 +2095,13 @@ function integrarContactosConcatenadosEnNota() {
     textoNota.value = contenidoNota;
   };
   
-  console.log('✅ Función crearNota integrada con contactos concatenados (sin duplicación)');
 }
 
-// Función para conectar el botón "+" existente (VERSIÓN CORREGIDA)
+// Función para conectar el botón "+" 
 function conectarBotonAgregarExacto() {
   const botonAgregar = document.getElementById('agregarNumero');
   
   if (botonAgregar) {
-    // Verificar si ya tiene nuestro event listener
-    if (botonAgregar.hasAttribute('data-contactos-connected')) {
-      console.log('⚠️ Botón ya conectado, evitando duplicación');
-      return;
-    }
     
     // Marcar el botón como conectado
     botonAgregar.setAttribute('data-contactos-connected', 'true');
@@ -2127,7 +2126,6 @@ function conectarBotonAgregarExacto() {
       }
     });
     
-    console.log('✅ Botón "agregarNumero" conectado exitosamente (protegido contra duplicación)');
   } else {
     console.warn('⚠️ No se encontró el botón con id "agregarNumero"');
   }
@@ -2137,11 +2135,9 @@ function conectarBotonAgregarExacto() {
 function inicializarSistemaContactosExactos() {
   // Verificar si ya está inicializado
   if (window.ContactosExactosInicializado) {
-    console.log('⚠️ Sistema ya inicializado, evitando duplicación');
     return;
   }
   
-  console.log('🚀 Inicializando sistema de contactos exactos...');
   
   // Marcar como inicializado
   window.ContactosExactosInicializado = true;
@@ -2152,7 +2148,6 @@ function inicializarSistemaContactosExactos() {
   // Integrar con sistema de notas
   integrarContactosConcatenadosEnNota();
   
-  console.log('✅ Sistema de contactos exactos inicializado correctamente');
 }
 
 // ===========================================
@@ -2175,7 +2170,6 @@ window.ContactosExactos = {
     if (botonAgregar) {
       botonAgregar.removeAttribute('data-contactos-connected');
     }
-    console.log('🔄 Sistema de contactos reiniciado');
   }
 };
 
@@ -2196,4 +2190,85 @@ window.addEventListener('load', function() {
     }, 800);
   }
 });
+
+// ===========================================
+// FUNCIONALIDAD CHECKBOX DIRECCIÓN NO LEGIBLE
+// ===========================================
+
+function inicializarCheckboxDireccionNoLegible() {
+    const checkbox = document.getElementById("direccionNoLegible");
+    const inputResultado = document.getElementById("resultado");
+    const seccionSistema = document.getElementById("seccionDireccionSistema");
+    const checkboxAceptar = document.getElementById("aceptarRecibo");
+    
+    if (checkbox && inputResultado) {
+        checkbox.addEventListener("change", function() {
+            if (this.checked) {
+                // ✅ CUANDO ESTÁ MARCADO "NO LEGIBLE"
+                
+                // 1. Habilitar input resultado
+                inputResultado.readOnly = false;
+                inputResultado.value = "DIRECCION NO ES LEGIBLE";
+                inputResultado.focus();
+                
+                // 2. Ocultar campos de dirección superior
+                const camposContainer = document.querySelector("#DRP .row.mb-2.no-gutters");
+                if (camposContainer) {
+                    camposContainer.style.display = "none";
+                }
+                
+                // 3. 🆕 OCULTAR TODA LA SECCIÓN DEL SISTEMA
+                if (seccionSistema) {
+                    seccionSistema.style.display = "none";
+                }
+                
+                // 4. 🆕 DESMARCAR AUTOMÁTICAMENTE "ACEPTAR RECIBO"
+                if (checkboxAceptar) {
+                    checkboxAceptar.checked = false;
+                }
+                
+                // 5. Actualizar la nota
+                if (typeof crearNota === "function") {
+                    crearNota();
+                }
+                
+                
+            } else {
+                // ✅ CUANDO ESTÁ DESMARCADO
+                
+                // 1. Restaurar input resultado
+                inputResultado.readOnly = true;
+                inputResultado.value = "direccion recibo";
+                
+                // 2. Mostrar campos de dirección
+                const camposContainer = document.querySelector("#DRP .row.mb-2.no-gutters");
+                if (camposContainer) {
+                    camposContainer.style.display = "";
+                }
+                
+                // 3. 🆕 MOSTRAR LA SECCIÓN DEL SISTEMA
+                if (seccionSistema) {
+                    seccionSistema.style.display = "";
+                }
+                
+                // 4. Restaurar concatenación
+                concatenateInputs();
+                
+                // 5. Actualizar la nota
+                if (typeof crearNota === "function") {
+                    crearNota();
+                }
+                
+            }
+        });
+        
+        // Event listener para modificaciones manuales del texto
+        inputResultado.addEventListener("input", function() {
+            if (!this.readOnly && typeof crearNota === "function") {
+                crearNota();
+            }
+        });
+        
+    }
+}
 
