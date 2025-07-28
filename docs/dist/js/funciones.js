@@ -954,8 +954,6 @@ const todosLosElementos = [
   "#notaAplicativos",
   "#DRP",
   "#direccionSistema",
-  "#nomt",
-  "#numt",
   "#jornadaSelect",
 ];
 
@@ -1248,7 +1246,7 @@ function manejarCasoQuiebre(valores) {
     toggleElementStat("Contacto", true);
     mostrarSoloElementos(
       {
-        block: ["#MotivoTec", "#MoQuiebre", "#nomt", "#numt"],
+        block: ["#MotivoTec", "#MoQuiebre",],
         flex: ["#notaAplicativos"],
       },
       elementosBaseQuiebre
@@ -1256,7 +1254,7 @@ function manejarCasoQuiebre(valores) {
   } else {
     mostrarSoloElementos(
       {
-        block: ["#MotivoTec", "#nomt", "#numt"],
+        block: ["#MotivoTec",],
       },
       elementosBaseQuiebre
     );
