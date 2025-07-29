@@ -64,14 +64,6 @@ function esFechaAnteriorAHoy(fechaStr) {
 // INICIALIZACIÓN Y EVENT LISTENERS
 // ===========================================
 
-const inputDireccion = document.getElementById("direccionSistema");
-
-if (inputDireccion) {
-  inputDireccion.addEventListener("paste", function (e) {
-    setTimeout(() => (this.value = limpiarTexto(this.value)), 10);
-  });
-}
-
 const formulario = document.getElementById("Formulario");
 if (formulario) {
   formulario.addEventListener("change", manejarCambio);
@@ -275,7 +267,7 @@ function FormatearFecha(fecha) {
   hoy.setHours(0, 0, 0, 0);
   fechaObj.setHours(0, 0, 0, 0);
 
-  if (esFechaAnteriorAHoy(fecha)) {
+  if (esFechaAnteriorAHoy(fechaObj)) {
     alert(
       "La fecha seleccionada no puede ser anterior a hoy. Seleccione una fecha válida 📅⚠️"
     );
@@ -331,7 +323,7 @@ function concatenateInputs() {
   const parts = [via, cruce, placa, complemento].filter(
     (part) => part.trim() !== ""
   );
-  const result = parts.join(" ");
+  const result = "en recibo publico esta " + parts.join(" ");
 
   actualizarResultadoDireccion(result);
 }
@@ -546,6 +538,7 @@ const ids = [
   "Agent",
   "direccionSistema",
   "resultado",
+  "DRP"
 ];
 
 const campos = {};
@@ -683,7 +676,6 @@ function procesarCasoAgenda(valores, textos) {
   return texto + notaGenerada;
 }
 
-// Función para procesar caso de quiebre
 // Función para procesar caso de quiebre
 function procesarCasoQuiebre(valores, textos) {
   const textoSinContacto = obtenerTextoSinContacto(valores.contactoConTitular);
@@ -867,25 +859,36 @@ function procesarCasoGestionDecos(valores, textos) {
 
 // Función para procesar caso de dirección piloto
 function procesarCasoDireccionPiloto(valores, textos) {
-  // 🆕 VERIFICAR SI LA DIRECCIÓN NO ES LEGIBLE
+  /* // Verificar si la dirección no es legible
   const direccionNoLegible = document.getElementById("direccionNoLegible");
   
   if (direccionNoLegible && direccionNoLegible.checked) {
-    // Si la dirección no es legible, generar nota especial
+    // ✅ CASO: DIRECCIÓN NO LEGIBLE
     const textoNoLegible = valores.direcionenRecibo || "DIRECCION NO ES LEGIBLE";
     return textos.texto + ` ${textoNoLegible}, por lo cual NO se acepta el recibo público`;
-  }
+  } */
   
-  // 🔄 LÓGICA ORIGINAL (cuando la dirección SÍ es legible)
-  const respuesta = valores.aceptarRecibo
-    ? "SI se da aceptación al recibo publico"
-    : `NO se acepta porque ${valores.motivoCliente}`;
-
-  return (
-    textos.texto +
-    ` ${valores.direcionenRecibo} y en sistema está ${valores.direccionAgendador} ${respuesta}`
-  );
+  // ✅ CASO: DIRECCIÓN LEGIBLE
+  // Determinar respuesta según si acepta o no el recibo
+  
+  let respuesta = "";
+if (valores.aceptarRecibo) {
+  respuesta = "SI se da aceptación al recibo publico";
+} else if (valores.direccionNoLegible) {
+  respuesta = "NO se acepta el recibo público porque la dirección no es legible";
+} else {
+  respuesta = "";
 }
+  
+  let sistema = (valores.direccionAgendador && `y en sistema está ${valores.direccionAgendador}`) 
+  || "";
+
+return (
+  textos.texto +
+  ` ${valores.direcionenRecibo || ""} ${sistema} ${respuesta}`
+);
+}
+
 
 // Función principal
 function crearNota() {
@@ -936,7 +939,7 @@ function crearNota() {
 // MANEJADORES DE CAMBIO EN OPCIONES DE FORMULARIO
 // ===========================================
 
-// Lista de todos los elementos que se manejan en la aplicación
+// Lista de todas las secciones o elementos visuales que se pueden mostrar/ocultar en la aplicacion
 const todosLosElementos = [
   "#MotivoTec",
   "#MoQuiebre",
@@ -953,7 +956,7 @@ const todosLosElementos = [
   "#suspender",
   "#notaAplicativos",
   "#DRP",
-  "#direccionSistema",
+  "#seccionDireccionSistema",
   "#jornadaSelect",
 ];
 
@@ -998,6 +1001,7 @@ function obtenerValoresManejarCambio() {
     aceptaInstalar: document.getElementById("Aceptains").checked,
     aceptarRecibo: document.getElementById("aceptarRecibo").checked,
     suspender: document.getElementById("sus").checked,
+    direccionNoLegible : document.getElementById("direccionNoLegible").checked
   };
 }
 function manejarCasoIncumplimiento(valores) {
@@ -1310,6 +1314,37 @@ function manejarCasoDecos(valores) {
     "titular solicita adicionar un decodificador a la orden para un total de "
   );
 }
+// duncion direcion piloto
+function manejarCasoDireccionPiloto(valores) {
+  // Configuración visual inicial
+  cambiarColorFondo("#c3c3c3");
+  setInnerHTML("#labelAcepta", "ACEPTAR RECIBO");
+  const elemntosBasePiloto= {
+     block: ["#MotivoTec", "#DRP"],
+     flex : [ "#seccionDireccionSistema",]
+  }
+  mostrarSoloElementos(elemntosBasePiloto
+   );
+
+  // Mostrar/ocultar campos según si acepta el recibo
+  if (!valores.aceptarRecibo) {
+    setInnerHTML("#TMusuario", "NO SE ACEPTA PORQUE?");
+  }
+
+  if (valores.direccionNoLegible) {
+    mostrarSoloElementos( elemntosBasePiloto
+      
+      /* {
+      block: ["#MotivoTec", "#Musuariod"],
+       flex : [ "#seccionDireccionSistema",]
+    } */);
+  }
+
+  ValueMostrar(
+    "#Mtecnico",
+    "requieren corrección en la dirección, "
+  );
+}
 
 // Función principal para manejarCambio
 function manejarCambio(e) {
@@ -1340,22 +1375,7 @@ function manejarCambio(e) {
         manejarCasoDecos(valores);
         break;
       case "5": // Gestión piloto
-        cambiarColorFondo("#c3c3c3");
-        setInnerHTML("#labelAcepta", "ACEPTAR RECIBO");
-        mostrarSoloElementos({
-          block: ["#MotivoTec", "#direccionSistema", "#DRP"],
-        });
-
-        if (!valores.aceptarRecibo) {
-          mostrarSoloElementos({
-            block: ["#MotivoTec", "#direccionSistema", "#Musuariod", "#DRP"],
-          });
-          setInnerHTML("#TMusuario", "NO SE ACEPTA PORQUE?");
-        }
-        ValueMostrar(
-          "#Mtecnico",
-          "requieren cambio de complemento, en recibo publico está "
-        );
+        manejarCasoDireccionPiloto(valores)
         break;
       case "6": // llamada caída
         cambiarColorFondo("#9513f1");
@@ -1386,7 +1406,7 @@ function procesarTextoNotaAplicativos(texto) {
 }
 
 // ===========================================
-// VALIDACIÓN PARA COPIAR NOTA - VERSIÓN SIMPLE
+// VALIDACIÓN PARA COPIAR NOTA
 // ===========================================
 
 function validarAntesDeCopirarNota() {
@@ -1533,14 +1553,7 @@ function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
       }
       break;
   }
-
-  // Validar fecha no sea anterior a hoy (si existe)
-  const fecha = document.getElementById("Fecha")?.value;
-  if (fecha && esFechaAnteriorAHoy(fecha)) {
-    errores.push("❌ La fecha de agenda no puede ser anterior a hoy");
-  }
-
-  return errores;
+    return errores;
 }
 
 // ===========================================
@@ -2196,85 +2209,4 @@ window.addEventListener('load', function() {
     }, 800);
   }
 });
-
-// ===========================================
-// FUNCIONALIDAD CHECKBOX DIRECCIÓN NO LEGIBLE
-// ===========================================
-
-function inicializarCheckboxDireccionNoLegible() {
-    const checkbox = document.getElementById("direccionNoLegible");
-    const inputResultado = document.getElementById("resultado");
-    const seccionSistema = document.getElementById("seccionDireccionSistema");
-    const checkboxAceptar = document.getElementById("aceptarRecibo");
-    
-    if (checkbox && inputResultado) {
-        checkbox.addEventListener("change", function() {
-            if (this.checked) {
-                // ✅ CUANDO ESTÁ MARCADO "NO LEGIBLE"
-                
-                // 1. Habilitar input resultado
-                inputResultado.readOnly = false;
-                inputResultado.value = "DIRECCION NO ES LEGIBLE";
-                inputResultado.focus();
-                
-                // 2. Ocultar campos de dirección superior
-                const camposContainer = document.querySelector("#DRP .row.mb-2.no-gutters");
-                if (camposContainer) {
-                    camposContainer.style.display = "none";
-                }
-                
-                // 3. 🆕 OCULTAR TODA LA SECCIÓN DEL SISTEMA
-                if (seccionSistema) {
-                    seccionSistema.style.display = "none";
-                }
-                
-                // 4. 🆕 DESMARCAR AUTOMÁTICAMENTE "ACEPTAR RECIBO"
-                if (checkboxAceptar) {
-                    checkboxAceptar.checked = false;
-                }
-                
-                // 5. Actualizar la nota
-                if (typeof crearNota === "function") {
-                    crearNota();
-                }
-                
-                
-            } else {
-                // ✅ CUANDO ESTÁ DESMARCADO
-                
-                // 1. Restaurar input resultado
-                inputResultado.readOnly = true;
-                inputResultado.value = "direccion recibo";
-                
-                // 2. Mostrar campos de dirección
-                const camposContainer = document.querySelector("#DRP .row.mb-2.no-gutters");
-                if (camposContainer) {
-                    camposContainer.style.display = "";
-                }
-                
-                // 3. 🆕 MOSTRAR LA SECCIÓN DEL SISTEMA
-                if (seccionSistema) {
-                    seccionSistema.style.display = "";
-                }
-                
-                // 4. Restaurar concatenación
-                concatenateInputs();
-                
-                // 5. Actualizar la nota
-                if (typeof crearNota === "function") {
-                    crearNota();
-                }
-                
-            }
-        });
-        
-        // Event listener para modificaciones manuales del texto
-        inputResultado.addEventListener("input", function() {
-            if (!this.readOnly && typeof crearNota === "function") {
-                crearNota();
-            }
-        });
-        
-    }
-}
 

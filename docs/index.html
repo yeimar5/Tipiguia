@@ -236,24 +236,24 @@
                       <div class="col-12 mt-2">
                         <div class="input-group">
                           <input type="text" class="form-control trans" id="resultado"
-                            placeholder="Direccion en recibo publico" readonly>
+                            placeholder="Dirección en recibo publico" readonly>
                           <div class="input-group-append">
                             <div class="input-group-text checkbox-addon">
-                              <input type="checkbox" id="direccionNoLegible" class="mr-2">
-                              <label for="direccionNoLegible" class="mb-0">Recibo no legible</label>
+                              <input type="checkbox" id="aceptarRecibo" class="mr-2">
+                              <label for="aceptarRecibo" class="mb-0">Aceptar recibo</label>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="input-group mt-3" id="seccionDireccionSistema">
-                      <input type="text" id="direccionSistema" autocomplete="off" class="form-control trans"
-                        placeholder="Pega la direccion de agendador" spellcheck="false" />
-                      <div class="input-group-append">
-                        <div class="input-group-text checkbox-addon">
-                          <input type="checkbox" id="aceptarRecibo" class="mr-2">
-                          <label for="aceptarRecibo" class="mb-0">Aceptar recibo</label>
-                        </div>
+                  </div>
+                  <div class="input-group mt-3" id="seccionDireccionSistema">
+                    <input type="text" id="direccionSistema" autocomplete="off" class="form-control trans"
+                      placeholder="Pega la direccion de agendador" spellcheck="false" />
+                    <div class="input-group-append">
+                      <div class="input-group-text checkbox-addon">
+                        <input type="checkbox" id="direccionNoLegible" class="mr-2">
+                        <label for="direccionNoLegible" class="mb-0">Recibo no se acepta</label>
                       </div>
                     </div>
                   </div>
@@ -432,7 +432,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="./dist/js/bootstrap.bundle.min.js"></script>
