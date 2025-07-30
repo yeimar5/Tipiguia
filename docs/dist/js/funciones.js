@@ -93,7 +93,7 @@ function manejarClick(evento) {
     Tipificar: lanzarModal,
     imagen: subirImagen,
     guardarCambios: guardarEnLocalStorage,
-    btnModificar: anularActualizartodo,
+    btnLimpiar: limpiarFormularios, 
   };
 
   if (actions[targetId]) {
@@ -174,6 +174,24 @@ function resetearFormularios() {
 
   // ✨ NUEVA LÍNEA - Limpiar resaltados
   limpiarResaltados();
+}
+
+function limpiarFormularios() {
+  Swal.fire({
+    title: "¿Está seguro de limpiar el formulario?",
+    text: "Esta acción borrará todos los datos ingresados, incluidos los datos del tecnico.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sí, limpiar",
+    cancelButtonText: "No, cancelar",
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      document.querySelector('#tipificarNota .close').click();
+      resetearFormularios();
+    }
+  });
 }
 
 // ===========================================
@@ -309,12 +327,6 @@ function formatoOracion(texto) {
 // ===========================================
 
 function concatenateInputs() {
-  // Si el checkbox está marcado, no hacer concatenación automática
-  const checkbox = document.getElementById("direccionNoLegible");
-  if (checkbox && checkbox.checked) {
-    return;
-  }
-  
   const via = document.getElementById("via").value || "";
   const cruce = document.getElementById("cruce").value || "";
   const placa = document.getElementById("placa").value || "";
@@ -342,9 +354,7 @@ function actualizarNotaCompleta() {
   autoResize(document.getElementById("textoNota"));
 }
 
-function actualizarNota(event) {
-  return true;
-}
+
 
 function Actualizartodo() {
   const formulario = document.querySelector("#Formulario");
@@ -353,27 +363,11 @@ function Actualizartodo() {
   });
 }
 
-function anularActualizartodo() {
-  document
-    .querySelector("#Formulario")
-    .removeEventListener("input", actualizarNota);
-  document.getElementById("textoNota").focus();
-}
 
 // ===========================================
 // FUNCIONES DE DOM
 // ===========================================
 
-function visualizarPantalla(selectors, displayValue) {
-  selectors.forEach((selector) => {
-    const element = document.querySelector(selector);
-    if (element) {
-      element.style.display = displayValue;
-    } else {
-      console.warn(`Elemento no encontrado para el selector: ${selector}`);
-    }
-  });
-}
 
 function cambiarColorFondo(color) {
   const colorElement = document.getElementById(`color`);
@@ -438,7 +432,6 @@ function inicializarCheckboxNotaAplicativos() {
 document.addEventListener("DOMContentLoaded", function () {
   inicializarInputsEnMayusculas();
   inicializarCheckboxNotaAplicativos();
-  inicializarCheckboxDireccionNoLegible(); 
 });
 
 // ===========================================
@@ -538,7 +531,7 @@ const ids = [
   "Agent",
   "direccionSistema",
   "resultado",
-  "DRP"
+  "DRP",
 ];
 
 const campos = {};
@@ -554,7 +547,7 @@ function obtenerValoresFormulario() {
     nombreTitular: campos.NomTitular.value,
     contingenciaActiva: campos.Contingencia.checked,
     aLaEsperadeInstalacion: campos.Aceptains.checked,
-    aceptarRecibo: campos.aceptarRecibo.checked,
+    aceptarRecibo: campos.aceptarRecibo.value,
     trabajador: campos.rol.value,
     contactoConTitular: campos.Contacto.value,
     motivoQuiebre: campos.mQuiebre.value,
@@ -859,36 +852,23 @@ function procesarCasoGestionDecos(valores, textos) {
 
 // Función para procesar caso de dirección piloto
 function procesarCasoDireccionPiloto(valores, textos) {
-  /* // Verificar si la dirección no es legible
-  const direccionNoLegible = document.getElementById("direccionNoLegible");
-  
-  if (direccionNoLegible && direccionNoLegible.checked) {
-    // ✅ CASO: DIRECCIÓN NO LEGIBLE
-    const textoNoLegible = valores.direcionenRecibo || "DIRECCION NO ES LEGIBLE";
-    return textos.texto + ` ${textoNoLegible}, por lo cual NO se acepta el recibo público`;
-  } */
-  
-  // ✅ CASO: DIRECCIÓN LEGIBLE
-  // Determinar respuesta según si acepta o no el recibo
-  
   let respuesta = "";
-if (valores.aceptarRecibo) {
-  respuesta = "SI se da aceptación al recibo publico";
-} else if (valores.direccionNoLegible) {
-  respuesta = "NO se acepta el recibo público porque la dirección no es legible";
-} else {
-  respuesta = "";
-}
-  
-  let sistema = (valores.direccionAgendador && `y en sistema está ${valores.direccionAgendador}`) 
-  || "";
+  if (valores.aceptarRecibo === "SI") {
+    respuesta = "SI se da aceptación al recibo publico";
+  } else if (valores.aceptarRecibo === "NO") {
+    respuesta = ` NO se acepta el recibo porque ${valores.motivoCliente}`;
+  } else {
+    respuesta = "";
+  }
 
-return (
-  textos.texto +
-  ` ${valores.direcionenRecibo || ""} ${sistema} ${respuesta}`
-);
-}
+  let sistema = valores.direccionAgendador
+    ? `y en sistema está ${valores.direccionAgendador}`
+    : "";
 
+  return (
+    textos.texto + ` ${valores.direcionenRecibo || ""} ${sistema} ${respuesta}`
+  );
+}
 
 // Función principal
 function crearNota() {
@@ -926,10 +906,12 @@ function crearNota() {
 
   textoFinal += textos.gestion;
   textoFinal = limpiarTexto(textoFinal);
-
-  // Procesar el texto con la función de Nota Aplicativos
-  if (typeof procesarTextoNotaAplicativos === "function") {
-    textoFinal = procesarTextoNotaAplicativos(textoFinal);
+  if (valores.contingenciaActiva) {
+    textoFinal = textoFinal.replace(/se marca al /gi, "").trim();
+    // Procesar el texto con la función de Nota Aplicativos
+    if (typeof procesarTextoNotaAplicativos === "function") {
+      textoFinal = procesarTextoNotaAplicativos(textoFinal);
+    }
   }
 
   textoNota.value = textoFinal;
@@ -999,9 +981,8 @@ function obtenerValoresManejarCambio() {
     trabajador: document.querySelector("#rol").value,
     contingencia: document.getElementById("Contingencia").checked,
     aceptaInstalar: document.getElementById("Aceptains").checked,
-    aceptarRecibo: document.getElementById("aceptarRecibo").checked,
+    aceptarRecibo: document.getElementById("aceptarRecibo").value,
     suspender: document.getElementById("sus").checked,
-    direccionNoLegible : document.getElementById("direccionNoLegible").checked
   };
 }
 function manejarCasoIncumplimiento(valores) {
@@ -1250,7 +1231,7 @@ function manejarCasoQuiebre(valores) {
     toggleElementStat("Contacto", true);
     mostrarSoloElementos(
       {
-        block: ["#MotivoTec", "#MoQuiebre",],
+        block: ["#MotivoTec", "#MoQuiebre"],
         flex: ["#notaAplicativos"],
       },
       elementosBaseQuiebre
@@ -1258,7 +1239,7 @@ function manejarCasoQuiebre(valores) {
   } else {
     mostrarSoloElementos(
       {
-        block: ["#MotivoTec",],
+        block: ["#MotivoTec"],
       },
       elementosBaseQuiebre
     );
@@ -1316,34 +1297,23 @@ function manejarCasoDecos(valores) {
 }
 // duncion direcion piloto
 function manejarCasoDireccionPiloto(valores) {
-  // Configuración visual inicial
   cambiarColorFondo("#c3c3c3");
-  setInnerHTML("#labelAcepta", "ACEPTAR RECIBO");
-  const elemntosBasePiloto= {
-     block: ["#MotivoTec", "#DRP"],
-     flex : [ "#seccionDireccionSistema",]
-  }
-  mostrarSoloElementos(elemntosBasePiloto
-   );
+  const elementosBasePiloto = {
+    block: ["#MotivoTec", "#DRP"],
+    flex: ["#seccionDireccionSistema"],
+  };
 
   // Mostrar/ocultar campos según si acepta el recibo
-  if (!valores.aceptarRecibo) {
+  if (valores.aceptarRecibo !== "NO") {
+    mostrarSoloElementos(elementosBasePiloto);
+  } else {
     setInnerHTML("#TMusuario", "NO SE ACEPTA PORQUE?");
+    mostrarSoloElementos(elementosBasePiloto, {
+      block: ["#Musuariod"],
+    });
   }
 
-  if (valores.direccionNoLegible) {
-    mostrarSoloElementos( elemntosBasePiloto
-      
-      /* {
-      block: ["#MotivoTec", "#Musuariod"],
-       flex : [ "#seccionDireccionSistema",]
-    } */);
-  }
-
-  ValueMostrar(
-    "#Mtecnico",
-    "requieren corrección en la dirección, "
-  );
+  ValueMostrar("#Mtecnico", "requieren corrección en la dirección, ");
 }
 
 // Función principal para manejarCambio
@@ -1375,7 +1345,7 @@ function manejarCambio(e) {
         manejarCasoDecos(valores);
         break;
       case "5": // Gestión piloto
-        manejarCasoDireccionPiloto(valores)
+        manejarCasoDireccionPiloto(valores);
         break;
       case "6": // llamada caída
         cambiarColorFondo("#9513f1");
@@ -1397,9 +1367,7 @@ function procesarTextoNotaAplicativos(texto) {
   const checkbox = document.getElementById("notaApp");
   if (checkbox && checkbox.checked) {
     let cleanedText = texto.replace(/POR CONTINGENCIA/gi, "").trim();
-    cleanedText = cleanedText.replace(/se marca al /gi, "").trim();
-
-    // Limpiar espacios extras que puedan quedar
+    // Limpiar espacios extras que puedan quedar */
     return cleanedText.replace(/\s+/g, " ").trim();
   }
   return texto;
@@ -1426,9 +1394,9 @@ function validarAntesDeCopirarNota() {
       ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
       // ✅ CORRECCIÓN: Fecha y Franja solo si NO hay contingencia Y contacto exitoso Y cliente agenda
       ...(!contingenciaActiva && contacto === "2" && clienteAgenda
-        ? { 
-            Fecha: "Fecha de agenda", 
-            Franja: "Franja horaria" 
+        ? {
+            Fecha: "Fecha de agenda",
+            Franja: "Franja horaria",
           }
         : {}),
       // Motivo usuario solo si hay contacto exitoso y no hay contingencia
@@ -1442,7 +1410,8 @@ function validarAntesDeCopirarNota() {
       NomTitular: "Nombre del titular",
       ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
       // ✅ CORRECCIÓN: Fecha y Franja SIEMPRE se piden EXCEPTO si Aceptains O sus están marcados
-      ...(!document.getElementById("Aceptains")?.checked && !document.getElementById("sus")?.checked
+      ...(!document.getElementById("Aceptains")?.checked &&
+      !document.getElementById("sus")?.checked
         ? { Fecha: "Fecha de agenda", Franja: "Franja horaria" }
         : {}),
     },
@@ -1538,7 +1507,9 @@ function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
       if (soportesConMotivo.includes(tipoSoporte)) {
         const motivoUsuario = document.getElementById("Musuario")?.value;
         if (!motivoUsuario || motivoUsuario.trim() === "") {
-          errores.push("❌ Falta: Motivo del usuario (para este tipo de soporte)");
+          errores.push(
+            "❌ Falta: Motivo del usuario (para este tipo de soporte)"
+          );
         }
       }
       break;
@@ -1553,7 +1524,7 @@ function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
       }
       break;
   }
-    return errores;
+  return errores;
 }
 
 // ===========================================
@@ -1591,8 +1562,12 @@ function esRequeridoYVacio(campo, motivoLlamada, contacto) {
       NomTitular: true,
       Contacto: !contingenciaActiva,
       // ✅ CORRECCIÓN: Fecha y Franja SIEMPRE se piden EXCEPTO si Aceptains O sus están marcados
-      Fecha: !document.getElementById("Aceptains")?.checked && !document.getElementById("sus")?.checked,
-      Franja: !document.getElementById("Aceptains")?.checked && !document.getElementById("sus")?.checked,
+      Fecha:
+        !document.getElementById("Aceptains")?.checked &&
+        !document.getElementById("sus")?.checked,
+      Franja:
+        !document.getElementById("Aceptains")?.checked &&
+        !document.getElementById("sus")?.checked,
       Musuario: contacto === "2" && !contingenciaActiva,
     },
     2: {
@@ -1622,7 +1597,6 @@ function esRequeridoYVacio(campo, motivoLlamada, contacto) {
       // Dirección piloto (sin cambios)
       direccionSistema: true,
       resultado: true,
-      Musuario: !document.getElementById("aceptarRecibo")?.checked,
     },
     6: {
       // Llamada caída (sin cambios)
@@ -1836,39 +1810,41 @@ let funcionOriginalGuardada = null; // Variable para guardar la función origina
 // Función para agregar un nuevo contacto (conectada al botón +)
 function agregarNuevoContactoExacto() {
   contadorContactosExactos++;
-  
+
   // Buscar el contenedor padre donde está el contacto original
-  const contactoOriginal = document.getElementById('contacto1');
+  const contactoOriginal = document.getElementById("contacto1");
   if (!contactoOriginal) {
     console.error('❌ No se encontró el elemento con id "contacto1"');
     return false;
   }
-  
-  const rowPadre = contactoOriginal.closest('.row');
+
+  const rowPadre = contactoOriginal.closest(".row");
   if (!rowPadre) {
-    console.error('❌ No se encontró el div.row padre');
+    console.error("❌ No se encontró el div.row padre");
     return false;
   }
-  
+
   // Crear el nuevo HTML exacto
   const nuevoContactoHTML = crearContactoExactoHTML(contadorContactosExactos);
-  
+
   // Insertar después del último contacto
-  const ultimoContacto = document.querySelector('[data-contacto-id]:last-of-type');
-  const elementoReferencia = ultimoContacto ? ultimoContacto.closest('.row') : rowPadre;
-  
-  elementoReferencia.insertAdjacentHTML('afterend', nuevoContactoHTML);
-  
+  const ultimoContacto = document.querySelector(
+    "[data-contacto-id]:last-of-type"
+  );
+  const elementoReferencia = ultimoContacto
+    ? ultimoContacto.closest(".row")
+    : rowPadre;
+
+  elementoReferencia.insertAdjacentHTML("afterend", nuevoContactoHTML);
+
   // Inicializar event listeners para el nuevo contacto
   inicializarEventListenersContactoExacto(contadorContactosExactos);
-  
-  console.log(`✅ Nuevo contacto exacto agregado: #${contadorContactosExactos}`);
-  
+
   // Actualizar la nota SOLO si existe la función
-  if (typeof crearNota === 'function') {
+  if (typeof crearNota === "function") {
     crearNota();
   }
-  
+
   return contadorContactosExactos;
 }
 
@@ -1914,20 +1890,20 @@ function crearContactoExactoHTML(numero) {
 function inicializarEventListenersContactoExacto(numero) {
   const numeroInput = document.getElementById(`NumTitular${numero}`);
   const contactoSelect = document.getElementById(`Contacto${numero}`);
-  
+
   if (numeroInput) {
-    numeroInput.addEventListener('input', function() {
+    numeroInput.addEventListener("input", function () {
       // Actualizar nota cuando cambie el número
-      if (typeof crearNota === 'function') {
+      if (typeof crearNota === "function") {
         crearNota();
       }
     });
   }
-  
+
   if (contactoSelect) {
-    contactoSelect.addEventListener('change', function() {
+    contactoSelect.addEventListener("change", function () {
       // Actualizar nota cuando cambie el tipo de contacto
-      if (typeof crearNota === 'function') {
+      if (typeof crearNota === "function") {
         crearNota();
       }
     });
@@ -1940,10 +1916,7 @@ function eliminarContactoExacto(numero) {
   if (contactoRow) {
     if (confirm(`¿Estás seguro de eliminar el Contacto #${numero}?`)) {
       contactoRow.remove();
-      console.log(`✅ Contacto #${numero} eliminado`);
-      
-      // Actualizar la nota
-      if (typeof crearNota === 'function') {
+      if (typeof crearNota === "function") {
         crearNota();
       }
     }
@@ -1953,84 +1926,87 @@ function eliminarContactoExacto(numero) {
 // Función para obtener todos los contactos (original + adicionales)
 function obtenerTodosLosContactosExactos() {
   const contactos = [];
-  
+
   // Contacto original
-  const numOriginal = document.getElementById('NumTitular')?.value || '';
-  const contactoOriginal = document.getElementById('Contacto')?.value || '...';
-  
-  if (numOriginal.trim() && contactoOriginal !== '...') {
+  const numOriginal = document.getElementById("NumTitular")?.value || "";
+  const contactoOriginal = document.getElementById("Contacto")?.value || "...";
+
+  if (numOriginal.trim() && contactoOriginal !== "...") {
     contactos.push({
       numero: 1,
       telefono: numOriginal,
       tipoContacto: contactoOriginal,
-      esOriginal: true
+      esOriginal: true,
     });
   }
-  
+
   // Contactos adicionales
-  document.querySelectorAll('[data-contacto-id]').forEach(elemento => {
-    const numero = elemento.getAttribute('data-contacto-id');
-    const telefono = document.getElementById(`NumTitular${numero}`)?.value || '';
-    const tipoContacto = document.getElementById(`Contacto${numero}`)?.value || '...';
-    
-    if (telefono.trim() && tipoContacto !== '...') {
+  document.querySelectorAll("[data-contacto-id]").forEach((elemento) => {
+    const numero = elemento.getAttribute("data-contacto-id");
+    const telefono =
+      document.getElementById(`NumTitular${numero}`)?.value || "";
+    const tipoContacto =
+      document.getElementById(`Contacto${numero}`)?.value || "...";
+
+    if (telefono.trim() && tipoContacto !== "...") {
       contactos.push({
         numero: parseInt(numero),
         telefono: telefono,
         tipoContacto: tipoContacto,
-        esOriginal: false
+        esOriginal: false,
       });
     }
   });
-  
+
   return contactos;
 }
 
 // Función para generar el texto de contactos concatenados para la nota
 function generarTextoContactosConcatenados(nombreTitular) {
   const contactos = obtenerTodosLosContactosExactos();
-  
+
   if (contactos.length === 0) {
     // Si no hay contactos válidos, usar la lógica original
-    const numOriginal = document.getElementById('NumTitular')?.value || '';
-    const contactoOriginal = document.getElementById('Contacto')?.value || '...';
-    
+    const numOriginal = document.getElementById("NumTitular")?.value || "";
+    const contactoOriginal =
+      document.getElementById("Contacto")?.value || "...";
+
     if (numOriginal.trim()) {
-      if (contactoOriginal === '2') {
+      if (contactoOriginal === "2") {
         return `Titular ${nombreTitular} se marca al número ${numOriginal} contesta `;
       } else if (esSinContacto(contactoOriginal)) {
         const textoSinContacto = obtenerTextoSinContacto(contactoOriginal);
         return `Titular ${nombreTitular} se marca al número ${numOriginal} ${textoSinContacto}`;
       }
     }
-    
+
     return `Titular ${nombreTitular} se marca al número `;
   }
-  
+
   if (contactos.length === 1) {
     // Un solo contacto - usar lógica original
     const contacto = contactos[0];
-    
-    if (contacto.tipoContacto === '2') {
+
+    if (contacto.tipoContacto === "2") {
       return `Titular ${nombreTitular} se marca al número ${contacto.telefono} contesta `;
     } else if (esSinContacto(contacto.tipoContacto)) {
       const textoSinContacto = obtenerTextoSinContacto(contacto.tipoContacto);
       return `Titular ${nombreTitular} se marca al número ${contacto.telefono} ${textoSinContacto}`;
     }
   }
-  
+
   // Múltiples contactos - concatenar
   let textoCompleto = `Titular ${nombreTitular} `;
   let hayContactoExitoso = false;
-  let textoContactoExitoso = '';
-  
+  let textoContactoExitoso = "";
+
   contactos.forEach((contacto, index) => {
-    if (contacto.tipoContacto === '2') {
+    if (contacto.tipoContacto === "2") {
       hayContactoExitoso = true;
       textoContactoExitoso = `se marca al número ${contacto.telefono} contesta `;
     } else if (esSinContacto(contacto.tipoContacto)) {
       const textoSinContacto = obtenerTextoSinContacto(contacto.tipoContacto);
-      
+
       if (index === 0) {
         textoCompleto += `se marca al número ${contacto.telefono} ${textoSinContacto}`;
       } else if (index === contactos.length - 1 && !hayContactoExitoso) {
@@ -2040,81 +2016,91 @@ function generarTextoContactosConcatenados(nombreTitular) {
       }
     }
   });
-  
+
   // Si hay contacto exitoso, agregarlo al final
   if (hayContactoExitoso) {
     if (contactos.length > 1) {
       // Si hubo intentos fallidos antes del exitoso
-      const intentosFallidos = contactos.filter(c => esSinContacto(c.tipoContacto));
+      const intentosFallidos = contactos.filter((c) =>
+        esSinContacto(c.tipoContacto)
+      );
       if (intentosFallidos.length > 0) {
         textoCompleto += `, finalmente ${textoContactoExitoso}`;
       } else {
         textoCompleto += textoContactoExitoso;
       }
     } else {
-      textoCompleto = textoContactoExitoso.replace('se marca al número', `Titular ${nombreTitular} se marca al número`);
+      textoCompleto = textoContactoExitoso.replace(
+        "se marca al número",
+        `Titular ${nombreTitular} se marca al número`
+      );
     }
   }
-  
+
   return textoCompleto;
 }
 
 // Función para modificar la función crearNota existente (VERSIÓN CORREGIDA)
 function integrarContactosConcatenadosEnNota() {
   // Verificar si ya hemos guardado la función original
-  
-  
+
   // Guardar referencia a la función original SOLO una vez
   funcionOriginalGuardada = window.crearNota;
-  
-  if (typeof funcionOriginalGuardada !== 'function') {
-    console.warn('⚠️ No se encontró la función crearNota original');
+
+  if (typeof funcionOriginalGuardada !== "function") {
+    console.warn("⚠️ No se encontró la función crearNota original");
     return;
   }
-  
+
   // Sobrescribir la función crearNota
-  window.crearNota = function() {
+  window.crearNota = function () {
     // Llamar a la función original PRIMERO
     funcionOriginalGuardada();
-    
+
     // Obtener valores necesarios
-    const nombreTitular = document.getElementById('NomTitular')?.value || '';
-    
+    const nombreTitular = document.getElementById("NomTitular")?.value || "";
+
     // Solo proceder si hay nombre de titular
     if (!nombreTitular.trim()) {
       return;
     }
-    
+
     // Generar texto de contactos concatenados
     const textoContactos = generarTextoContactosConcatenados(nombreTitular);
-    
+
     // Obtener el contenido actual de la nota
-    const textoNota = document.getElementById('textoNota');
+    const textoNota = document.getElementById("textoNota");
     if (!textoNota) return;
-    
+
     let contenidoNota = textoNota.value;
-    
+
     // Patrón más específico para evitar reemplazos múltiples
-    const patronTitular = new RegExp(`Titular\\s+${nombreTitular.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+se marca al número[^,\\.]*`, 'i');
-    
+    const patronTitular = new RegExp(
+      `Titular\\s+${nombreTitular.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&"
+      )}\\s+se marca al número[^,\\.]*`,
+      "i"
+    );
+
     if (patronTitular.test(contenidoNota)) {
       // Reemplazar el patrón existente con el texto concatenado
       contenidoNota = contenidoNota.replace(patronTitular, textoContactos);
     } else {
       // Buscar patrón más general como fallback
-      const patronGeneral = /Titular\s+[^\s]+(?:\s+[^\s]+)*\s+se marca al número[^,\.]*/i;
+      const patronGeneral =
+        /Titular\s+[^\s]+(?:\s+[^\s]+)*\s+se marca al número[^,\.]*/i;
       if (patronGeneral.test(contenidoNota)) {
         contenidoNota = contenidoNota.replace(patronGeneral, textoContactos);
       }
     }
-    
+
     // Actualizar el contenido de la nota
     textoNota.value = contenidoNota;
   };
-  
 }
 
-// Función para conectar el botón "+" 
+// Función para conectar el botón "+"
 /* function conectarBotonAgregarExacto() {
   const botonAgregar = document.getElementById('agregarNumero');
   
@@ -2156,17 +2142,15 @@ function inicializarSistemaContactosExactos() {
   if (window.ContactosExactosInicializado) {
     return;
   }
-  
-  
+
   // Marcar como inicializado
   window.ContactosExactosInicializado = true;
-  
+
   // Conectar botón agregar
   conectarBotonAgregarExacto();
-  
+
   // Integrar con sistema de notas
   integrarContactosConcatenadosEnNota();
-  
 }
 
 // ===========================================
@@ -2181,19 +2165,19 @@ window.ContactosExactos = {
   generarTexto: generarTextoContactosConcatenados,
   inicializar: inicializarSistemaContactosExactos,
   // Función para reiniciar el sistema si es necesario
-  reiniciar: function() {
+  reiniciar: function () {
     window.ContactosExactosInicializado = false;
     funcionOriginalGuardada = null;
     contadorContactosExactos = 1;
-    const botonAgregar = document.getElementById('agregarNumero');
+    const botonAgregar = document.getElementById("agregarNumero");
     if (botonAgregar) {
-      botonAgregar.removeAttribute('data-contactos-connected');
+      botonAgregar.removeAttribute("data-contactos-connected");
     }
-  }
+  },
 };
 
 // Inicialización automática con protección contra múltiples ejecuciones
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   if (!window.ContactosExactosInicializado) {
     setTimeout(() => {
       inicializarSistemaContactosExactos();
@@ -2202,7 +2186,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // También en window.onload por si acaso
-window.addEventListener('load', function() {
+window.addEventListener("load", function () {
   if (!window.ContactosExactosInicializado) {
     setTimeout(() => {
       inicializarSistemaContactosExactos();
@@ -2210,3 +2194,31 @@ window.addEventListener('load', function() {
   }
 });
 
+// Aplicar limpieza automática al input direccionSistema
+document.addEventListener("DOMContentLoaded", function () {
+  const direccionSistema = document.getElementById("direccionSistema");
+
+  function aplicarLimpieza() {
+    const textoOriginal = direccionSistema.value;
+    const textoLimpio = limpiarTexto(textoOriginal);
+
+    // Solo actualizar si el texto cambió para evitar bucles infinitos
+    if (textoOriginal !== textoLimpio) {
+      // Guardar la posición del cursor
+      const cursorPos = direccionSistema.selectionStart;
+      direccionSistema.value = textoLimpio;
+
+      // Restaurar posición del cursor (aproximada)
+      const nuevaPos = Math.min(cursorPos, textoLimpio.length);
+      direccionSistema.setSelectionRange(nuevaPos, nuevaPos);
+    }
+  }
+
+  // Aplicar limpieza al pegar
+  direccionSistema.addEventListener("paste", function (e) {
+    setTimeout(aplicarLimpieza, 0);
+  });
+
+  // Aplicar limpieza al escribir
+  direccionSistema.addEventListener("input", aplicarLimpieza);
+});

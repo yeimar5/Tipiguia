@@ -215,21 +215,29 @@
                   <div class="mt-3" id="DRP">
                     <label class="form-label"><b>DIRECCION EN RECIBO PUBLICO</b></label>
                     <div class="row mb-2 no-gutters">
-                      <div class="col-sm-3 px-1">
+                      <div class="col-sm-2 px-1">
                         <label for="via" class="form-label">Vía Principal</label>
                         <input type="text" class="form-control trans" id="via" placeholder="VIA PRINCIPAL">
                       </div>
-                      <div class="col-sm-3 px-1">
+                      <div class="col-sm-2 px-1">
                         <label for="cruce" class="form-label">Cruce</label>
                         <input type="text" class="form-control trans" id="cruce" placeholder="CRUCE">
                       </div>
-                      <div class="col-sm-3 px-1">
+                      <div class="col-sm-1 px-1">
                         <label for="placa" class="form-label">Placa</label>
                         <input type="text" class="form-control trans" id="placa" placeholder="PLACA">
                       </div>
-                      <div class="col-sm-3 px-1">
+                      <div class="col-sm-4 px-1">
                         <label for="complemento" class="form-label">Complemento</label>
                         <input type="text" class="form-control trans" id="complemento" placeholder="COMPLEMENTO">
+                      </div>
+                      <div class="col-sm-3 px-1">
+                        <label for="aceptarRecibo" class="form-label">Estado Recibo</label>
+                        <select class="form-control trans" id="aceptarRecibo">
+                          <option value="">Seleccionar...</option>
+                          <option value="SI">Aceptar recibo</option>
+                          <option value="NO">Recibo no se acepta</option>
+                        </select>
                       </div>
                     </div>
                     <div class="row mb-2">
@@ -237,12 +245,7 @@
                         <div class="input-group">
                           <input type="text" class="form-control trans" id="resultado"
                             placeholder="Dirección en recibo publico" readonly>
-                          <div class="input-group-append">
-                            <div class="input-group-text checkbox-addon">
-                              <input type="checkbox" id="aceptarRecibo" class="mr-2">
-                              <label for="aceptarRecibo" class="mb-0">Aceptar recibo</label>
-                            </div>
-                          </div>
+                          
                         </div>
                       </div>
                     </div>
@@ -250,12 +253,6 @@
                   <div class="input-group mt-3" id="seccionDireccionSistema">
                     <input type="text" id="direccionSistema" autocomplete="off" class="form-control trans"
                       placeholder="Pega la direccion de agendador" spellcheck="false" />
-                    <div class="input-group-append">
-                      <div class="input-group-text checkbox-addon">
-                        <input type="checkbox" id="direccionNoLegible" class="mr-2">
-                        <label for="direccionNoLegible" class="mb-0">Recibo no se acepta</label>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -426,7 +423,7 @@
 
         <div class="modal-footer">
           <textarea class="form-control trans" id="textoNota" rows="3" oninput="autoResize(this)"></textarea>
-          <button type="button" class="btn btn-outline-warning trans" id="btnModificar">MODIFICAR</button>
+          <button type="button" class="btn btn-outline-warning trans" id="btnLimpiar">LIMPIAR FORMULARIOS</button>
           <button type="button" class="btn btn-outline-primary trans" id="btnCopiarNota">COPIAR</button>
         </div>
       </div>
