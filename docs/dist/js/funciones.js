@@ -488,7 +488,7 @@ function actualizarResultadoDireccion(result) {
   if (!resultDiv) return;
 
   if (result.trim() === "") {
-    resultDiv.value = "direccion recibo";
+    resultDiv.value = "";
     resultDiv.style.color = "#6c757d";
   } else {
     resultDiv.value = result;
@@ -857,7 +857,7 @@ function procesarCasoDireccionPiloto(valores, textos) {
   } else {
     respuesta = "";
   }
-  let reciboPublico = valores.direcionenRecibo ? `en recibo publico esta ${valores.direcionenRecibo}`:"";
+  let reciboPublico = valores.direcionenRecibo ? `en recibo publico esta ${valores.direcionenRecibo}`: "";
   let sistema = valores.direccionAgendador ? `y en sistema está ${valores.direccionAgendador}`: "";
 
   return (

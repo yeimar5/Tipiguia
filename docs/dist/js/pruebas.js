@@ -1,1 +1,0 @@
-"en recibo publico esta "
