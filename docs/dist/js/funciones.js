@@ -93,7 +93,7 @@ function manejarClick(evento) {
     Tipificar: lanzarModal,
     imagen: subirImagen,
     guardarCambios: guardarEnLocalStorage,
-    btnLimpiar: limpiarFormularios, 
+    btnLimpiar: limpiarFormularios,
   };
 
   if (actions[targetId]) {
@@ -185,10 +185,10 @@ function limpiarFormularios() {
     confirmButtonText: "Sí, limpiar",
     cancelButtonText: "No, cancelar",
     confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6"
+    cancelButtonColor: "#3085d6",
   }).then((result) => {
     if (result.isConfirmed) {
-      document.querySelector('#tipificarNota .close').click();
+      document.querySelector("#tipificarNota .close").click();
       resetearFormularios();
     }
   });
@@ -335,7 +335,7 @@ function concatenateInputs() {
   const parts = [via, cruce, placa, complemento].filter(
     (part) => part.trim() !== ""
   );
-  const result = "en recibo publico esta " + parts.join(" ");
+  const result = parts.join(" ");
 
   actualizarResultadoDireccion(result);
 }
@@ -354,8 +354,6 @@ function actualizarNotaCompleta() {
   autoResize(document.getElementById("textoNota"));
 }
 
-
-
 function Actualizartodo() {
   const formulario = document.querySelector("#Formulario");
   formulario.addEventListener("input", (event) => {
@@ -363,11 +361,9 @@ function Actualizartodo() {
   });
 }
 
-
 // ===========================================
 // FUNCIONES DE DOM
 // ===========================================
-
 
 function cambiarColorFondo(color) {
   const colorElement = document.getElementById(`color`);
@@ -527,10 +523,12 @@ const ids = [
   "SF",
   "FC",
   "sus",
+  "noSoporte",
   "NomAgent",
   "Agent",
   "direccionSistema",
   "resultado",
+  "tipoJornada",
   "DRP",
 ];
 
@@ -542,22 +540,24 @@ ids.forEach((id) => {
 function obtenerValoresFormulario() {
   return {
     motivoLlamada: campos.Motivo.value,
-    motivoTecnico: campos.Mtecnico,
+    motivoTecnico: campos.Mtecnico.value,
     numeroTitular: campos.NumTitular.value,
     nombreTitular: campos.NomTitular.value,
-    contingenciaActiva: campos.Contingencia.checked,
-    aLaEsperadeInstalacion: campos.Aceptains.checked,
+    contingencia: campos.Contingencia.checked,
+    aceptaInstalar: campos.Aceptains.checked,
     aceptarRecibo: campos.aceptarRecibo.value,
+    suspenderOrden: campos.sus.checked,
     trabajador: campos.rol.value,
-    contactoConTitular: campos.Contacto.value,
+    contacto: campos.Contacto.value,
     motivoQuiebre: campos.mQuiebre.value,
     motivoCliente: campos.Musuario.value,
     fecha: campos.Fecha.value,
+    tipoJornada: campos.tipoJornada.value,
     franjaAgenda: campos.Franja.value,
     gpsActivo: campos.gps.value,
+    motivoNoAplica: campos.noSoporte.value,
     soporteFotografico: campos.SF.value,
     fallaChatbot: campos.FC.checked,
-    suspenderOrden: campos.sus.checked,
     nombreAsesor: campos.NomAgent.value,
     agentAsesor: `agent_${campos.Agent.value}`,
     direccionAgendador: campos.direccionSistema.value,
@@ -571,14 +571,14 @@ function generarTextosBase(valores) {
     titularContacto: `Titular ${valores.nombreTitular} se marca al número ${valores.numeroTitular}`,
     gestion: `. Gestionado por ${valores.nombreAsesor} ${valores.agentAsesor}.`,
     fechaFormateada: FormatearFecha(valores.fecha),
-    texto: `LINEA RESCATE Se comunica ${valores.trabajador} informando que ${valores.motivoTecnico.value} `,
+    texto: `LINEA RESCATE Se comunica ${valores.trabajador} informando que ${valores.motivoTecnico} `,
   };
 }
 
 function procesarCasoIncumplimiento(valores, textos) {
   let notaGenerada = "";
   let mensajeChatbot = "";
-  const textoSinContacto = obtenerTextoSinContacto(valores.contactoConTitular);
+  const textoSinContacto = obtenerTextoSinContacto(valores.contacto);
   let texto = textos.texto + mensajeChatbot + ` ${textos.titularContacto} `;
 
   if (valores.trabajador === "técnico") {
@@ -586,11 +586,11 @@ function procesarCasoIncumplimiento(valores, textos) {
       ? "Se valida soporte por falla reportada en chatbot"
       : "Se valida chatbot ok.";
 
-    if (valores.contingenciaActiva) {
-      valores.contactoConTitular = "...";
+    if (valores.contingencia) {
+      valores.contacto = "...";
       notaGenerada = "POR CONTINGENCIA se deja orden pendiente en aplicativos";
     } else {
-      if (esSinContacto(valores.contactoConTitular)) {
+      if (esSinContacto(valores.contacto)) {
         notaGenerada = `${textoSinContacto}, Se Valida GPS ${valores.gpsActivo} Se Valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}`;
         if (valores.gpsActivo === "OK" && valores.soporteFotografico === "OK") {
           notaGenerada +=
@@ -599,9 +599,9 @@ function procesarCasoIncumplimiento(valores, textos) {
           notaGenerada +=
             " Se le indica a técnico dirigirse al predio y Subir Soporte fotográfico";
         }
-      } else if (valores.contactoConTitular === "2") {
+      } else if (valores.contacto === "2") {
         notaGenerada += ` contesta e indica que ${valores.motivoCliente}`;
-        if (valores.aLaEsperadeInstalacion) {
+        if (valores.aceptaInstalar) {
           notaGenerada +=
             " indica que esta a la espera de instalación, valida datos correctos";
         } else if (!valores.suspenderOrden) {
@@ -619,7 +619,7 @@ function procesarCasoIncumplimiento(valores, textos) {
 function procesarCasoAgenda(valores, textos) {
   let notaGenerada = "";
   let mensajeChatbot = "";
-  const textoSinContacto = obtenerTextoSinContacto(valores.contactoConTitular);
+  const textoSinContacto = obtenerTextoSinContacto(valores.contacto);
   const agendaNota = ` se reagenda orden para el dia ${textos.fechaFormateada} en la franja ${valores.franjaAgenda} segun indicación de técnico.`;
 
   if (valores.trabajador === "técnico") {
@@ -627,8 +627,8 @@ function procesarCasoAgenda(valores, textos) {
       ? "Se valida soporte por falla reportada en chatbot"
       : "Se valida chatbot ok.";
 
-    if (valores.contingenciaActiva) {
-      valores.contactoConTitular = "...";
+    if (valores.contingencia) {
+      valores.contacto = "...";
       notaGenerada = valores.suspenderOrden
         ? "POR CONTINGENCIA se deja orden pendiente en aplicativos."
         : ` POR CONTINGENCIA ${agendaNota}`;
@@ -640,7 +640,7 @@ function procesarCasoAgenda(valores, textos) {
     mensajeChatbot +
     ` ${textos.titularContacto} ${valores.motivoCliente} `;
 
-  if (esSinContacto(valores.contactoConTitular)) {
+  if (esSinContacto(valores.contacto)) {
     if (valores.trabajador === "gestor") {
       notaGenerada = `${textoSinContacto} se le indica a gestor que intente mas tarde para proceder con la gestión.`;
     } else {
@@ -655,8 +655,8 @@ function procesarCasoAgenda(valores, textos) {
           " Se le indica a técnico dirigirse al predio y Subir Soporte fotográfico.";
       }
     }
-  } else if (valores.contactoConTitular === "2") {
-    if (valores.aLaEsperadeInstalacion) {
+  } else if (valores.contacto === "2") {
+    if (valores.aceptaInstalar) {
       notaGenerada =
         "indica que esta a la espera de instalación, valida datos correctos.";
     } else if (valores.suspenderOrden) {
@@ -671,7 +671,7 @@ function procesarCasoAgenda(valores, textos) {
 
 // Función para procesar caso de quiebre
 function procesarCasoQuiebre(valores, textos) {
-  const textoSinContacto = obtenerTextoSinContacto(valores.contactoConTitular);
+  const textoSinContacto = obtenerTextoSinContacto(valores.contacto);
   let notaGenerada = "";
   let mensajeChatbot = "";
   let prefijoQC = ""; // Para manejar el prefijo QC al inicio
@@ -681,15 +681,12 @@ function procesarCasoQuiebre(valores, textos) {
       ? " Se valida soporte por falla reportada en chatbot."
       : " Se valida chatbot ok.";
 
-    if (valores.contingenciaActiva) {
-      valores.contactoConTitular = "...";
+    if (valores.contingencia) {
+      valores.contacto = "...";
       notaGenerada =
         " POR CONTINGENCIA se deja orden suspendida en aplicativos";
     } else {
-      if (
-        esSinContacto(valores.contactoConTitular) ||
-        valores.contactoConTitular === "..."
-      ) {
+      if (esSinContacto(valores.contacto) || valores.contacto === "...") {
         if (valores.trabajador === "gestor") {
           notaGenerada = ` ${textoSinContacto} se le indica a gestor que intente mas tarde para proceder con la gestión.`;
         } else {
@@ -704,7 +701,7 @@ function procesarCasoQuiebre(valores, textos) {
             notaGenerada = ` ${textoSinContacto}. Se valida GPS ${valores.gpsActivo}. Se valida SOPORTE FOTOGRÁFICO ${valores.soporteFotografico}. Se le indica al técnico dirigirse al predio y subir soporte fotográfico.`;
           }
         }
-      } else if (valores.contactoConTitular === "2") {
+      } else if (valores.contacto === "2") {
         const motivosEspeciales = [
           "TELÉFONO DEL CLIENTE ERRADO",
           "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN",
@@ -712,7 +709,7 @@ function procesarCasoQuiebre(valores, textos) {
         ];
 
         if (
-          valores.aLaEsperadeInstalacion ||
+          valores.aceptaInstalar ||
           motivosEspeciales.includes(valores.motivoQuiebre)
         ) {
           return procesarMotivoEspecial(valores, textos);
@@ -748,7 +745,7 @@ function procesarMotivoEspecial(valores, textos) {
     textos.texto + mensajeChatbot + ` ${textos.titularContacto} `;
 
   if (
-    valores.aLaEsperadeInstalacion ||
+    valores.aceptaInstalar ||
     valores.motivoQuiebre === "GESTIÓN COMERCIAL/CLIENTE ACEPTA INSTALACIÓN"
   ) {
     const motivoTexto =
@@ -831,7 +828,7 @@ function procesarCasoSoporteNoAplica(valores, textos) {
 
 // Función para procesar caso de gestión de decos
 function procesarCasoGestionDecos(valores, textos) {
-  const textoSinContacto = obtenerTextoSinContacto(valores.contactoConTitular);
+  const textoSinContacto = obtenerTextoSinContacto(valores.contacto);
   const mensajeChatbot = valores.fallaChatbot
     ? ", se valida soporte por falla reportada en chatbot"
     : ", se valida chatbot ok.";
@@ -841,9 +838,9 @@ function procesarCasoGestionDecos(valores, textos) {
     mensajeChatbot +
     ` ${textos.titularContacto} ${valores.motivoCliente}`;
 
-  if (valores.contactoConTitular === "2") {
+  if (valores.contacto === "2") {
     texto += " se valida datos correctos y se actualiza TAG de equipos";
-  } else if (esSinContacto(valores.contactoConTitular)) {
+  } else if (esSinContacto(valores.contacto)) {
     texto += ` ${textoSinContacto} se indica a técnico que le diga al titular que este pendiente de la llamada e intente nuevamente`;
   }
 
@@ -860,13 +857,11 @@ function procesarCasoDireccionPiloto(valores, textos) {
   } else {
     respuesta = "";
   }
-
-  let sistema = valores.direccionAgendador
-    ? `y en sistema está ${valores.direccionAgendador}`
-    : "";
+  let reciboPublico = valores.direcionenRecibo ? `en recibo publico esta ${valores.direcionenRecibo}`:"";
+  let sistema = valores.direccionAgendador ? `y en sistema está ${valores.direccionAgendador}`: "";
 
   return (
-    textos.texto + ` ${valores.direcionenRecibo || ""} ${sistema} ${respuesta}`
+    textos.texto + ` ${reciboPublico} ${sistema} ${respuesta}`
   );
 }
 
@@ -906,7 +901,7 @@ function crearNota() {
 
   textoFinal += textos.gestion;
   textoFinal = limpiarTexto(textoFinal);
-  if (valores.contingenciaActiva) {
+  if (valores.contingencia) {
     textoFinal = textoFinal.replace(/se marca al /gi, "").trim();
     // Procesar el texto con la función de Nota Aplicativos
     if (typeof procesarTextoNotaAplicativos === "function") {
@@ -972,19 +967,6 @@ function toggleElementStat(elementId, isDisabled) {
   }
 }
 
-// Función para obtener valores del formulario para manejarCambio
-function obtenerValoresManejarCambio() {
-  return {
-    mLlamada: document.querySelector("#Motivo").value,
-    soporteNA: document.querySelector("#noSoporte").value,
-    contacto: document.querySelector("#Contacto").value,
-    trabajador: document.querySelector("#rol").value,
-    contingencia: document.getElementById("Contingencia").checked,
-    aceptaInstalar: document.getElementById("Aceptains").checked,
-    aceptarRecibo: document.getElementById("aceptarRecibo").value,
-    suspender: document.getElementById("sus").checked,
-  };
-}
 function manejarCasoIncumplimiento(valores) {
   cambiarColorFondo("#0314f8ff");
 
@@ -1019,7 +1001,7 @@ function manejarCasoIncumplimiento(valores) {
           elementosBaseIncumplimiento
         );
       } else {
-        if (!valores.suspender && !valores.aceptaInstalar) {
+        if (!valores.suspenderOrden && !valores.aceptaInstalar) {
           mostrarSoloElementos(
             {
               block: ["#Musuariod"],
@@ -1027,7 +1009,7 @@ function manejarCasoIncumplimiento(valores) {
             },
             elementosBaseIncumplimiento
           );
-        } else if (valores.suspender && !valores.aceptaInstalar) {
+        } else if (valores.suspenderOrden && !valores.aceptaInstalar) {
           mostrarSoloElementos(
             {
               block: ["#Musuariod", "#fecha"],
@@ -1035,7 +1017,7 @@ function manejarCasoIncumplimiento(valores) {
             },
             elementosBaseIncumplimiento
           );
-        } else if (!valores.suspender && valores.aceptaInstalar) {
+        } else if (!valores.suspenderOrden && valores.aceptaInstalar) {
           mostrarSoloElementos(
             {
               block: ["#Musuariod"],
@@ -1102,7 +1084,7 @@ function manejarCasoAgenda(valores) {
     const segundoElemento = document.querySelector("fecha");
     ordenarElementos(primerElemento, segundoElemento);
 
-    if (valores.suspender) {
+    if (valores.suspenderOrden) {
       mostrarSoloElementos(
         {
           block: ["#MotivoTec"],
@@ -1112,7 +1094,7 @@ function manejarCasoAgenda(valores) {
       );
     }
   } else if (valores.contacto === "2" && !valores.contingencia) {
-    if (valores.aceptaInstalar && !valores.suspender) {
+    if (valores.aceptaInstalar && !valores.suspenderOrden) {
       mostrarSoloElementos(
         {
           flex: ["#Acepta"],
@@ -1120,7 +1102,7 @@ function manejarCasoAgenda(valores) {
         },
         elementosBaseAgenda
       );
-    } else if (!valores.aceptaInstalar && valores.suspender) {
+    } else if (!valores.aceptaInstalar && valores.suspenderOrden) {
       mostrarSoloElementos(
         {
           block: ["#MotivoTec", "#Musuariod"],
@@ -1150,7 +1132,7 @@ function manejarCasoAgenda(valores) {
         elementosBaseAgenda
       );
 
-      if (valores.suspender) {
+      if (valores.suspenderOrden) {
         mostrarSoloElementos(
           {
             block: ["#MotivoTec"],
@@ -1255,7 +1237,7 @@ function manejarCasoSoporteNoAplica(valores) {
 
   const soportesConTitular = ["11", "6", "13", "14", "3", "9", "4", "16"];
 
-  if (soportesConTitular.includes(valores.soporteNA)) {
+  if (soportesConTitular.includes(valores.motivoNoAplica)) {
     mostrarSoloElementos({
       block: ["#MotivoTec", "#Musuariod", "#Soporte"],
       flex: ["#Titular"],
@@ -1264,7 +1246,7 @@ function manejarCasoSoporteNoAplica(valores) {
     mostrarSoloElementos({
       block: ["#MotivoTec", "#Soporte"],
     });
-    if (valores.soporteNA === "7") {
+    if (valores.motivoNoAplica === "7") {
       mostrarSoloElementos({
         block: ["#MotivoTec", "#Soporte"],
         flex: ["#jornadaSelect"],
@@ -1311,6 +1293,14 @@ function manejarCasoDireccionPiloto(valores) {
     mostrarSoloElementos(elementosBasePiloto, {
       block: ["#Musuariod"],
     });
+    if (valores.motivoLlamada === "5") {
+      ValueMostrar(
+        "#Musuario",
+        "la direccion no es legible, se encuentra borrosa"
+      );
+    } else {
+      ValueMostrar("#Musuario", "");
+    }
   }
 
   ValueMostrar("#Mtecnico", "requieren corrección en la dirección, ");
@@ -1323,10 +1313,10 @@ function manejarCambio(e) {
   setInnerHTML("#labelAcepta", "CLIENTE ACEPTA INSTALAR");
   setInnerHTML("#labelSuspender", "SUSPENDER ORDEN");
 
-  const valores = obtenerValoresManejarCambio();
+  const valores = obtenerValoresFormulario();
 
   if (Actualizartodo) {
-    switch (valores.mLlamada) {
+    switch (valores.motivoLlamada) {
       case "0": // incumplimiento
         manejarCasoIncumplimiento(valores);
         setInnerHTML("#labelAcepta", "CLIENTE A LA ESPERA");
@@ -1356,18 +1346,18 @@ function manejarCambio(e) {
         cambiarColorFondo("#1392F1");
         mostrarSoloElementos({ block: ["#MotivoTec"] });
         ValueMostrar("#Mtecnico", "");
+        ValueMostrar("#Musuario", "");
     }
   }
 
   crearNota();
 }
 
-// Función para procesar el texto y eliminar "POR CONTINGENCIA" y "se marca al número"
+// Función para procesar el texto y eliminar "POR CONTINGENCIA"
 function procesarTextoNotaAplicativos(texto) {
   const checkbox = document.getElementById("notaApp");
   if (checkbox && checkbox.checked) {
     let cleanedText = texto.replace(/POR CONTINGENCIA/gi, "").trim();
-    // Limpiar espacios extras que puedan quedar */
     return cleanedText.replace(/\s+/g, " ").trim();
   }
   return texto;
@@ -1378,11 +1368,12 @@ function procesarTextoNotaAplicativos(texto) {
 // ===========================================
 
 function validarAntesDeCopirarNota() {
+  const valores = obtenerValoresFormulario();
   const errores = [];
-  const motivoLlamada = document.getElementById("Motivo").value;
-  const contingenciaActiva = document.getElementById("Contingencia")?.checked;
-  const contacto = document.getElementById("Contacto")?.value;
-  const clienteAgenda = document.getElementById("sus")?.checked; // ✅ Agregado
+  const motivoLlamada = valores.motivoLlamada;
+  const contingencia = valores.contingencia;
+  const contacto = valores.contacto;
+  const clienteAgenda = valores.suspenderOrden;
 
   // Campos específicos según el motivo
   const camposPorMotivo = {
@@ -1391,16 +1382,16 @@ function validarAntesDeCopirarNota() {
       NumTitular: "Número de teléfono del titular",
       NomTitular: "Nombre del titular",
       // Solo validar contacto si NO hay contingencia activa
-      ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
+      ...(contingencia ? {} : { Contacto: "Tipo de contacto" }),
       // ✅ CORRECCIÓN: Fecha y Franja solo si NO hay contingencia Y contacto exitoso Y cliente agenda
-      ...(!contingenciaActiva && contacto === "2" && clienteAgenda
+      ...(!contingencia && contacto === "2" && clienteAgenda
         ? {
             Fecha: "Fecha de agenda",
             Franja: "Franja horaria",
           }
         : {}),
       // Motivo usuario solo si hay contacto exitoso y no hay contingencia
-      ...(!contingenciaActiva && contacto === "2"
+      ...(!contingencia && contacto === "2"
         ? { Musuario: "Motivo del cliente" }
         : {}),
     },
@@ -1408,10 +1399,22 @@ function validarAntesDeCopirarNota() {
       // ✅ AGENDA CORREGIDO
       NumTitular: "Número de teléfono del titular",
       NomTitular: "Nombre del titular",
-      ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
-      // ✅ CORRECCIÓN: Fecha y Franja SIEMPRE se piden EXCEPTO si Aceptains O sus están marcados
-      ...(!document.getElementById("Aceptains")?.checked &&
-      !document.getElementById("sus")?.checked
+
+      // Contacto: Para gestor siempre, para técnico solo si no hay contingencia
+      ...(valores.trabajador === "gestor"
+        ? { Contacto: "Tipo de contacto" } // GESTOR: Siempre pide contacto
+        : contingencia
+        ? {}
+        : { Contacto: "Tipo de contacto" }), // TÉCNICO: Solo si no hay contingencia
+
+      // Fecha y Franja: Lógica diferente según el tipo de trabajador
+      ...(valores.trabajador === "gestor"
+        ? // GESTOR: Solo pedir fecha si hay contacto exitoso (contacto === "2")
+          contacto === "2"
+          ? { Fecha: "Fecha de agenda", Franja: "Franja horaria" }
+          : {}
+        : // TÉCNICO: Lógica original (fecha siempre EXCEPTO si Aceptains O sus están marcados)
+        !valores.aceptaInstalar && !valores.suspenderOrden
         ? { Fecha: "Fecha de agenda", Franja: "Franja horaria" }
         : {}),
     },
@@ -1419,7 +1422,7 @@ function validarAntesDeCopirarNota() {
       // Quiebre (sin cambios)
       NumTitular: "Número de teléfono del titular",
       NomTitular: "Nombre del titular",
-      ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
+      ...(contingencia ? {} : { Contacto: "Tipo de contacto" }),
       mQuiebre: "Motivo de quiebre",
     },
     3: {
@@ -1430,12 +1433,12 @@ function validarAntesDeCopirarNota() {
       // Gestión decos (sin cambios)
       NumTitular: "Número de teléfono del titular",
       NomTitular: "Nombre del titular",
-      ...(contingenciaActiva ? {} : { Contacto: "Tipo de contacto" }),
+      ...(contingencia ? {} : { Contacto: "Tipo de contacto" }),
     },
     5: {
       // Dirección piloto (sin cambios)
-      direccionSistema: "Dirección del sistema",
       resultado: "Dirección de recibo",
+      direccionSistema: "Dirección del sistema",
     },
     6: {
       // Llamada caída (sin cambios)
@@ -1458,7 +1461,7 @@ function validarAntesDeCopirarNota() {
 
   // Validaciones condicionales específicas
   errores.push(
-    ...validarCamposCondicionales(motivoLlamada, contingenciaActiva)
+    ...validarCamposCondicionales(motivoLlamada, contingencia, valores)
   );
 
   return errores;
@@ -1468,14 +1471,11 @@ function validarAntesDeCopirarNota() {
 // FUNCIÓN AUXILIAR PARA VALIDACIONES CONDICIONALES
 // ===========================================
 
-function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
+function validarCamposCondicionales(motivoLlamada, contingencia, valores) {
   const errores = [];
-  const contacto = document.getElementById("Contacto")?.value;
-
   // Solo validar motivo del cliente si hay contacto exitoso y no hay contingencia
-  if (contacto === "2" && !contingenciaActiva) {
-    const motivoCliente = document.getElementById("Musuario")?.value;
-    if (!motivoCliente || motivoCliente.trim() === "") {
+  if (valores.contacto === "2" && !valores.contingencia) {
+    if (!valores.motivoCliente || valores.motivoCliente.trim() === "") {
       errores.push(
         "❌ Falta: Motivo del cliente (cuando hay contacto exitoso)"
       );
@@ -1485,19 +1485,18 @@ function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
   // Validaciones específicas por motivo
   switch (motivoLlamada) {
     case "2": // Quiebre
-      if (contacto === "2" && !contingenciaActiva) {
-        const motivoQuiebre = document.getElementById("mQuiebre")?.value;
-        if (!motivoQuiebre || motivoQuiebre === "...") {
+      if (valores.contacto === "2" && !valores.contingencia) {
+        if (!valores.motivoQuiebre || valores.motivoQuiebre === "...") {
           errores.push("❌ Falta: Motivo específico de quiebre");
         }
       }
       break;
 
     case "3": // Soporte no aplica
-      const tipoSoporte = document.getElementById("noSoporte")?.value;
+      const tipoSoporte = valores.motivoNoAplica;
       // Validar jornada si es tipo 7
       if (tipoSoporte === "7") {
-        const jornada = document.getElementById("tipoJornada")?.value;
+        const jornada = valores.tipoJornada;
         if (!jornada || jornada === "") {
           errores.push("❌ Falta: Tipo de jornada (AM/PM)");
         }
@@ -1505,8 +1504,7 @@ function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
       // Validar motivo usuario para ciertos tipos de soporte
       const soportesConMotivo = ["11", "6", "13", "14", "3", "9", "4"];
       if (soportesConMotivo.includes(tipoSoporte)) {
-        const motivoUsuario = document.getElementById("Musuario")?.value;
-        if (!motivoUsuario || motivoUsuario.trim() === "") {
+        if (!valores.motivoCliente || valores.motivoCliente.trim() === "") {
           errores.push(
             "❌ Falta: Motivo del usuario (para este tipo de soporte)"
           );
@@ -1515,10 +1513,8 @@ function validarCamposCondicionales(motivoLlamada, contingenciaActiva) {
       break;
 
     case "5": // Dirección piloto
-      const aceptaRecibo = document.getElementById("aceptarRecibo")?.checked;
-      if (!aceptaRecibo) {
-        const motivoNoAcepta = document.getElementById("Musuario")?.value;
-        if (!motivoNoAcepta || motivoNoAcepta.trim() === "") {
+      if (valores.aceptarRecibo === "NO") {
+        if (!valores.motivoCliente || valores.motivoCliente.trim() === "") {
           errores.push("❌ Falta: Motivo por el cual no acepta el recibo");
         }
       }
@@ -1539,7 +1535,7 @@ function esRequeridoYVacio(campo, motivoLlamada, contacto) {
 
   if (!estaVacio) return false; // Si no está vacío, no necesita resaltado
 
-  const contingenciaActiva = document.getElementById("Contingencia")?.checked;
+  const contingencia = document.getElementById("Contingencia")?.checked;
   const clienteAgenda = document.getElementById("sus")?.checked; // ✅ Agregado
 
   // Definir qué campos son requeridos según el motivo
@@ -1549,18 +1545,18 @@ function esRequeridoYVacio(campo, motivoLlamada, contacto) {
       NumTitular: true,
       NomTitular: true,
       // Solo requerir contacto si NO hay contingencia activa
-      Contacto: !contingenciaActiva,
+      Contacto: !contingencia,
       // ✅ CORRECCIÓN: Fecha y Franja solo si NO hay contingencia Y hay contacto exitoso Y cliente agenda
-      Fecha: !contingenciaActiva && contacto === "2" && clienteAgenda,
-      Franja: !contingenciaActiva && contacto === "2" && clienteAgenda,
+      Fecha: !contingencia && contacto === "2" && clienteAgenda,
+      Franja: !contingencia && contacto === "2" && clienteAgenda,
       // Musuario solo si hay contacto exitoso y no hay contingencia
-      Musuario: contacto === "2" && !contingenciaActiva,
+      Musuario: contacto === "2" && !contingencia,
     },
     1: {
       // ✅ AGENDA CORREGIDO
       NumTitular: true,
       NomTitular: true,
-      Contacto: !contingenciaActiva,
+      Contacto: !contingencia,
       // ✅ CORRECCIÓN: Fecha y Franja SIEMPRE se piden EXCEPTO si Aceptains O sus están marcados
       Fecha:
         !document.getElementById("Aceptains")?.checked &&
@@ -1568,15 +1564,15 @@ function esRequeridoYVacio(campo, motivoLlamada, contacto) {
       Franja:
         !document.getElementById("Aceptains")?.checked &&
         !document.getElementById("sus")?.checked,
-      Musuario: contacto === "2" && !contingenciaActiva,
+      Musuario: contacto === "2" && !contingencia,
     },
     2: {
       // Quiebre (sin cambios)
       NumTitular: true,
       NomTitular: true,
-      Contacto: !contingenciaActiva,
+      Contacto: !contingencia,
       mQuiebre: true,
-      Musuario: contacto === "2" && !contingenciaActiva,
+      Musuario: contacto === "2" && !contingencia,
     },
     3: {
       // ✅ SOPORTE NO APLICA CORREGIDO - NO se requiere nombre ni número de titular
@@ -1590,8 +1586,8 @@ function esRequeridoYVacio(campo, motivoLlamada, contacto) {
       // Gestión decos (sin cambios)
       NumTitular: true,
       NomTitular: true,
-      Contacto: !contingenciaActiva,
-      Musuario: contacto === "2" && !contingenciaActiva,
+      Contacto: !contingencia,
+      Musuario: contacto === "2" && !contingencia,
     },
     5: {
       // Dirección piloto (sin cambios)
@@ -2147,7 +2143,7 @@ function inicializarSistemaContactosExactos() {
   window.ContactosExactosInicializado = true;
 
   // Conectar botón agregar
-  conectarBotonAgregarExacto();
+  //conectarBotonAgregarExacto();
 
   // Integrar con sistema de notas
   integrarContactosConcatenadosEnNota();
