@@ -18,7 +18,7 @@ function procesarCasoIncumplimiento(valores, textos) {
   let notaGenerada = "";
   let mensajeChatbot = "";
   const textoSinContacto = obtenerTextoSinContacto(valores.contacto);
-  let texto = textos.texto + mensajeChatbot + ` ${textos.titularContacto} `;
+  let textoCliente = textos.texto + mensajeChatbot + ` ${textos.titularContacto} `;
 
   if (valores.trabajador === "técnico") {
     mensajeChatbot = valores.fallaChatbot
@@ -51,7 +51,7 @@ function procesarCasoIncumplimiento(valores, textos) {
       }
     }
   }
-  return texto + notaGenerada;
+  return textoCliente + notaGenerada;
 }
 function manejarCasoIncumplimiento(valores) {
   cambiarColorFondo("#0314f8ff");

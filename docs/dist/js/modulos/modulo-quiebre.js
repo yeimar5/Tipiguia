@@ -22,7 +22,7 @@ function procesarCasoQuiebre(valores, textos) {
   let mensajeChatbot = "";
   let prefijoQC = ""; // Para manejar el prefijo QC al inicio
 
-  if (valores.trabajador === "técnico") {
+  if (valores.trabajador === "técnico" || valores.trabajador === "gestor") {
     mensajeChatbot = valores.fallaChatbot
       ? " Se valida soporte por falla reportada en chatbot."
       : " Se valida chatbot ok.";
