@@ -17,7 +17,46 @@ html{
 .container {
   text-align: center;
 }
+#intentosRecibo {
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  padding: 12px;
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
+  transition: all 0.3s ease;
+  outline: none;
+  margin: 0 10px 10px 0;
+}
 
+#intentosRecibo:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+#intentosRecibo:hover {
+  border-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.15);
+}
+
+/* Ocultar flechas de número en Chrome, Safari, Edge */
+#intentosRecibo::-webkit-outer-spin-button,
+#intentosRecibo::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Ocultar flechas en Firefox */
+#intentosRecibo[type=number] {
+  -moz-appearance: textfield;
+}
 .trans {
   backdrop-filter: blur(7px);
   border-radius: 10px;

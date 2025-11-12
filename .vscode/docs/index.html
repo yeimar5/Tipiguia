@@ -21,6 +21,8 @@
   <link rel="apple-touch-icon" href="./dist/img/LR.png" />
 
   <!-- Metadatos para PWA -->
+
+  
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -140,7 +142,7 @@
 
   <!-- Modal -->
   <div class="modal fade" id="tipificarNota" tabindex="-1" role="dialog" aria-labelledby="tipificarModalLabel"
-    aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
       <div class="modal-content trans">
         <div class="modal-header" id="color">
@@ -174,6 +176,15 @@
                   <input type="checkbox" class="custom-control-input" id="FC">
                   <label class="custom-control-label" for="FC">FALLA CHATBOT</label>
                 </div>
+                <div id="select_aceptarRecibo">
+                  <label for="aceptarRecibo" class="form-label">CANTIDAD INTENTOS</label>
+                    <input type="number" id="intentosRecibo" maxlength="1" oninput="this.value = this.value.slice(0, 1);" class="mr-4">
+                  <select class="form-control trans" id="aceptarRecibo">
+                    <option value="" selected disabled>APROBACIÓN RECIBO</option>
+                    <option value="SI">Aceptar recibo</option>
+                    <option value="NO">Rechazar recibo</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -205,6 +216,7 @@
                 <option value="">...</option>
                 <option value="AM">AM</option>
                 <option value="PM">PM</option>
+                <option value="PM_12_a_4">PM_12_a_4</option>
               </select>
             </div>
 
@@ -215,45 +227,30 @@
                   <textarea class="form-control trans" id="Mtecnico" rows="2" oninput="autoResize(this)"></textarea>
                   <div class="mt-3" id="DRP">
                     <label class="form-label"><b>DIRECCION EN RECIBO PUBLICO</b></label>
-                    <div class="row mb-2 no-gutters">
-                      <div class="col-sm-2 px-1">
-                        <label for="via" class="form-label">Vía</label>
-                        <input type="text" class="form-control trans" id="via" placeholder="VIA PRINCIPAL">
+                    <div class="row my-1 no-gutters">
+                      <div class="col-sm-7 px-1">
+                        <input type="text" class="form-control trans" id="via" 
+                          placeholder="Pega o escribe la dirección del recibo"  autocomplete="new-password" />
                       </div>
-                      <div class="col-sm-2 px-1">
-                        <label for="cruce" class="form-label">Cruce</label>
-                        <input type="text" class="form-control trans" id="cruce" placeholder="CRUCE">
-                      </div>
-                      <div class="col-sm-1 px-1">
-                        <label for="placa" class="form-label">Placa</label>
-                        <input type="text" class="form-control trans" id="placa" placeholder="PLACA">
-                      </div>
-                      <div class="col-sm-4 px-1">
-                        <label for="complemento" class="form-label">Complemento</label>
-                        <input type="text" class="form-control trans" id="complemento" placeholder="COMPLEMENTO">
-                      </div>
-                      <div class="col-sm-3 px-1">
-                        <label for="aceptarRecibo" class="form-label">Estado Recibo</label>
-                        <select class="form-control trans" id="aceptarRecibo">
-                          <option value="">Seleccionar...</option>
-                          <option value="SI">Aceptar recibo</option>
-                          <option value="NO">Recibo no se acepta</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row mb-2">
-                      <div class="col-12 mt-2">
-                        <div class="input-group">
-                          <input type="text" class="form-control trans" id="resultado"
-                            placeholder="Dirección en recibo publico" readonly>
-                          
-                        </div>
+                      <div class="col-sm-5 px-1">
+                        <input type="text" class="form-control trans" id="complemento"
+                          placeholder="Complemento en recibo">
                       </div>
                     </div>
                   </div>
-                  <div class="input-group mt-3" id="seccionDireccionSistema">
-                    <input type="text" id="direccionSistema" autocomplete="off" class="form-control trans"
-                      placeholder="Pega la direccion de agendador" spellcheck="false" />
+
+                  <div class="mt-3" id="seccionDireccionSistema">
+                    <label class="form-label"><b>DIRECCION EN SISTEMA</b></label>
+                    <div class="row my-1 no-gutters">
+                      <div class="col-sm-7 px-1">
+                        <input type="text" id="direccionSistema" class="form-control trans"
+                          placeholder="Pega la direccion de agendador" autocomplete="new-password" />
+                      </div>
+                      <div class="col-sm-5 px-1">
+                        <input type="text" class="form-control trans" id="complemento_agendador"
+                          placeholder="Complemento en agendador">
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -269,7 +266,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row" id="seccion-contacto">
               <div class="col-12" id="contacto1">
                 <div class="row">
                   <div class="col-5">
@@ -295,7 +292,7 @@
                   </div>
                   <div class="col-2 d-flex align-items-end">
                     <button type="button" id="agregarNumero" class="btn btn-success btn-block" data-toggle="tooltip"
-                      data-placement="top" title="Agregar número adicional">+</button>
+                      data-placement="top" title="Agregar número adicional" onclick="duplicarContacto()">+</button>
                   </div>
                 </div>
               </div>
@@ -348,6 +345,7 @@
                     aria-label="Franja">
                     <option id="AM" value="AM">AM</option>
                     <option id="PM" value="PM">PM</option>
+                    <option id="PM_12_a_4" value="PM_12_a_4">PM_12_a_4</option>
                   </select>
                   <div class="input-group-append">
                     <button type="button" id="pedirCuota" class="btn btn-warning">Pedir Cuota</button>
@@ -435,7 +433,57 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="./dist/js/bootstrap.bundle.min.js"></script>
   <script src="./dist/js/sweetalert2@11.js"></script>
-  <script type="module" src="./dist/js/main.js"></script>
+  <script type="module" src="dist/js/main.mjs"
+    onerror="this.onerror=null; var fallback = document.createElement('script'); fallback.src='dist/js/funciones.js'; document.head.appendChild(fallback);">
+    </script>
+  <script>
+    let contador = 0;
+
+    function duplicarContacto() {
+      contador++;
+
+      // Obtener elemento original
+      const original = document.getElementById('seccion-contacto');
+      const clon = original.cloneNode(true);
+
+      // Limpiar campos específicos
+      clon.querySelector('input[type="tel"]').value = '';
+      clon.querySelector('select').selectedIndex = 0;
+
+      // Cambiar ID del clon
+      clon.id = 'seccion-contacto-' + contador;
+
+      // Agregar botón eliminar
+      const columnaBoton = clon.querySelector('.col-2');
+      const botonEliminar = document.createElement('button');
+      botonEliminar.type = 'button';
+      botonEliminar.className = 'btn btn-danger btn-block mt-1 btnEliminar';
+      botonEliminar.innerHTML = '-';
+      botonEliminar.onclick = () => eliminarSeccion('seccion-contacto-' + contador);
+      botonEliminar.setAttribute('title', 'Eliminar');
+
+      columnaBoton.appendChild(botonEliminar);
+
+      // Insertar en el DOM
+      original.parentNode.appendChild(clon);
+    }
+
+    function eliminarSeccion(idSeccion) {
+      const elemento = document.getElementById(idSeccion);
+      if (elemento) elemento.remove();
+    }
+
+    // Delegación de eventos para eliminar secciones dinámicas tipo div
+    // Elimina cualquier div cuya id empiece por 'seccion-contacto' al hacer click en el botón eliminar
+
+    document.addEventListener('click', function (e) {
+      if (e.target.classList.contains('btnEliminar')) {
+        const seccion = e.target.closest('[id^="seccion-contacto"]');
+        if (seccion) seccion.remove();
+      }
+    });
+  </script>
+
 </body>
 
 </html>
